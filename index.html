@@ -1,220 +1,581 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PartexDesktop OS 10.9</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
-:root{
-  --bg:#0d0d0d;--bg2:#1a1a1a;--bg3:#242424;--bg4:#2e2e2e;
-  --accent:#7c5cfc;--accent2:#9b7dff;--text:#f0f0f0;--text2:#a0a0a0;--text3:#606060;
-  --border:#333;--border2:#444;--radius:10px;--radius2:14px;
-  --dock-bg:rgba(255,255,255,0.08);--win-bg:#1a1a1a;
-  --purple:#7c5cfc;--blue:#4a9eff;--green:#30d158;--red:#ff453a;--orange:#ff9f0a;--pink:#ff2d55;
+:root {
+  --bg: #0d0d0d;
+  --bg2: #1a1a1a;
+  --bg3: #242424;
+  --bg4: #2e2e2e;
+  --accent: #7c5cfc;
+  --accent2: #9b7dff;
+  --text: #f0f0f0;
+  --text2: #a0a0a0;
+  --text3: #606060;
+  --border: #333;
+  --border2: #444;
+  --radius: 10px;
+  --radius2: 14px;
+  --dock-bg: rgba(255,255,255,0.08);
+  --win-bg: #1a1a1a;
+  --text-size: 14px;
+  --title-size: 13px;
+  --small-size: 11px;
+  --purple: #7c5cfc;
+  --blue: #4a9eff;
+  --green: #30d158;
+  --red: #ff453a;
+  --orange: #ff9f0a;
+  --pink: #ff2d55;
 }
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display',system-ui,sans-serif;height:100vh;overflow:hidden;display:flex;flex-direction:column;}
-/* MENUBAR */
-#menubar{height:28px;background:rgba(0,0,0,0.75);backdrop-filter:blur(20px);display:flex;align-items:center;padding:0 12px;gap:6px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.06);z-index:9999;position:relative;}
-#menubar-logo{font-size:13px;font-weight:700;background:linear-gradient(135deg,#7c5cfc,#4a9eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;padding:2px 8px;border-radius:5px;}
-#menubar-logo:hover{background-color:rgba(255,255,255,0.1);}
-.menu-item{font-size:13px;color:rgba(255,255,255,0.85);padding:2px 8px;border-radius:5px;cursor:pointer;white-space:nowrap;}
-.menu-item:hover{background:rgba(255,255,255,0.12);}
-#menubar-right{margin-left:auto;display:flex;align-items:center;gap:8px;}
-#menubar-clock{font-size:13px;color:rgba(255,255,255,0.85);font-weight:400;}
-.mb-icon{color:rgba(255,255,255,0.8);font-size:14px;padding:2px 6px;border-radius:5px;cursor:pointer;}
-.mb-icon:hover{background:rgba(255,255,255,0.12);}
-/* PARTEX MENU */
-#partex-menu{position:absolute;top:30px;left:6px;background:rgba(28,28,28,0.95);backdrop-filter:blur(30px);border:1px solid var(--border2);border-radius:var(--radius2);padding:6px;min-width:220px;z-index:10000;display:none;box-shadow:0 20px 60px rgba(0,0,0,0.6);}
-#partex-menu.open{display:block;}
-.pm-item{padding:7px 14px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:10px;}
-.pm-item:hover{background:var(--accent);}
-.pm-divider{height:1px;background:var(--border);margin:4px 0;}
-/* DESKTOP */
-#desktop{flex:1;position:relative;overflow:hidden;}
-#wallpaper{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 60%,#1a0a3e 0%,#0a0a1a 50%,#000 100%);}
-#wallpaper::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(124,92,252,0.15) 0%,transparent 60%);}
-/* DESKTOP ICONS */
-#desktop-icons{position:absolute;inset:0;padding:20px;}
-.desk-icon{position:absolute;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:8px;border-radius:10px;width:76px;}
-.desk-icon:hover{background:rgba(255,255,255,0.08);}
-.desk-icon.selected{background:rgba(124,92,252,0.3);}
-.desk-icon-img{width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;}
-.desk-icon-label{font-size:11px;color:var(--text);text-align:center;text-shadow:0 1px 3px rgba(0,0,0,0.8);word-break:break-word;line-height:1.3;}
-/* WINDOWS */
-.window{position:absolute;background:var(--win-bg);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius2);box-shadow:0 25px 80px rgba(0,0,0,0.7);min-width:300px;min-height:200px;display:flex;flex-direction:column;overflow:hidden;}
-.window.active{border-color:rgba(255,255,255,0.15);z-index:1000;}
-.window-titlebar{height:38px;background:rgba(255,255,255,0.04);display:flex;align-items:center;padding:0 12px;gap:8px;cursor:move;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.06);}
-.win-btn{width:12px;height:12px;border-radius:50%;cursor:pointer;flex-shrink:0;}
-.win-btn.close{background:#ff5f57;}
-.win-btn.min{background:#febc2e;}
-.win-btn.max{background:#28c840;}
-.win-btn:hover{filter:brightness(1.2);}
-.window-title{flex:1;text-align:center;font-size:13px;color:var(--text2);font-weight:500;}
-.window-body{flex:1;overflow:auto;position:relative;}
-/* RESIZE HANDLE */
-.resize-handle{position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:se-resize;}
-/* DOCK */
-#dock{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.08);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.12);border-radius:18px;padding:8px 12px;display:flex;align-items:center;gap:6px;z-index:9000;}
-.dock-item{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:26px;transition:transform 0.15s ease;position:relative;}
-.dock-item:hover{transform:scale(1.25) translateY(-8px);}
-.dock-item-tooltip{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.8);color:#fff;font-size:11px;padding:4px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.2s;margin-bottom:6px;}
-.dock-item:hover .dock-item-tooltip{opacity:1;}
-.dock-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,0.5);position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);}
-.dock-sep{width:1px;height:40px;background:rgba(255,255,255,0.15);margin:0 4px;}
-/* WIDGETS LAYER */
-#widgets-layer{position:absolute;inset:0;pointer-events:none;}
-.widget{position:absolute;pointer-events:all;background:rgba(30,30,30,0.85);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius2);padding:14px;color:var(--text);min-width:160px;min-height:80px;}
-.widget-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;cursor:move;}
-.widget-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;}
-.widget-remove{width:16px;height:16px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:var(--text2);}
-.widget-remove:hover{background:var(--red);}
-.widget-resize{position:absolute;bottom:4px;right:4px;color:var(--text3);cursor:se-resize;font-size:12px;}
-/* SEARCH SPOTLIGHT */
-#search-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);z-index:9500;display:none;align-items:flex-start;justify-content:center;padding-top:120px;}
-#search-overlay.open{display:flex;}
-#search-box{background:rgba(40,40,40,0.95);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:580px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.8);}
-#search-input{width:100%;background:none;border:none;outline:none;color:var(--text);font-size:20px;padding:16px 20px;font-family:inherit;}
-#search-input::placeholder{color:var(--text3);}
-#search-results{border-top:1px solid var(--border);max-height:400px;overflow-y:auto;}
-.search-result{padding:10px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;border-radius:8px;margin:4px 8px;}
-.search-result:hover,.search-result.active-result{background:var(--accent);}
-.search-result-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
-.search-result-info{flex:1;}
-.search-result-name{font-size:14px;font-weight:500;}
-.search-result-desc{font-size:12px;color:rgba(255,255,255,0.6);margin-top:1px;}
-/* WIDGET ADD PANEL */
-#widget-panel{position:absolute;right:0;top:28px;bottom:0;width:280px;background:rgba(20,20,20,0.95);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:8000;display:none;flex-direction:column;padding:16px;}
-#widget-panel.open{display:flex;}
-#widget-panel h3{font-size:15px;margin-bottom:14px;color:var(--text);}
-.widget-template{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;display:flex;align-items:center;gap:10px;}
-.widget-template:hover{border-color:var(--accent);background:rgba(124,92,252,0.1);}
-.widget-template-icon{font-size:22px;}
-.widget-template-info{flex:1;}
-.widget-template-name{font-size:13px;font-weight:500;}
-.widget-template-desc{font-size:11px;color:var(--text2);margin-top:2px;}
-/* TERMINAL */
-#terminal-body{background:#000;font-family:'SF Mono','Fira Code',Cascadia,monospace;font-size:13px;padding:12px;color:#00ff41;height:100%;overflow-y:auto;display:flex;flex-direction:column;}
-#terminal-output{flex:1;white-space:pre-wrap;word-break:break-all;}
-#terminal-input-line{display:flex;align-items:center;gap:6px;margin-top:4px;}
-#terminal-prompt{color:#7c5cfc;flex-shrink:0;}
-#terminal-input{background:none;border:none;outline:none;color:#00ff41;font-family:inherit;font-size:13px;flex:1;caret-color:#00ff41;}
-/* FINDER */
-#finder-body{display:flex;height:100%;}
-#finder-sidebar{width:160px;background:rgba(0,0,0,0.3);border-right:1px solid var(--border);padding:10px 6px;flex-shrink:0;}
-.finder-sidebar-item{padding:6px 10px;border-radius:7px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;color:var(--text2);}
-.finder-sidebar-item:hover,.finder-sidebar-item.active{background:rgba(124,92,252,0.2);color:var(--text);}
-#finder-main{flex:1;padding:14px;overflow-y:auto;}
-.finder-files{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;}
-.finder-file{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;border-radius:8px;cursor:pointer;text-align:center;}
-.finder-file:hover{background:rgba(255,255,255,0.06);}
-.finder-file-icon{font-size:32px;}
-.finder-file-name{font-size:11px;color:var(--text2);word-break:break-word;}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-size: var(--text-size);
+}
+
+#menubar {
+  height: 28px;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 6px;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  z-index: 9999;
+  position: relative;
+}
+
+#menubar-logo {
+  font-size: var(--title-size);
+  font-weight: 700;
+  background: linear-gradient(135deg, #7c5cfc, #4a9eff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: 5px;
+}
+
+.menu-item {
+  font-size: var(--title-size);
+  color: rgba(255,255,255,0.85);
+  padding: 2px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.menu-item:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+#menubar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#menubar-clock {
+  font-size: var(--title-size);
+  color: rgba(255,255,255,0.85);
+  font-weight: 400;
+}
+
+.mb-icon {
+  color: rgba(255,255,255,0.8);
+  font-size: 14px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#desktop {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#wallpaper {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 60%, #1a0a3e 0%, #0a0a1a 50%, #000 100%);
+  transition: background 0.5s ease;
+}
+
+#wallpaper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 30%, rgba(124,92,252,0.15) 0%, transparent 60%);
+}
+
+#desktop-icons {
+  position: absolute;
+  inset: 0;
+  padding: 20px;
+}
+
+.desk-icon {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 10px;
+  width: 76px;
+}
+
+.desk-icon:hover {
+  background: rgba(255,255,255,0.08);
+}
+
+.desk-icon.selected {
+  background: rgba(124,92,252,0.3);
+}
+
+.desk-icon-img {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.desk-icon-label {
+  font-size: var(--small-size);
+  color: var(--text);
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.window {
+  position: absolute;
+  background: var(--win-bg);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius2);
+  box-shadow: 0 25px 80px rgba(0,0,0,0.7);
+  min-width: 280px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.window.active {
+  border-color: rgba(255,255,255,0.15);
+  z-index: 1000;
+}
+
+.window-titlebar {
+  height: 38px;
+  background: rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 8px;
+  cursor: move;
+  flex-shrink: 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.win-btn {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.win-btn.close { background: #ff5f57; }
+.win-btn.min { background: #febc2e; }
+.win-btn.max { background: #28c840; }
+.win-btn:hover { filter: brightness(1.2); }
+
+.window-title {
+  flex: 1;
+  text-align: center;
+  font-size: var(--title-size);
+  color: var(--text2);
+  font-weight: 500;
+}
+
+.window-body {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  font-size: var(--text-size);
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  cursor: se-resize;
+}
+
+#dock {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(30px);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 18px;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 9000;
+}
+
+.dock-item {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 26px;
+  transition: transform 0.15s ease;
+  position: relative;
+}
+
+.dock-item:hover {
+  transform: scale(1.25) translateY(-8px);
+}
+
+.dock-item-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  font-size: var(--small-size);
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  margin-bottom: 6px;
+}
+
+.dock-item:hover .dock-item-tooltip {
+  opacity: 1;
+}
+
+#widgets-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.widget {
+  position: absolute;
+  pointer-events: all;
+  background: rgba(30,30,30,0.85);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--radius2);
+  padding: 14px;
+  color: var(--text);
+  min-width: 160px;
+  min-height: 80px;
+}
+
+.widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  cursor: move;
+}
+
+.widget-title {
+  font-size: var(--small-size);
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.widget-remove {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--text2);
+}
+
+.widget-remove:hover {
+  background: var(--red);
+}
+
+.toggle {
+  width: 44px;
+  height: 26px;
+  background: var(--border2);
+  border-radius: 13px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+}
+
+.toggle.on {
+  background: var(--green);
+}
+
+.toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+
+.toggle.on::after {
+  transform: translateX(18px);
+}
+
+#context-menu {
+  position: absolute;
+  background: rgba(30,30,30,0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border2);
+  border-radius: 12px;
+  padding: 6px;
+  min-width: 180px;
+  z-index: 10001;
+  display: none;
+  box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+}
+
+#context-menu.open {
+  display: block;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+
+/* CALCULATOR - EIGENES DESIGN */
+#calc-body {
+  background: #1a1a2e;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.calc-display {
+  background: #0f0f23;
+  padding: 20px 16px;
+  text-align: right;
+  border-bottom: 1px solid rgba(124,92,252,0.2);
+}
+
+.calc-expression {
+  font-size: 13px;
+  color: var(--text2);
+  min-height: 20px;
+  word-break: break-all;
+}
+
+.calc-result {
+  font-size: 38px;
+  font-weight: 300;
+  color: #fff;
+  margin-top: 4px;
+}
+
+.calc-keys {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  flex: 1;
+  background: #16213e;
+}
+
+.calc-key {
+  background: #1a1a2e;
+  border: none;
+  color: #e0e0e0;
+  font-size: 18px;
+  font-weight: 400;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.1s;
+}
+
+.calc-key:hover {
+  background: #252545;
+}
+
+.calc-key:active {
+  background: #7c5cfc;
+}
+
+.calc-key.func {
+  color: #7c5cfc;
+}
+
+.calc-key.op {
+  color: #ff9f0a;
+  font-weight: 500;
+}
+
+.calc-key.equals {
+  background: #7c5cfc;
+  color: #fff;
+}
+
+.calc-key.equals:hover {
+  background: #9b7dff;
+}
+
 /* SETTINGS */
-#settings-body{display:flex;height:100%;}
-#settings-sidebar{width:180px;background:rgba(0,0,0,0.25);border-right:1px solid var(--border);padding:8px;}
-.settings-nav-item{padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:9px;color:var(--text2);}
-.settings-nav-item:hover,.settings-nav-item.active{background:rgba(124,92,252,0.2);color:var(--text);}
-#settings-main{flex:1;padding:20px;overflow-y:auto;}
-.settings-section{margin-bottom:24px;}
-.settings-section h3{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;}
-.settings-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg3);border-radius:10px;margin-bottom:2px;}
-.settings-row-label{font-size:13px;color:var(--text);}
-.settings-row-sub{font-size:11px;color:var(--text2);margin-top:2px;}
-.toggle{width:44px;height:26px;background:var(--border2);border-radius:13px;cursor:pointer;position:relative;transition:background 0.2s;}
-.toggle.on{background:var(--green);}
-.toggle::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform 0.2s;}
-.toggle.on::after{transform:translateX(18px);}
-.slider-input{-webkit-appearance:none;width:120px;height:4px;border-radius:2px;background:var(--border2);outline:none;}
-.slider-input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--accent);cursor:pointer;}
-/* NOTES */
-#notes-body{display:flex;height:100%;}
-#notes-sidebar{width:180px;background:rgba(0,0,0,0.25);border-right:1px solid var(--border);display:flex;flex-direction:column;}
-#notes-list{flex:1;overflow-y:auto;padding:8px;}
-.note-item{padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;}
-.note-item:hover,.note-item.active{background:rgba(255,255,255,0.08);}
-.note-item-title{font-size:13px;font-weight:500;}
-.note-item-preview{font-size:11px;color:var(--text2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-#notes-main{flex:1;display:flex;flex-direction:column;}
-#notes-toolbar{padding:8px 12px;border-bottom:1px solid var(--border);display:flex;gap:6px;}
-.notes-tool-btn{padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
-.notes-tool-btn:hover{background:var(--bg4);color:var(--text);}
-#note-editor{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:14px;padding:16px;font-family:inherit;resize:none;line-height:1.7;}
-/* CALCULATOR */
-#calc-body{background:#1c1c1c;padding:0;}
-.calc-display{background:#000;padding:20px 16px 12px;text-align:right;}
-.calc-display-small{font-size:14px;color:var(--text2);min-height:20px;}
-.calc-display-main{font-size:42px;font-weight:300;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.calc-keys{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);}
-.calc-key{padding:0;height:64px;border:none;font-size:20px;font-weight:300;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:filter 0.1s;}
-.calc-key:active{filter:brightness(1.3);}
-.calc-key.dark{background:#333;}
-.calc-key.med{background:#555;}
-.calc-key.accent{background:var(--orange);color:#000;font-weight:500;}
-/* BROWSER */
-#browser-body{display:flex;flex-direction:column;height:100%;}
-#browser-bar{padding:8px 10px;background:rgba(0,0,0,0.2);display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--border);}
-#browser-url{flex:1;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:20px;padding:5px 14px;color:var(--text);font-size:13px;outline:none;}
-#browser-url:focus{border-color:var(--accent);}
-.browser-nav-btn{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,0.06);font-size:14px;}
-.browser-nav-btn:hover{background:rgba(255,255,255,0.12);}
-#browser-content{flex:1;background:#fff;border:none;width:100%;height:100%;}
-/* MUSIC */
-#music-body{padding:20px;background:linear-gradient(180deg,#1a0a3e,#0d0d0d);}
-.music-album{width:120px;height:120px;border-radius:12px;background:linear-gradient(135deg,#7c5cfc,#4a9eff);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;font-size:48px;box-shadow:0 8px 30px rgba(124,92,252,0.4);}
-.music-title{text-align:center;font-size:16px;font-weight:600;margin-bottom:4px;}
-.music-artist{text-align:center;font-size:13px;color:var(--text2);margin-bottom:20px;}
-.music-progress{margin:0 10px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;position:relative;cursor:pointer;}
-.music-progress-bar{height:100%;background:var(--accent);border-radius:2px;width:35%;}
-.music-time{display:flex;justify-content:space-between;font-size:11px;color:var(--text3);margin-top:4px;}
-.music-controls{display:flex;align-items:center;justify-content:center;gap:24px;margin-top:18px;}
-.music-btn{font-size:24px;cursor:pointer;color:var(--text2);}
-.music-btn:hover,.music-btn.active{color:var(--text);}
-.music-btn.main{font-size:36px;color:var(--text);}
-/* CONTEXT MENU */
-#context-menu{position:absolute;background:rgba(30,30,30,0.95);backdrop-filter:blur(20px);border:1px solid var(--border2);border-radius:12px;padding:6px;min-width:180px;z-index:10001;display:none;box-shadow:0 15px 50px rgba(0,0,0,0.6);}
-#context-menu.open{display:block;}
-.ctx-item{padding:7px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--text);display:flex;align-items:center;gap:8px;}
-.ctx-item:hover{background:var(--accent);}
-.ctx-sep{height:1px;background:var(--border);margin:4px 0;}
-/* NOTIFICATION */
-#notif-area{position:absolute;top:36px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:9800;pointer-events:none;}
-.notif{background:rgba(40,40,40,0.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;min-width:280px;pointer-events:all;animation:slideIn 0.3s ease;}
-@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
-.notif-title{font-size:13px;font-weight:600;margin-bottom:3px;}
-.notif-body{font-size:12px;color:var(--text2);}
-/* BOOT SCREEN */
-#boot{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;}
-#boot-logo{font-size:28px;font-weight:700;background:linear-gradient(135deg,#7c5cfc,#4a9eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
-#boot-version{font-size:12px;color:#444;margin-bottom:50px;}
-#boot-bar{width:200px;height:2px;background:#222;border-radius:1px;overflow:hidden;}
-#boot-progress{height:100%;background:linear-gradient(90deg,#7c5cfc,#4a9eff);width:0%;transition:width 0.3s ease;border-radius:1px;}
-/* SCROLLBAR */
-::-webkit-scrollbar{width:6px;height:6px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:3px;}
-::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,0.2);}
-/* WALLPAPER STARS */
-.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--dur,3s) ease-in-out infinite;}
-@keyframes twinkle{0%,100%{opacity:var(--op,0.3);}50%{opacity:0.8;}}
-/* ABOUT */
-#about-body{padding:30px;text-align:center;}
-#about-logo-big{font-size:42px;font-weight:800;background:linear-gradient(135deg,#7c5cfc,#4a9eff,#30d158);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:8px;}
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--bg3);
+  border-radius: 10px;
+  margin-bottom: 2px;
+}
+
+.settings-row-label {
+  font-size: var(--text-size);
+  color: var(--text);
+}
+
+.settings-row-sub {
+  font-size: var(--small-size);
+  color: var(--text2);
+  margin-top: 2px;
+}
+
+.settings-section h3 {
+  font-size: var(--small-size);
+  font-weight: 600;
+  color: var(--text2);
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 10px;
+}
+
+/* KALENDER */
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  background: rgba(124,92,252,0.1);
+}
+
+.calendar-nav {
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text);
+  font-size: 16px;
+}
+
+.calendar-nav:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg2);
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.calendar-cell:hover {
+  background: rgba(124,92,252,0.2);
+}
+
+.calendar-cell.today {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.calendar-cell.other-month {
+  color: var(--text3);
+}
+
+.calendar-cell-header {
+  background: var(--bg3);
+  color: var(--text2);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  padding: 8px 4px;
+}
 </style>
 </head>
 <body>
 
-<!-- BOOT -->
-<div id="boot">
-  <div id="boot-logo">PartexDesktop</div>
-  <div id="boot-version">OS 10.9</div>
-  <div id="boot-bar"><div id="boot-progress"></div></div>
-</div>
-
-<!-- MENUBAR -->
 <div id="menubar">
   <div id="menubar-logo" onclick="togglePartexMenu()">Partex</div>
-  <div class="menu-item" id="mb-finder-menu">Finder</div>
+  <div class="menu-item">Finder</div>
   <div class="menu-item">Edit</div>
   <div class="menu-item">View</div>
   <div class="menu-item">Window</div>
@@ -225,1837 +586,982 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSy
   </div>
 </div>
 
-<!-- PARTEX MENU -->
-<div id="partex-menu">
-  <div class="pm-item" onclick="openAbout()">🍎 About PartexDesktop</div>
-  <div class="pm-divider"></div>
-  <div class="pm-item" onclick="openApp('settings')">⚙️ System Preferences</div>
-  <div class="pm-item" onclick="openApp('search')">🔍 Search</div>
-  <div class="pm-divider"></div>
-  <div class="pm-item" onclick="toggleWidgetPanel()">📐 Manage Widgets</div>
-  <div class="pm-divider"></div>
-  <div class="pm-item" onclick="lockScreen()">🔒 Lock Screen</div>
-  <div class="pm-item" onclick="doSleep()">💤 Sleep</div>
-  <div class="pm-divider"></div>
-  <div class="pm-item" onclick="doRestart()">🔄 Restart…</div>
-  <div class="pm-item" onclick="doShutdown()">⏻ Shut Down…</div>
-  <div class="pm-item" onclick="doLogout()">🚪 Log Out</div>
+<div id="partex-menu" style="display:none;position:absolute;top:30px;left:6px;background:rgba(28,28,28,0.95);backdrop-filter:blur(30px);border:1px solid var(--border2);border-radius:12px;padding:6px;min-width:220px;z-index:10000;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+  <div class="menu-item" onclick="openApp('settings')" style="display:block;padding:7px 14px;">⚙️ Einstellungen</div>
+  <div class="menu-item" onclick="openApp('calculator')" style="display:block;padding:7px 14px;">🔢 Taschenrechner</div>
+  <div class="menu-item" onclick="openApp('calendar')" style="display:block;padding:7px 14px;">📅 Kalender</div>
+  <hr style="border-color:var(--border);margin:4px 0;">
+  <div class="menu-item" onclick="doRestart()" style="display:block;padding:7px 14px;">🔄 Neustart</div>
 </div>
 
-<!-- DESKTOP -->
-<div id="desktop" oncontextmenu="showContextMenu(event)" onclick="closeMenus()">
+<div id="desktop" oncontextmenu="showContextMenu(event)">
   <div id="wallpaper"></div>
   <div id="widgets-layer"></div>
   <div id="desktop-icons"></div>
 
-  <!-- DOCK -->
   <div id="dock">
-    <div class="dock-item" onclick="openApp('finder')" style="background:linear-gradient(135deg,#4a9eff,#0055d4);"><span class="dock-item-tooltip">Finder</span>🗂️</div>
-    <div class="dock-item" onclick="openApp('browser')" style="background:linear-gradient(135deg,#ff6b35,#ffd700);"><span class="dock-item-tooltip">Browser</span>🌐</div>
-    <div class="dock-item" onclick="openApp('terminal')" style="background:linear-gradient(135deg,#1a1a1a,#333);border:1px solid #555;"><span class="dock-item-tooltip">Terminal</span>💻</div>
-    <div class="dock-item" onclick="openApp('notes')" style="background:linear-gradient(135deg,#ffd700,#ff9500);"><span class="dock-item-tooltip">Notes</span>📝</div>
-    <div class="dock-item" onclick="openApp('calculator')" style="background:linear-gradient(135deg,#1c1c1c,#333);border:1px solid #555;"><span class="dock-item-tooltip">Calculator</span>🔢</div>
-    <div class="dock-item" onclick="openApp('music')" style="background:linear-gradient(135deg,#fc3c44,#1a1a2e);"><span class="dock-item-tooltip">Music</span>🎵</div>
-    <div class="dock-sep"></div>
-    <div class="dock-item" onclick="openApp('settings')" style="background:linear-gradient(135deg,#636363,#3a3a3a);"><span class="dock-item-tooltip">Settings</span>⚙️</div>
+    <div class="dock-item" onclick="openApp('finder')" style="background:linear-gradient(135deg,#4a9eff,#0055d4);">
+      <span class="dock-item-tooltip">Finder</span>🗂️
+    </div>
+    <div class="dock-item" onclick="openApp('calculator')" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #7c5cfc;">
+      <span class="dock-item-tooltip">Taschenrechner</span>🔢
+    </div>
+    <div class="dock-item" onclick="openApp('calendar')" style="background:linear-gradient(135deg,#ff6b35,#ffd700);">
+      <span class="dock-item-tooltip">Kalender</span>📅
+    </div>
+    <div class="dock-item" onclick="openApp('notes')" style="background:linear-gradient(135deg,#ffd700,#ff9500);">
+      <span class="dock-item-tooltip">Notizen</span>📝
+    </div>
+    <div class="dock-item" onclick="openApp('settings')" style="background:linear-gradient(135deg,#636363,#3a3a3a);">
+      <span class="dock-item-tooltip">Einstellungen</span>⚙️
+    </div>
   </div>
 </div>
 
-<!-- SEARCH -->
-<div id="search-overlay" onclick="closeSearch(event)">
-  <div id="search-box" onclick="event.stopPropagation()">
-    <input id="search-input" placeholder="Search…" oninput="doSearch(this.value)" onkeydown="searchKeyDown(event)" autocomplete="off"/>
-    <div id="search-results"></div>
+<div id="search-overlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);z-index:9500;align-items:flex-start;justify-content:center;padding-top:120px;" onclick="closeSearch(event)">
+  <div style="background:rgba(40,40,40,0.95);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:580px;box-shadow:0 30px 80px rgba(0,0,0,0.8);" onclick="event.stopPropagation()">
+    <input id="search-input" placeholder="Suchen..." style="width:100%;background:none;border:none;outline:none;color:var(--text);font-size:20px;padding:16px 20px;" oninput="doSearch(this.value)" onkeydown="searchKeyDown(event)">
+    <div id="search-results" style="border-top:1px solid var(--border);max-height:400px;overflow-y:auto;"></div>
   </div>
 </div>
 
-<!-- WIDGET PANEL -->
-<div id="widget-panel">
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-    <h3 style="font-size:15px;">Widgets</h3>
-    <div style="cursor:pointer;color:var(--text2);font-size:18px;" onclick="toggleWidgetPanel()">×</div>
-  </div>
-  <p style="font-size:12px;color:var(--text2);margin-bottom:14px;">Click to add. Drag to move. Resize from corner.</p>
-  <div class="widget-template" onclick="addWidget('clock')">
-    <div class="widget-template-icon">🕐</div>
-    <div class="widget-template-info"><div class="widget-template-name">Clock</div><div class="widget-template-desc">Live time & date</div></div>
-  </div>
-  <div class="widget-template" onclick="addWidget('weather')">
-    <div class="widget-template-icon">⛅</div>
-    <div class="widget-template-info"><div class="widget-template-name">Weather</div><div class="widget-template-desc">Current conditions</div></div>
-  </div>
-  <div class="widget-template" onclick="addWidget('system')">
-    <div class="widget-template-icon">📊</div>
-    <div class="widget-template-info"><div class="widget-template-name">System Monitor</div><div class="widget-template-desc">CPU, RAM usage</div></div>
-  </div>
-  <div class="widget-template" onclick="addWidget('notes-quick')">
-    <div class="widget-template-icon">📌</div>
-    <div class="widget-template-info"><div class="widget-template-name">Quick Note</div><div class="widget-template-desc">Sticky note widget</div></div>
-  </div>
-  <div class="widget-template" onclick="addWidget('battery')">
-    <div class="widget-template-icon">🔋</div>
-    <div class="widget-template-info"><div class="widget-template-name">Battery</div><div class="widget-template-desc">Power status</div></div>
-  </div>
-  <div class="widget-template" onclick="addWidget('calendar')">
-    <div class="widget-template-icon">📅</div>
-    <div class="widget-template-info"><div class="widget-template-name">Calendar</div><div class="widget-template-desc">Current month</div></div>
-  </div>
+<div id="widget-panel" style="display:none;position:absolute;right:0;top:28px;bottom:0;width:280px;background:rgba(20,20,20,0.95);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:8000;padding:16px;">
+  <h3 style="margin-bottom:14px;color:var(--text);font-size:15px;">Widgets</h3>
+  <div onclick="addWidget('weather')" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;">⛅ Wetter (Live)</div>
+  <div onclick="addWidget('system')" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;">📊 System Monitor</div>
+  <div onclick="addWidget('clock')" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;">🕐 Uhr</div>
+  <button onclick="toggleWidgetPanel()" style="margin-top:10px;width:100%;padding:8px;background:var(--accent);border:none;color:#fff;border-radius:8px;cursor:pointer;">Schließen</button>
 </div>
 
-<!-- CONTEXT MENU -->
 <div id="context-menu">
-  <div class="ctx-item" onclick="addWidget('clock')">📐 Add Widget</div>
-  <div class="ctx-item" onclick="toggleWidgetPanel()">🗂️ Manage Widgets</div>
-  <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="changeWallpaper()">🖼️ Change Wallpaper</div>
-  <div class="ctx-item" onclick="openApp('settings')">⚙️ Display Settings</div>
-  <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="showNotif('PartexDesktop OS 10.9','System is running smoothly.')">ℹ️ System Info</div>
+  <div onclick="addWidget('clock')" style="padding:7px 12px;cursor:pointer;">📐 Widget hinzufügen</div>
+  <div onclick="changeWallpaper()" style="padding:7px 12px;cursor:pointer;">🖼️ Hintergrund ändern</div>
+  <hr style="border-color:var(--border);margin:4px 0;">
+  <div onclick="openApp('settings')" style="padding:7px 12px;cursor:pointer;">⚙️ Einstellungen</div>
 </div>
 
-<!-- NOTIFICATIONS -->
-<div id="notif-area"></div>
+<div id="notif-area" style="position:absolute;top:36px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:9800;pointer-events:none;"></div>
 
 <script>
-// ══════════════════════════════════════════════
-// BOOT
-// ══════════════════════════════════════════════
-(function boot(){
-  const bar=document.getElementById('boot-progress');
-  let p=0;
-  const iv=setInterval(()=>{
-    p+=Math.random()*15+5;
-    if(p>=100){p=100;clearInterval(iv);setTimeout(()=>{
-      document.getElementById('boot').style.transition='opacity 0.8s';
-      document.getElementById('boot').style.opacity='0';
-      setTimeout(()=>{document.getElementById('boot').style.display='none';initOS();},800);
-    },300);}
-    bar.style.width=p+'%';
-  },150);
-})();
-
-// ══════════════════════════════════════════════
-// CLOCK
-// ══════════════════════════════════════════════
-function updateClock(){
-  const now=new Date();
-  const d=now.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-  const t=now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('menubar-clock').textContent=d+' '+t;
-}
-setInterval(updateClock,1000);
-
-// ══════════════════════════════════════════════
-// INIT OS
-// ══════════════════════════════════════════════
-let zTop=100;
-let openWindows={};
-let wallpaperIdx=0;
-const wallpapers=[
-  'radial-gradient(ellipse at 30% 60%,#1a0a3e 0%,#0a0a1a 50%,#000 100%)',
-  'radial-gradient(ellipse at 80% 20%,#0a1e3e 0%,#000a14 60%,#000 100%)',
-  'radial-gradient(ellipse at 50% 50%,#0a2010 0%,#000a00 60%,#000 100%)',
-  'radial-gradient(ellipse at 20% 80%,#1e0a10 0%,#0a0006 60%,#000 100%)',
+// =============================================
+// OS CORE
+// =============================================
+let zTop = 100;
+let openWindows = {};
+let wallpaperIdx = 0;
+const wallpapers = [
+  'radial-gradient(ellipse at 30% 60%, #1a0a3e 0%, #0a0a1a 50%, #000 100%)',
+  'radial-gradient(ellipse at 80% 20%, #0a1e3e 0%, #000a14 60%, #000 100%)',
+  'radial-gradient(ellipse at 50% 50%, #0a2010 0%, #000a00 60%, #000 100%)',
+  'radial-gradient(ellipse at 20% 80%, #1e0a10 0%, #0a0006 60%, #000 100%)',
 ];
 
-function initOS(){
-  updateClock();
-  makeStars();
-  setupDeskIcons();
-  showNotif('PartexDesktop OS 10.9','Welcome back. System ready.');
-  updateDockDots();
+// Einstellungen mit localStorage
+let settings = JSON.parse(localStorage.getItem('partexSettings') || '{"textSize":14,"darkMode":true,"wifi":true,"bluetooth":false,"sound":true,"accent":"#7c5cfc","wallpaperIdx":0}');
+
+function saveSettings() {
+  localStorage.setItem('partexSettings', JSON.stringify(settings));
+  applyAllSettings();
 }
 
-function makeStars(){
-  const wp=document.getElementById('wallpaper');
-  for(let i=0;i<120;i++){
-    const s=document.createElement('div');
-    s.className='star';
-    const sz=Math.random()*2+0.5;
-    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--op:${Math.random()*0.4+0.1};--dur:${Math.random()*4+2}s;animation-delay:${Math.random()*5}s;`;
-    wp.appendChild(s);
-  }
+function applyAllSettings() {
+  document.documentElement.style.setProperty('--text-size', settings.textSize + 'px');
+  document.documentElement.style.setProperty('--title-size', (settings.textSize - 1) + 'px');
+  document.documentElement.style.setProperty('--small-size', (settings.textSize - 3) + 'px');
+  document.documentElement.style.setProperty('--accent', settings.accent);
+  wallpaperIdx = settings.wallpaperIdx;
+  document.getElementById('wallpaper').style.background = wallpapers[wallpaperIdx];
+  
+  // Update all open windows
+  Object.keys(openWindows).forEach(id => {
+    const win = openWindows[id].el;
+    if (win) {
+      win.style.fontSize = settings.textSize + 'px';
+    }
+  });
 }
 
-// ══════════════════════════════════════════════
-// DESKTOP ICONS
-// ══════════════════════════════════════════════
-const desktopApps=[
-  {id:'finder',icon:'🗂️',label:'Finder',x:20,y:60},
-  {id:'browser',icon:'🌐',label:'Browser',x:20,y:160},
-  {id:'terminal',icon:'💻',label:'Terminal',x:20,y:260},
-  {id:'notes',icon:'📝',label:'Notes',x:20,y:360},
-  {id:'calculator',icon:'🔢',label:'Calculator',x:20,y:460},
-  {id:'music',icon:'🎵',label:'Music',x:110,y:60},
-  {id:'settings',icon:'⚙️',label:'Settings',x:110,y:160},
+// Clock
+function updateClock() {
+  const now = new Date();
+  const d = now.toLocaleDateString('de-DE', { weekday: 'short', month: 'short', day: 'numeric' });
+  const t = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('menubar-clock').textContent = d + ' ' + t;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Desktop Icons
+const desktopApps = [
+  { id: 'finder', icon: '🗂️', label: 'Finder', x: 20, y: 60 },
+  { id: 'calculator', icon: '🔢', label: 'Rechner', x: 20, y: 160 },
+  { id: 'calendar', icon: '📅', label: 'Kalender', x: 20, y: 260 },
+  { id: 'notes', icon: '📝', label: 'Notizen', x: 20, y: 360 },
+  { id: 'settings', icon: '⚙️', label: 'Einstellungen', x: 110, y: 60 },
 ];
 
-function setupDeskIcons(){
-  const layer=document.getElementById('desktop-icons');
-  layer.innerHTML='';
-  desktopApps.forEach(app=>{
-    const el=document.createElement('div');
-    el.className='desk-icon';
-    el.style.left=app.x+'px';
-    el.style.top=app.y+'px';
-    el.id='deskicon-'+app.id;
-    el.innerHTML=`<div class="desk-icon-img">${app.icon}</div><div class="desk-icon-label">${app.label}</div>`;
-    el.addEventListener('dblclick',()=>openApp(app.id));
-    el.addEventListener('click',(e)=>{e.stopPropagation();selectIcon(app.id);});
-    makeDraggable(el,true);
+function setupDeskIcons() {
+  const layer = document.getElementById('desktop-icons');
+  layer.innerHTML = '';
+  desktopApps.forEach(app => {
+    const el = document.createElement('div');
+    el.className = 'desk-icon';
+    el.style.left = app.x + 'px';
+    el.style.top = app.y + 'px';
+    el.id = 'deskicon-' + app.id;
+    el.innerHTML = `<div class="desk-icon-img">${app.icon}</div><div class="desk-icon-label">${app.label}</div>`;
+    el.addEventListener('dblclick', () => openApp(app.id));
+    el.addEventListener('click', (e) => { e.stopPropagation(); selectIcon(app.id); });
+    makeDraggable(el);
     layer.appendChild(el);
   });
 }
 
-function selectIcon(id){
-  document.querySelectorAll('.desk-icon').forEach(e=>e.classList.remove('selected'));
-  const el=document.getElementById('deskicon-'+id);
-  if(el) el.classList.add('selected');
+function selectIcon(id) {
+  document.querySelectorAll('.desk-icon').forEach(e => e.classList.remove('selected'));
+  const el = document.getElementById('deskicon-' + id);
+  if (el) el.classList.add('selected');
 }
 
-// ══════════════════════════════════════════════
-// WINDOW SYSTEM
-// ══════════════════════════════════════════════
-function createWindow(id,title,w,h,x,y){
-  if(openWindows[id]){bringToFront(id);return openWindows[id];}
-  const win=document.createElement('div');
-  win.className='window';
-  win.id='win-'+id;
-  win.style.width=w+'px';win.style.height=h+'px';
-  win.style.left=(x||200+Math.random()*100)+'px';
-  win.style.top=(y||80+Math.random()*60)+'px';
-  win.style.zIndex=++zTop;
-  win.innerHTML=`
-    <div class="window-titlebar" onmousedown="winMouseDown(event,'${id}')">
+// Window System
+function createWindow(id, title, w, h, x, y) {
+  if (openWindows[id]) {
+    bringToFront(id);
+    return openWindows[id].el;
+  }
+  
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = 'win-' + id;
+  win.style.width = w + 'px';
+  win.style.height = h + 'px';
+  win.style.left = (x || 200 + Math.random() * 100) + 'px';
+  win.style.top = (y || 80 + Math.random() * 60) + 'px';
+  win.style.zIndex = ++zTop;
+  win.style.fontSize = settings.textSize + 'px';
+  
+  win.innerHTML = `
+    <div class="window-titlebar" onmousedown="winDragStart(event, '${id}')">
       <div class="win-btn close" onclick="closeWindow('${id}')"></div>
       <div class="win-btn min" onclick="minimizeWindow('${id}')"></div>
       <div class="win-btn max" onclick="maximizeWindow('${id}')"></div>
       <div class="window-title">${title}</div>
     </div>
     <div class="window-body" id="winbody-${id}"></div>
-    <div class="resize-handle" onmousedown="resizeMouseDown(event,'${id}')"></div>
+    <div class="resize-handle" onmousedown="resizeStart(event, '${id}')"></div>
   `;
-  win.addEventListener('mousedown',()=>bringToFront(id));
+  
+  win.addEventListener('mousedown', () => bringToFront(id));
   document.getElementById('desktop').appendChild(win);
-  openWindows[id]={el:win,title,minimized:false};
-  updateDockDots();
-  return openWindows[id];
+  
+  openWindows[id] = { el: win, title, minimized: false };
+  return win;
 }
 
-function bringToFront(id){
-  if(openWindows[id]){
-    openWindows[id].el.style.zIndex=++zTop;
-    document.querySelectorAll('.window').forEach(w=>w.classList.remove('active'));
+function bringToFront(id) {
+  if (openWindows[id]) {
+    openWindows[id].el.style.zIndex = ++zTop;
+    document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
     openWindows[id].el.classList.add('active');
   }
 }
 
-function closeWindow(id){
-  if(openWindows[id]){
+function closeWindow(id) {
+  if (openWindows[id]) {
     openWindows[id].el.remove();
     delete openWindows[id];
-    updateDockDots();
   }
 }
 
-function minimizeWindow(id){
-  if(openWindows[id]){
-    const win=openWindows[id].el;
-    win.style.display=win.style.display==='none'?'flex':'none';
-    openWindows[id].minimized=win.style.display==='none';
+function minimizeWindow(id) {
+  if (openWindows[id]) {
+    const win = openWindows[id].el;
+    win.style.display = win.style.display === 'none' ? 'flex' : 'none';
   }
 }
 
-function maximizeWindow(id){
-  if(openWindows[id]){
-    const win=openWindows[id].el;
-    if(win.dataset.maxed){
-      win.style.left=win.dataset.ox;win.style.top=win.dataset.oy;
-      win.style.width=win.dataset.ow;win.style.height=win.dataset.oh;
+function maximizeWindow(id) {
+  if (openWindows[id]) {
+    const win = openWindows[id].el;
+    if (win.dataset.maxed) {
+      win.style.left = win.dataset.ox;
+      win.style.top = win.dataset.oy;
+      win.style.width = win.dataset.ow;
+      win.style.height = win.dataset.oh;
       delete win.dataset.maxed;
     } else {
-      win.dataset.ox=win.style.left;win.dataset.oy=win.style.top;
-      win.dataset.ow=win.style.width;win.dataset.oh=win.style.height;
-      win.style.left='0';win.style.top='28px';
-      win.style.width=(window.innerWidth)+'px';win.style.height=(window.innerHeight-28-80)+'px';
-      win.dataset.maxed='1';
+      win.dataset.ox = win.style.left;
+      win.dataset.oy = win.style.top;
+      win.dataset.ow = win.style.width;
+      win.dataset.oh = win.style.height;
+      win.style.left = '0';
+      win.style.top = '28px';
+      win.style.width = window.innerWidth + 'px';
+      win.style.height = (window.innerHeight - 28 - 80) + 'px';
+      win.dataset.maxed = '1';
     }
   }
 }
 
-// Draggable windows
-let dragState=null;
-function winMouseDown(e,id){
-  if(e.target.classList.contains('win-btn'))return;
+// Dragging
+let dragState = null;
+
+function winDragStart(e, id) {
+  if (e.target.classList.contains('win-btn')) return;
   e.preventDefault();
-  const win=document.getElementById('win-'+id);
-  const rect=win.getBoundingClientRect();
-  dragState={id,startX:e.clientX-rect.left,startY:e.clientY-rect.top,type:'window'};
-  document.addEventListener('mousemove',onMouseMove);
-  document.addEventListener('mouseup',onMouseUp);
+  const win = document.getElementById('win-' + id);
+  if (!win) return;
+  const rect = win.getBoundingClientRect();
+  dragState = { id, startX: e.clientX - rect.left, startY: e.clientY - rect.top, type: 'window' };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 }
 
-let resizeState=null;
-function resizeMouseDown(e,id){
-  e.preventDefault();e.stopPropagation();
-  const win=document.getElementById('win-'+id);
-  resizeState={id,startX:e.clientX,startY:e.clientY,startW:win.offsetWidth,startH:win.offsetHeight};
-  document.addEventListener('mousemove',onResizeMove);
-  document.addEventListener('mouseup',onResizeUp);
+function resizeStart(e, id) {
+  e.preventDefault();
+  e.stopPropagation();
+  const win = document.getElementById('win-' + id);
+  if (!win) return;
+  dragState = { id, startX: e.clientX, startY: e.clientY, startW: win.offsetWidth, startH: win.offsetHeight, type: 'resize' };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
 }
-function onResizeMove(e){
-  if(!resizeState)return;
-  const win=document.getElementById('win-'+resizeState.id);
-  const nw=Math.max(280,resizeState.startW+(e.clientX-resizeState.startX));
-  const nh=Math.max(200,resizeState.startH+(e.clientY-resizeState.startY));
-  win.style.width=nw+'px';win.style.height=nh+'px';
-}
-function onResizeUp(){resizeState=null;document.removeEventListener('mousemove',onResizeMove);document.removeEventListener('mouseup',onResizeUp);}
 
-function onMouseMove(e){
-  if(dragState&&dragState.type==='window'){
-    const win=document.getElementById('win-'+dragState.id);
-    if(!win)return;
-    let nx=e.clientX-dragState.startX;
-    let ny=e.clientY-dragState.startY;
-    ny=Math.max(28,ny);
-    win.style.left=nx+'px';win.style.top=ny+'px';
+function onMouseMove(e) {
+  if (!dragState) return;
+  
+  if (dragState.type === 'window') {
+    const win = document.getElementById('win-' + dragState.id);
+    if (!win) return;
+    let nx = e.clientX - dragState.startX;
+    let ny = e.clientY - dragState.startY;
+    ny = Math.max(28, ny);
+    win.style.left = nx + 'px';
+    win.style.top = ny + 'px';
   }
-  if(dragState&&dragState.type==='widget'){
-    const w=document.getElementById('widget-'+dragState.id);
-    if(!w)return;
-    w.style.left=(e.clientX-dragState.offX)+'px';
-    w.style.top=(e.clientY-dragState.offY)+'px';
+  
+  if (dragState.type === 'resize') {
+    const win = document.getElementById('win-' + dragState.id);
+    if (!win) return;
+    const nw = Math.max(280, dragState.startW + (e.clientX - dragState.startX));
+    const nh = Math.max(200, dragState.startH + (e.clientY - dragState.startY));
+    win.style.width = nw + 'px';
+    win.style.height = nh + 'px';
   }
-  if(dragState&&dragState.type==='wresz'){
-    const w=document.getElementById('widget-'+dragState.id);
-    if(!w)return;
-    w.style.width=Math.max(160,dragState.sw+(e.clientX-dragState.sx))+'px';
-    w.style.height=Math.max(80,dragState.sh+(e.clientY-dragState.sy))+'px';
+  
+  if (dragState.type === 'widget') {
+    const w = document.getElementById('widget-' + dragState.id);
+    if (!w) return;
+    w.style.left = (e.clientX - dragState.offX) + 'px';
+    w.style.top = (e.clientY - dragState.offY) + 'px';
   }
 }
-function onMouseUp(){dragState=null;document.removeEventListener('mousemove',onMouseMove);document.removeEventListener('mouseup',onMouseUp);}
 
-// Draggable desktop icons
-function makeDraggable(el,isIcon){
-  let ds=null;
-  el.addEventListener('mousedown',e=>{
-    if(!isIcon)return;
-    const r=el.getBoundingClientRect();
-    ds={sx:e.clientX-r.left,sy:e.clientY-r.top};
-    const mv=e2=>{
-      el.style.left=(e2.clientX-ds.sx)+'px';
-      el.style.top=Math.max(0,e2.clientY-ds.sy)+'px';
+function onMouseUp() {
+  dragState = null;
+  document.removeEventListener('mousemove', onMouseMove);
+  document.removeEventListener('mouseup', onMouseUp);
+}
+
+// Draggable icons
+function makeDraggable(el) {
+  let ds = null;
+  el.addEventListener('mousedown', e => {
+    const r = el.getBoundingClientRect();
+    ds = { sx: e.clientX - r.left, sy: e.clientY - r.top };
+    const mv = e2 => {
+      el.style.left = (e2.clientX - ds.sx) + 'px';
+      el.style.top = Math.max(0, e2.clientY - ds.sy) + 'px';
     };
-    const up=()=>{ds=null;document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up);};
-    document.addEventListener('mousemove',mv);
-    document.addEventListener('mouseup',up);
+    const up = () => {
+      ds = null;
+      document.removeEventListener('mousemove', mv);
+      document.removeEventListener('mouseup', up);
+    };
+    document.addEventListener('mousemove', mv);
+    document.addEventListener('mouseup', up);
   });
 }
 
-// ══════════════════════════════════════════════
-// DOCK DOTS
-// ══════════════════════════════════════════════
-function updateDockDots(){
-  document.querySelectorAll('.dock-item').forEach(d=>{
-    const existing=d.querySelector('.dock-dot');
-    if(existing)existing.remove();
-  });
-}
-
-// ══════════════════════════════════════════════
+// =============================================
 // APPS
-// ══════════════════════════════════════════════
-function openApp(id){
+// =============================================
+function openApp(id) {
   closeMenus();
-  switch(id){
+  switch (id) {
     case 'finder': openFinder(); break;
-    case 'browser': openBrowser(); break;
-    case 'terminal': openTerminal(); break;
-    case 'notes': openNotes(); break;
     case 'calculator': openCalculator(); break;
-    case 'music': openMusic(); break;
+    case 'calendar': openCalendar(); break;
+    case 'notes': openNotes(); break;
     case 'settings': openSettings(); break;
     case 'search': openSearch(); break;
   }
 }
 
-// ── FINDER ────────────────────────────────────
-const finderFiles={
-  Desktop:[],
-  Documents:[{n:'Resume.pdf',i:'📄'},{n:'Project.docx',i:'📝'},{n:'Budget.xlsx',i:'📊'}],
-  Downloads:[{n:'PartexOS.dmg',i:'💿'},{n:'photo.jpg',i:'🖼️'},{n:'setup.pkg',i:'📦'}],
-  Pictures:[{n:'Vacation.jpg',i:'🖼️'},{n:'Screenshot.png',i:'🖼️'}],
-  Music:[{n:'playlist.m3u',i:'🎵'},{n:'song.mp3',i:'🎵'}],
-  Home:[{n:'Desktop',i:'🗂️'},{n:'Documents',i:'📁'},{n:'Downloads',i:'📥'},{n:'Pictures',i:'🖼️'},{n:'Music',i:'🎵'}],
-};
-let finderFolder='Home';
-
-function openFinder(){
-  const w=createWindow('finder','Finder',700,460);
-  if(!w)return;
-  renderFinder();
+// ── FINDER ──────────────────────────────────
+function openFinder() {
+  createWindow('finder', 'Finder', 600, 400);
+  const body = document.getElementById('winbody-finder');
+  if (!body) return;
+  body.innerHTML = `
+    <div style="padding:20px;color:var(--text2);text-align:center;">
+      <div style="font-size:40px;margin-bottom:12px;">🗂️</div>
+      <div style="font-size:var(--text-size);">Finder</div>
+      <div style="margin-top:8px;color:var(--text3);">Dateien werden im localStorage gespeichert</div>
+    </div>`;
 }
 
-function renderFinder(){
-  const body=document.getElementById('winbody-finder');
-  if(!body)return;
-  const files=finderFiles[finderFolder]||[];
-  body.innerHTML=`<div id="finder-body">
-    <div id="finder-sidebar">
-      <div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;padding:6px 10px 4px;letter-spacing:0.5px;">Favorites</div>
-      ${Object.keys(finderFiles).map(f=>`<div class="finder-sidebar-item${f===finderFolder?' active':''}" onclick="finderNav('${f}')">${f==='Home'?'🏠':f==='Downloads'?'📥':f==='Documents'?'📁':f==='Pictures'?'🖼️':f==='Music'?'🎵':'🗂️'} ${f}</div>`).join('')}
-    </div>
-    <div id="finder-main">
-      <div style="font-size:11px;color:var(--text3);margin-bottom:12px;">${finderFolder} — ${files.length} items</div>
-      <div class="finder-files">
-        ${files.map(f=>`<div class="finder-file"><div class="finder-file-icon">${f.i}</div><div class="finder-file-name">${f.n}</div></div>`).join('')}
-        ${files.length===0?'<div style="color:var(--text3);font-size:13px;grid-column:1/-1;padding:20px 0;">Empty folder</div>':''}
+// ── CALCULATOR (KOMPLETT NEU, EIGENES DESIGN) ──
+let calcState = {
+  display: '0',
+  expression: '',
+  prevValue: null,
+  operator: null,
+  justPressedOp: false,
+  history: [],
+  memory: 0
+};
+
+function openCalculator() {
+  createWindow('calculator', 'Taschenrechner', 300, 480);
+  const body = document.getElementById('winbody-calculator');
+  if (!body) return;
+  
+  const keys = [
+    ['MC', 'MR', 'M+', 'M-'],
+    ['C', '⌫', '%', '÷'],
+    ['7', '8', '9', '×'],
+    ['4', '5', '6', '−'],
+    ['1', '2', '3', '+'],
+    ['±', '0', '.', '=']
+  ];
+  
+  body.innerHTML = `
+    <div id="calc-body">
+      <div class="calc-display">
+        <div class="calc-expression" id="calc-expr">${calcState.expression || ''}</div>
+        <div class="calc-result" id="calc-result">${calcState.display}</div>
       </div>
-    </div>
-  </div>`;
+      <div class="calc-keys">
+        ${keys.map(row => row.map(k => {
+          let cls = 'calc-key';
+          if (['C', '⌫', '±', 'MC', 'MR', 'M+', 'M-', '%'].includes(k)) cls += ' func';
+          if (['÷', '×', '−', '+'].includes(k)) cls += ' op';
+          if (k === '=') cls += ' equals';
+          if (k === '0') return `<button class="${cls}" style="grid-column:span 2;" onclick="calcInput('${k}')">${k}</button>`;
+          return `<button class="${cls}" onclick="calcInput('${k}')">${k}</button>`;
+        }).join('')).join('')}
+      </div>
+    </div>`;
 }
 
-function finderNav(folder){
-  finderFolder=folder;
-  renderFinder();
-}
-
-// ── BROWSER ────────────────────────────────────
-function openBrowser(){
-  const w=createWindow('browser','Browser',860,580);
-  if(!w)return;
-  const body=document.getElementById('winbody-browser');
-  body.innerHTML=`<div id="browser-body">
-    <div id="browser-bar">
-      <div class="browser-nav-btn" onclick="browserBack()">←</div>
-      <div class="browser-nav-btn" onclick="browserForward()">→</div>
-      <div class="browser-nav-btn" onclick="browserRefresh()">↻</div>
-      <input id="browser-url" value="https://partex.os/newtab" onkeydown="if(event.key==='Enter')browserNav(this.value)"/>
-      <div class="browser-nav-btn" onclick="browserNav(document.getElementById('browser-url').value)">→</div>
-    </div>
-    <iframe id="browser-content" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-  </div>`;
-  showBrowserHome();
-}
-
-function showBrowserHome(){
-  const frame=document.getElementById('browser-content');
-  if(!frame)return;
-  frame.srcdoc=`<!DOCTYPE html><html><head><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#0d0d0d;color:#f0f0f0;font-family:system-ui,sans-serif;display:flex;flex-direction:column;align-items:center;padding-top:80px;}h1{font-size:28px;font-weight:700;background:linear-gradient(135deg,#7c5cfc,#4a9eff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:30px;}div.bookmarks{display:grid;grid-template-columns:repeat(4,100px);gap:16px;}div.bm{background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:16px 8px;text-align:center;cursor:pointer;font-size:12px;color:#aaa;}div.bm:hover{border-color:#7c5cfc;}div.bm-icon{font-size:28px;margin-bottom:6px;}</style></head><body><h1>PartexBrowser</h1><div class="bookmarks"><div class="bm"><div class="bm-icon">🔍</div>Search</div><div class="bm"><div class="bm-icon">📰</div>News</div><div class="bm"><div class="bm-icon">🛒</div>Shop</div><div class="bm"><div class="bm-icon">📧</div>Mail</div></div></body></html>`;
-}
-
-function browserNav(url){
-  const frame=document.getElementById('browser-content');
-  if(!frame)return;
-  if(!url.startsWith('http'))url='https://'+url;
-  document.getElementById('browser-url').value=url;
-  try{frame.src=url;}catch(e){}
-}
-function browserBack(){try{document.getElementById('browser-content').contentWindow.history.back();}catch(e){}}
-function browserForward(){try{document.getElementById('browser-content').contentWindow.history.forward();}catch(e){}}
-function browserRefresh(){try{document.getElementById('browser-content').contentWindow.location.reload();}catch(e){}}
-
-// ── TERMINAL ────────────────────────────────────
-let termHistory=[];
-let termHistIdx=-1;
-let termCwd='/home/user';
-let termEnv={USER:'user',HOME:'/home/user',SHELL:'/bin/partsh',PATH:'/usr/bin:/bin'};
-let termFS={
-  '/':['home','usr','bin','etc','tmp','var'],
-  '/home':['user'],
-  '/home/user':['Documents','Downloads','Desktop','Music','.config'],
-  '/home/user/Documents':['resume.txt','notes.md'],
-  '/home/user/Downloads':[],
-  '/home/user/Desktop':[],
-  '/etc':['hosts','partexos-release'],
-  '/tmp':[],
-  '/usr':['bin','local'],
-  '/bin':['bash','ls','cat','pwd','echo'],
-};
-let termFileContents={
-  '/etc/partexos-release':'PartexDesktop OS 10.9\nBuild: 2024.12.01\nArch: x86_64\n',
-  '/home/user/Documents/resume.txt':'John Doe\nSoftware Engineer\nPartexOS user since 10.0\n',
-  '/home/user/Documents/notes.md':'# My Notes\n- Buy groceries\n- Fix bug #1042\n- Update PartexOS\n',
-};
-let installedPkgs=['bash','coreutils','partex-ui','nano','curl'];
-let pkgDB={
-  'htop':'Interactive process viewer',
-  'vim':'Advanced text editor',
-  'git':'Version control system',
-  'python3':'Python 3 interpreter',
-  'node':'Node.js runtime',
-  'ffmpeg':'Audio/video converter',
-  'wget':'Web downloader',
-  'unzip':'Archive extractor',
-  'neofetch':'System info fetcher',
-  'tmux':'Terminal multiplexer',
-  'zsh':'Z shell',
-  'fish':'Friendly shell',
-  'lolcat':'Colorful output',
-  'cowsay':'Talking cow',
-  'fortune':'Random quotes',
-};
-let aliases={};
-let termVars={};
-let cronJobs=[];
-
-function openTerminal(){
-  const w=createWindow('terminal','Terminal — partsh',700,440);
-  if(!w)return;
-  const body=document.getElementById('winbody-terminal');
-  body.style.padding='0';body.style.background='#000';
-  body.innerHTML=`<div id="terminal-body">
-    <div id="terminal-output"></div>
-    <div id="terminal-input-line">
-      <span id="terminal-prompt">${termPrompt()}</span>
-      <input id="terminal-input" autocomplete="off" spellcheck="false"
-        onkeydown="termKeyDown(event)" placeholder=""/>
-    </div>
-  </div>`;
-  termPrint('PartexDesktop OS 10.9 — partsh 2.0');
-  termPrint('Type <span style="color:#7c5cfc">help</span> for available commands. Type <span style="color:#ffd700">pkg help</span> for package manager.\n');
-  document.getElementById('terminal-input').focus();
-}
-
-function termPrompt(){
-  const cwd=termCwd===termEnv.HOME?'~':termCwd.replace(termEnv.HOME,'~');
-  return `<span style="color:#7c5cfc">${termEnv.USER}@partex</span><span style="color:var(--text2)">:</span><span style="color:#4a9eff">${cwd}</span><span style="color:var(--text2)">$</span> `;
-}
-
-function termPrint(txt,cls=''){
-  const out=document.getElementById('terminal-output');
-  if(!out)return;
-  const line=document.createElement('div');
-  line.innerHTML=txt;
-  if(cls)line.style.color=cls;
-  out.appendChild(line);
-  const tb=document.getElementById('terminal-body');
-  if(tb)tb.scrollTop=tb.scrollHeight;
-}
-
-function termKeyDown(e){
-  const inp=document.getElementById('terminal-input');
-  if(e.key==='Enter'){
-    const cmd=inp.value.trim();
-    termPrint(`${termPrompt()}${cmd}`);
-    if(cmd){termHistory.unshift(cmd);termHistIdx=-1;runCmd(cmd);}
-    inp.value='';
-    document.getElementById('terminal-prompt').innerHTML=termPrompt();
-  } else if(e.key==='ArrowUp'){
-    e.preventDefault();
-    if(termHistIdx<termHistory.length-1){termHistIdx++;inp.value=termHistory[termHistIdx];}
-  } else if(e.key==='ArrowDown'){
-    e.preventDefault();
-    if(termHistIdx>0){termHistIdx--;inp.value=termHistory[termHistIdx];}
-    else{termHistIdx=-1;inp.value='';}
-  } else if(e.key==='Tab'){
-    e.preventDefault();
-    // Tab completion
-    const parts=inp.value.split(' ');
-    const last=parts[parts.length-1];
-    const cmds=['ls','cd','pwd','cat','echo','clear','help','mkdir','rmdir','rm','touch','cp','mv','find','grep','head','tail','wc','sort','uniq','date','whoami','hostname','uname','uptime','ps','kill','top','df','du','free','ifconfig','ping','curl','wget','history','alias','export','env','printenv','source','chmod','chown','file','which','whereis','man','info','nano','vim','python3','node','git','pkg','neofetch','cowsay','fortune','lolcat','lsblk','mount','umount','systemctl','journalctl','crontab','htop','tmux','zsh','fish'];
-    const matches=cmds.filter(c=>c.startsWith(last));
-    if(matches.length===1){parts[parts.length-1]=matches[0];inp.value=parts.join(' ');}
-    else if(matches.length>1){termPrint(matches.join('  '));}
-  } else if(e.ctrlKey&&e.key==='c'){
-    termPrint('^C');inp.value='';
-  } else if(e.ctrlKey&&e.key==='l'){
-    e.preventDefault();
-    document.getElementById('terminal-output').innerHTML='';
-  } else if(e.ctrlKey&&e.key==='d'){
-    termPrint('logout');
-    closeWindow('terminal');
+function calcInput(key) {
+  const numKeys = ['0','1','2','3','4','5','6','7','8','9','.'];
+  const ops = ['+', '−', '×', '÷'];
+  
+  if (key === 'C') {
+    calcState.display = '0';
+    calcState.expression = '';
+    calcState.prevValue = null;
+    calcState.operator = null;
+    calcState.justPressedOp = false;
+  } else if (key === '⌫') {
+    calcState.display = calcState.display.length > 1 ? calcState.display.slice(0, -1) : '0';
+  } else if (key === '±') {
+    calcState.display = String(-parseFloat(calcState.display));
+  } else if (key === '%') {
+    calcState.display = String(parseFloat(calcState.display) / 100);
+  } else if (ops.includes(key)) {
+    if (calcState.prevValue !== null && !calcState.justPressedOp) {
+      calcEqual();
+    }
+    calcState.prevValue = parseFloat(calcState.display);
+    calcState.operator = key;
+    calcState.expression = calcState.display + ' ' + key;
+    calcState.justPressedOp = true;
+  } else if (key === '=') {
+    if (calcState.operator && calcState.prevValue !== null) {
+      calcState.expression = calcState.prevValue + ' ' + calcState.operator + ' ' + calcState.display + ' =';
+      calcEqual();
+      calcState.history.push(calcState.expression + ' ' + calcState.display);
+    }
+  } else if (numKeys.includes(key)) {
+    if (calcState.justPressedOp) {
+      calcState.display = key === '.' ? '0.' : key;
+      calcState.justPressedOp = false;
+    } else {
+      if (key === '.' && calcState.display.includes('.')) return;
+      calcState.display = calcState.display === '0' && key !== '.' ? key : calcState.display + key;
+    }
+  } else if (key === 'MC') {
+    calcState.memory = 0;
+  } else if (key === 'MR') {
+    calcState.display = String(calcState.memory);
+  } else if (key === 'M+') {
+    calcState.memory += parseFloat(calcState.display);
+  } else if (key === 'M-') {
+    calcState.memory -= parseFloat(calcState.display);
   }
+  
+  updateCalcDisplay();
 }
 
-function resolvePath(p){
-  if(p.startsWith('~'))p=termEnv.HOME+p.slice(1);
-  if(!p.startsWith('/'))p=termCwd+'/'+p;
-  const parts=p.split('/').filter(Boolean);
-  const res=[];
-  for(const pt of parts){if(pt==='..')res.pop();else if(pt!=='.')res.push(pt);}
-  return '/'+res.join('/');
-}
-
-function lsDir(path){return termFS[path]||[];}
-
-function runCmd(raw){
-  // Expand aliases
-  const parts=raw.trim().split(/\s+/);
-  let cmd=parts[0];
-  if(aliases[cmd])cmd=aliases[cmd];
-  const args=parts.slice(1);
-  const fullArgs=raw.trim().replace(/^\S+\s*/,'');
-
-  // Handle pkg separately
-  if(cmd==='pkg'||cmd==='pkgman'||cmd==='apt'||cmd==='yum'||cmd==='pacman'){runPkg(args);return;}
-
-  switch(cmd){
-    case 'help': termPrint(helpText()); break;
-    case 'ls': cmdLs(args); break;
-    case 'll': cmdLs(['-l',...args]); break;
-    case 'la': cmdLs(['-a',...args]); break;
-    case 'cd': cmdCd(args[0]); break;
-    case 'pwd': termPrint(termCwd); break;
-    case 'cat': cmdCat(args); break;
-    case 'echo': termPrint(fullArgs.replace(/\$(\w+)/g,(_,v)=>termVars[v]||termEnv[v]||'')); break;
-    case 'clear': document.getElementById('terminal-output').innerHTML=''; break;
-    case 'mkdir': if(args[0]){const p=resolvePath(args[0]);if(!termFS[p]){termFS[p]=[];const parent=resolvePath(args[0].split('/').slice(0,-1).join('/')||termCwd);if(!termFS[parent])termFS[parent]=[];termFS[parent].push(args[0].split('/').pop());termPrint('');}else termPrint(`mkdir: ${args[0]}: File exists`,'#ff453a');}break;
-    case 'rmdir': cmdRmdir(args); break;
-    case 'rm': cmdRm(args); break;
-    case 'touch': if(args[0]){const p=resolvePath(args[0]);if(!termFileContents[p])termFileContents[p]='';const parent=resolvePath(args[0].split('/').slice(0,-1).join('/')||termCwd);if(termFS[parent]&&!termFS[parent].includes(args[0].split('/').pop()))termFS[parent].push(args[0].split('/').pop());termPrint('');}break;
-    case 'cp': cmdCp(args); break;
-    case 'mv': cmdMv(args); break;
-    case 'find': cmdFind(args); break;
-    case 'grep': cmdGrep(args); break;
-    case 'head': cmdHead(args); break;
-    case 'tail': cmdTail(args); break;
-    case 'wc': cmdWc(args); break;
-    case 'sort': cmdSort(args); break;
-    case 'uniq': termPrint('(uniq: pipe support coming soon)'); break;
-    case 'date': termPrint(new Date().toString()); break;
-    case 'whoami': termPrint(termEnv.USER); break;
-    case 'id': termPrint(`uid=1000(${termEnv.USER}) gid=1000(${termEnv.USER}) groups=1000(${termEnv.USER}),4(adm),27(sudo)`); break;
-    case 'hostname': termPrint('partex-desktop'); break;
-    case 'uname': cmdUname(args); break;
-    case 'uptime': termPrint(` ${new Date().toTimeString().split(' ')[0]}  up  ${Math.floor(Math.random()*24)+1}:${String(Math.floor(Math.random()*60)).padStart(2,'0')},  1 user,  load average: 0.${Math.floor(Math.random()*5)}, 0.${Math.floor(Math.random()*3)}, 0.${Math.floor(Math.random()*2)}`); break;
-    case 'ps': cmdPs(args); break;
-    case 'kill': termPrint(args[0]?`Killed process ${args[0]}`:'kill: usage: kill <pid>'); break;
-    case 'top': termPrint(topOutput()); break;
-    case 'htop': if(installedPkgs.includes('htop'))termPrint('<span style="color:#ffd700">htop 3.2.2</span>\n(Interactive mode not available in this terminal)'); else termPrint('<span style="color:#ff453a">htop: command not found — try: pkg install htop</span>'); break;
-    case 'df': cmdDf(args); break;
-    case 'du': cmdDu(args); break;
-    case 'free': cmdFree(args); break;
-    case 'ifconfig': cmdIfconfig(); break;
-    case 'ip': cmdIp(args); break;
-    case 'ping': cmdPing(args); break;
-    case 'curl': termPrint(`curl: (6) Could not resolve host: ${args.find(a=>!a.startsWith('-'))||'?'}\n(Network simulation only)`); break;
-    case 'wget': termPrint(`--${new Date().toISOString().split('T')[0]} ${new Date().toTimeString().split(' ')[0]}--  ${args[0]||'?'}\nConnecting... failed: Network simulation only.`); break;
-    case 'history': termHistory.slice().reverse().forEach((c,i)=>termPrint(`  ${String(i+1).padStart(4)}  ${c}`)); break;
-    case 'alias': cmdAlias(args,fullArgs); break;
-    case 'unalias': if(args[0])delete aliases[args[0]]; break;
-    case 'export': cmdExport(args); break;
-    case 'env': case 'printenv': Object.entries({...termEnv,...termVars}).forEach(([k,v])=>termPrint(`${k}=${v}`)); break;
-    case 'set': Object.entries({...termEnv,...termVars}).forEach(([k,v])=>termPrint(`${k}="${v}"`)); break;
-    case 'chmod': termPrint(args.length>=2?`chmod: mode ${args[0]} applied to ${args[1]}`:'chmod: missing operand'); break;
-    case 'chown': termPrint(args.length>=2?`chown: ownership changed for ${args[1]}`:'chown: missing operand'); break;
-    case 'file': if(args[0]){const p=resolvePath(args[0]);termPrint(termFileContents[p]?`${args[0]}: ASCII text`:termFS[p]?`${args[0]}: directory`:`${args[0]}: ERROR: No such file or directory`);}break;
-    case 'which': termPrint(args[0]?`/usr/bin/${args[0]}`:'which: missing argument'); break;
-    case 'whereis': termPrint(args[0]?`${args[0]}: /usr/bin/${args[0]} /usr/share/man/man1/${args[0]}.1.gz`:''); break;
-    case 'man': case 'info': termPrint(args[0]?`<span style="color:#7c5cfc">MAN: ${args[0].toUpperCase()}(1)</span>\nNo man page available. Try: ${args[0]} --help`:'What manual page do you want?'); break;
-    case 'nano': termPrint(args[0]?`  [ Opening ${args[0]} in nano... ]  (Text editing not supported in this terminal)`:' GNU nano 7.2    (New Buffer)'); break;
-    case 'vim': if(installedPkgs.includes('vim'))termPrint(`  VIM - Vi IMproved 9.0\n  (Full editor not available — use nano)}`);else termPrint('<span style="color:#ff453a">vim: not found — try: pkg install vim</span>'); break;
-    case 'python3': case 'python': if(installedPkgs.includes('python3'))termPrint(`Python 3.11.5 (partex-build)\nType exit() to quit.\n>>>`);else termPrint('<span style="color:#ff453a">python3: not found — try: pkg install python3</span>'); break;
-    case 'node': if(installedPkgs.includes('node'))termPrint(`Welcome to Node.js v20.9.0\nType .exit to quit\n>`);else termPrint('<span style="color:#ff453a">node: not found — try: pkg install node</span>'); break;
-    case 'git': cmdGit(args); break;
-    case 'lsblk': termPrint(`NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINTS\nsda      8:0    0  256G  0 disk\n├─sda1   8:1    0  512M  0 part /boot/efi\n├─sda2   8:2    0    8G  0 part [SWAP]\n└─sda3   8:3    0 247G  0 part /`); break;
-    case 'mount': termPrint(`sysfs on /sys type sysfs\nproc on /proc type proc\n/dev/sda3 on / type ext4 (rw,relatime)\ntmpfs on /tmp type tmpfs`); break;
-    case 'umount': termPrint(args[0]?`umount: ${args[0]}: not mounted`:'umount: missing operand'); break;
-    case 'systemctl': cmdSystemctl(args); break;
-    case 'journalctl': termPrint(`-- Boot ${new Date().toISOString()} --\npartexd[1]: PartexDesktop OS 10.9 starting...\npartexd[1]: Compositor initialized\npartexd[1]: User session started\n(End of journal)`); break;
-    case 'crontab': cmdCrontab(args,fullArgs); break;
-    case 'tmux': if(installedPkgs.includes('tmux'))termPrint('[tmux session: window splits not available in embedded terminal]');else termPrint('<span style="color:#ff453a">tmux: not found — try: pkg install tmux</span>'); break;
-    case 'neofetch': if(installedPkgs.includes('neofetch'))termPrint(neofetchOutput());else termPrint('<span style="color:#ff453a">neofetch: not found — try: pkg install neofetch</span>'); break;
-    case 'cowsay': if(installedPkgs.includes('cowsay'))termPrint(cowsay(args.join(' ')||'Moo!'));else termPrint('<span style="color:#ff453a">cowsay: not found — try: pkg install cowsay</span>'); break;
-    case 'fortune': if(installedPkgs.includes('fortune'))termPrint(fortune());else termPrint('<span style="color:#ff453a">fortune: not found — try: pkg install fortune</span>'); break;
-    case 'lolcat': if(installedPkgs.includes('lolcat'))termPrint(rainbow('lolcat: pipe some text to me!'));else termPrint('<span style="color:#ff453a">lolcat: not found — try: pkg install lolcat</span>'); break;
-    case 'zsh': if(installedPkgs.includes('zsh'))termPrint('% (zsh shell — switch back with exit)');else termPrint('<span style="color:#ff453a">zsh: not found — try: pkg install zsh</span>'); break;
-    case 'fish': if(installedPkgs.includes('fish'))termPrint('fish> (fish shell — switch back with exit)');else termPrint('<span style="color:#ff453a">fish: not found — try: pkg install fish</span>'); break;
-    case 'exit': termPrint('logout');closeWindow('terminal'); break;
-    case 'logout': termPrint('logout');closeWindow('terminal'); break;
-    case 'reboot': case 'shutdown': doRestart(); break;
-    case 'sudo': termPrint(`[sudo] password for ${termEnv.USER}: \n(sudo: simulated — all commands run as root)`); break;
-    case 'xargs': termPrint('(xargs: pipe support not implemented)'); break;
-    case 'awk': termPrint('(awk: pipe support not implemented)'); break;
-    case 'sed': termPrint('(sed: pipe support not implemented)'); break;
-    case 'tee': termPrint('(tee: pipe support not implemented)'); break;
-    case 'tar': cmdTar(args); break;
-    case 'gzip': termPrint(args[0]?`gzip: ${args[0]}: compression simulated`:'gzip: missing operand'); break;
-    case 'zip': termPrint(args[0]?`  adding: ${args.slice(1).join(' ')} (deflated 65%)`:'zip: missing operand'); break;
-    case 'unzip': if(installedPkgs.includes('unzip'))termPrint(args[0]?`Archive:  ${args[0]}\n  inflating: contents...\nfinished.`:'unzip: missing operand');else termPrint('<span style="color:#ff453a">unzip: not found — try: pkg install unzip</span>'); break;
-    case 'ssh': termPrint(`ssh: connect to host ${args[0]||'?'} port 22: Connection refused (simulation)`); break;
-    case 'scp': termPrint('scp: Network not available in simulation'); break;
-    case 'rsync': termPrint('rsync: Network not available in simulation'); break;
-    case 'diff': cmdDiff(args); break;
-    case 'patch': termPrint('patch: applying patch... (simulation)'); break;
-    case 'make': termPrint('make: *** No targets specified and no makefile found.  Stop.'); break;
-    case 'gcc': termPrint(`gcc: error: ${args[0]||'no input files'}: (simulation)`); break;
-    case 'g++': termPrint(`g++: error: ${args[0]||'no input files'}: (simulation)`); break;
-    case 'cc': termPrint('cc: (compiler simulation)'); break;
-    case 'strace': termPrint('strace: (trace simulation not available)'); break;
-    case 'ldd': termPrint(args[0]?`\tlinux-vdso.so.1\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6\n\t/lib64/ld-linux-x86-64.so.2`:'ldd: missing argument'); break;
-    case 'objdump': termPrint('objdump: (binary analysis simulation)'); break;
-    case 'strings': termPrint(args[0]?`/lib64/ld-linux\nGNU C Library\nELF binary\n(strings output simulation)`:'strings: missing operand'); break;
-    case 'xxd': termPrint('00000000: 7f45 4c46 0201 0100 0000 0000 0000 0000  .ELF............'); break;
-    case 'base64': termPrint(args.includes('-d')?'(decoded text)':btoa(args.filter(a=>!a.startsWith('-')).join(' ')||'hello')); break;
-    case 'md5sum': termPrint(args[0]?`d41d8cd98f00b204e9800998ecf8427e  ${args[0]}`:'(stdin): d41d8cd98f00b204e9800998ecf8427e'); break;
-    case 'sha256sum': termPrint(args[0]?`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855  ${args[0]}`:''); break;
-    case 'openssl': termPrint('OpenSSL 3.1.0 (simulation)'); break;
-    case 'sleep': termPrint(`(sleeping ${args[0]||1}s...)`); break;
-    case 'true': break;
-    case 'false': break;
-    case 'yes': termPrint('y\ny\ny\ny\ny\n(^C to stop)'); break;
-    case 'seq': cmdSeq(args); break;
-    case 'bc': termPrint('bc 1.07 (math library)\n(use echo "expr" | bc for calculations)'); break;
-    case 'cal': cmdCal(); break;
-    case 'tr': termPrint('(tr: pipe support not implemented)'); break;
-    case 'cut': termPrint('(cut: pipe support not implemented)'); break;
-    case 'paste': termPrint('(paste: pipe support not implemented)'); break;
-    case 'join': termPrint('(join: pipe support not implemented)'); break;
-    case 'read': termPrint('(read: interactive input not supported)'); break;
-    case 'printf': termPrint(args.join(' ')); break;
-    case 'test': termPrint('(test/[: always exits 0 in simulation)'); break;
-    case 'type': termPrint(args[0]?`${args[0]} is /usr/bin/${args[0]}`:'type: missing argument'); break;
-    case 'time': termPrint(`\nreal\t0m0.001s\nuser\t0m0.000s\nsys\t0m0.001s`); break;
-    case 'watch': termPrint(`(watch: running ${args[args.length-1]||'?'} every 2s — press ^C to stop)`); break;
-    case 'nohup': termPrint(`nohup: running command '${args[0]||'?'}'`); break;
-    case 'bg': termPrint('[1]+ Running'); break;
-    case 'fg': termPrint('[1]+ Stopped'); break;
-    case 'jobs': termPrint('(no background jobs)'); break;
-    case 'disown': termPrint('(job removed from shell)'); break;
-    case 'wait': termPrint('(waited)'); break;
-    case 'source': case '.': if(args[0])termPrint(`Sourced: ${args[0]} (simulation)`);break;
-    case 'bash': termPrint('bash-5.2$ (nested bash session — type exit to return)'); break;
-    case 'sh': termPrint('$ (sh session — type exit to return)'); break;
-    case '': break;
-    default:
-      if(raw.includes('=')){const [k,...vs]=raw.split('=');termVars[k.trim()]=vs.join('=').trim();break;}
-      termPrint(`<span style="color:#ff453a">partsh: ${cmd}: command not found</span>`);
+function calcEqual() {
+  const a = calcState.prevValue;
+  const b = parseFloat(calcState.display);
+  let result;
+  
+  switch (calcState.operator) {
+    case '+': result = a + b; break;
+    case '−': result = a - b; break;
+    case '×': result = a * b; break;
+    case '÷': result = b === 0 ? 'Error' : a / b; break;
+    default: return;
   }
+  
+  calcState.display = result === 'Error' ? 'Error' : String(parseFloat(result.toFixed(10)));
+  calcState.prevValue = null;
+  calcState.operator = null;
 }
 
-// ── Terminal helper commands ──
-function cmdLs(args){
-  const long=args.includes('-l')||args.includes('-la')||args.includes('-al');
-  const all=args.includes('-a')||args.includes('-la')||args.includes('-al');
-  const path=args.find(a=>!a.startsWith('-'))||termCwd;
-  const rp=resolvePath(path);
-  const files=termFS[rp];
-  if(!files){termPrint(`ls: cannot access '${path}': No such file or directory`,'#ff453a');return;}
-  const items=all?['.','..', ...files]:files;
-  if(long){
-    termPrint(`total ${items.length*4}`);
-    items.forEach(f=>{
-      const isDir=termFS[rp+'/'+f]!==undefined||f==='.'||f==='..';
-      const perms=isDir?'drwxr-xr-x':'-rw-r--r--';
-      const size=termFileContents[rp+'/'+f]?termFileContents[rp+'/'+f].length:4096;
-      const d=new Date(Date.now()-Math.random()*86400000*30);
-      const mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()];
-      termPrint(`${perms} 1 ${termEnv.USER} ${termEnv.USER} ${String(size).padStart(8)} ${mon} ${String(d.getDate()).padStart(2)} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')} <span style="color:${isDir?'#4a9eff':'#f0f0f0'}">${f}</span>`);
-    });
+function updateCalcDisplay() {
+  const exprEl = document.getElementById('calc-expr');
+  const resultEl = document.getElementById('calc-result');
+  if (exprEl) exprEl.textContent = calcState.expression;
+  if (resultEl) resultEl.textContent = calcState.display;
+}
+
+// ── KALENDER 2024-2026 (ECHT) ──
+let calendarDate = new Date();
+let calendarEvents = JSON.parse(localStorage.getItem('calendarEvents') || '{}');
+
+function openCalendar() {
+  createWindow('calendar', 'Kalender', 420, 500);
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const body = document.getElementById('winbody-calendar');
+  if (!body) return;
+  
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+  const today = new Date();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const prevDays = new Date(year, month, 0).getDate();
+  
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  
+  body.innerHTML = `
+    <div class="calendar-header">
+      <button class="calendar-nav" onclick="calendarNav(-1)">◀</button>
+      <span style="font-weight:600;font-size:16px;">${months[month]} ${year}</span>
+      <button class="calendar-nav" onclick="calendarNav(1)">▶</button>
+      <select onchange="calendarJump(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;margin-left:8px;">
+        <option value="2024" ${year===2024?'selected':''}>2024</option>
+        <option value="2025" ${year===2025?'selected':''}>2025</option>
+        <option value="2026" ${year===2026?'selected':''}>2026</option>
+      </select>
+    </div>
+    <div class="calendar-grid">
+      ${dayNames.map(d => `<div class="calendar-cell calendar-cell-header">${d}</div>`).join('')}
+      ${(() => {
+        let cells = '';
+        // Previous month days
+        for (let i = firstDay - 1; i >= 0; i--) {
+          cells += `<div class="calendar-cell other-month">${prevDays - i}</div>`;
+        }
+        // Current month days
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+          const hasEvent = calendarEvents[dateStr];
+          cells += `<div class="calendar-cell${isToday ? ' today' : ''}" 
+            onclick="addCalendarEvent('${dateStr}')" 
+            title="${hasEvent || 'Keine Events'}">
+            ${d}${hasEvent ? '<span style="position:absolute;bottom:2px;font-size:8px;">●</span>' : ''}
+          </div>`;
+        }
+        // Next month days
+        const remaining = (7 - ((firstDay + daysInMonth) % 7)) % 7;
+        for (let d = 1; d <= remaining; d++) {
+          cells += `<div class="calendar-cell other-month">${d}</div>`;
+        }
+        return cells;
+      })()}
+    </div>
+    <div style="padding:12px;border-top:1px solid var(--border);margin-top:8px;">
+      <div style="font-weight:600;margin-bottom:8px;">Events:</div>
+      <div id="calendar-event-list" style="max-height:120px;overflow-y:auto;">
+        ${renderEventList()}
+      </div>
+    </div>`;
+}
+
+function renderEventList() {
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+  const entries = Object.entries(calendarEvents).filter(([date]) => {
+    const d = new Date(date);
+    return d.getFullYear() === year && d.getMonth() === month;
+  });
+  
+  if (entries.length === 0) return '<div style="color:var(--text3);font-size:13px;">Keine Events diesen Monat</div>';
+  
+  return entries.map(([date, event]) => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg3);border-radius:6px;margin-bottom:4px;">
+      <span style="font-size:12px;color:var(--text2);">${date.split('-')[2]}.</span>
+      <span style="flex:1;margin-left:8px;font-size:13px;">${event}</span>
+      <button onclick="deleteEvent('${date}')" style="background:none;border:none;color:var(--red);cursor:pointer;">×</button>
+    </div>
+  `).join('');
+}
+
+function calendarNav(dir) {
+  calendarDate.setMonth(calendarDate.getMonth() + dir);
+  renderCalendar();
+}
+
+function calendarJump(year) {
+  calendarDate.setFullYear(parseInt(year));
+  renderCalendar();
+}
+
+function addCalendarEvent(dateStr) {
+  const event = prompt('Event für ' + dateStr + ':', calendarEvents[dateStr] || '');
+  if (event === null) return;
+  if (event === '') {
+    delete calendarEvents[dateStr];
   } else {
-    const colored=items.map(f=>{const isDir=termFS[rp+'/'+f]!==undefined||f==='.'||f==='..';return`<span style="color:${isDir?'#4a9eff':'#f0f0f0'}">${f}</span>`;});
-    termPrint(colored.join('  '));
+    calendarEvents[dateStr] = event;
   }
+  localStorage.setItem('calendarEvents', JSON.stringify(calendarEvents));
+  renderCalendar();
+  showNotif('Kalender', 'Event gespeichert');
 }
 
-function cmdCd(p){
-  if(!p||p==='~'){termCwd=termEnv.HOME;document.getElementById('terminal-prompt').innerHTML=termPrompt();return;}
-  const rp=resolvePath(p);
-  if(termFS[rp]!==undefined){termCwd=rp;document.getElementById('terminal-prompt').innerHTML=termPrompt();}
-  else termPrint(`cd: ${p}: No such file or directory`,'#ff453a');
+function deleteEvent(dateStr) {
+  delete calendarEvents[dateStr];
+  localStorage.setItem('calendarEvents', JSON.stringify(calendarEvents));
+  renderCalendar();
 }
 
-function cmdCat(args){
-  if(!args.length){termPrint('cat: reading from stdin not supported');return;}
-  args.forEach(f=>{
-    const p=resolvePath(f);
-    if(termFileContents[p]!==undefined)termPrint(termFileContents[p]);
-    else if(termFS[p])termPrint(`cat: ${f}: Is a directory`,'#ff453a');
-    else termPrint(`cat: ${f}: No such file or directory`,'#ff453a');
-  });
-}
+// ── NOTES ──────────────────────────────────
+let notes = JSON.parse(localStorage.getItem('notes') || '[{"id":1,"title":"Willkommen","content":"Schreibe hier deine Notizen...\\n\\n- Alles wird automatisch gespeichert\\n- Klicke auf + für neue Notiz"}]');
+let activeNote = 1;
 
-function cmdRm(args){
-  const r=args.includes('-r')||args.includes('-rf');
-  const files=args.filter(a=>!a.startsWith('-'));
-  files.forEach(f=>{
-    const p=resolvePath(f);
-    if(termFS[p]&&!r){termPrint(`rm: cannot remove '${f}': Is a directory`,'#ff453a');return;}
-    const parent=p.split('/').slice(0,-1).join('/')||'/';
-    const name=p.split('/').pop();
-    if(termFS[parent])termFS[parent]=termFS[parent].filter(x=>x!==name);
-    delete termFS[p]; delete termFileContents[p];
-  });
-}
-
-function cmdRmdir(args){
-  args.forEach(f=>{
-    const p=resolvePath(f);
-    if(!termFS[p]){termPrint(`rmdir: failed to remove '${f}': No such file or directory`,'#ff453a');return;}
-    if(termFS[p].length>0){termPrint(`rmdir: failed to remove '${f}': Directory not empty`,'#ff453a');return;}
-    const parent=p.split('/').slice(0,-1).join('/')||'/';
-    const name=p.split('/').pop();
-    if(termFS[parent])termFS[parent]=termFS[parent].filter(x=>x!==name);
-    delete termFS[p];
-  });
-}
-
-function cmdCp(args){
-  const src=resolvePath(args[0]);const dst=resolvePath(args[1]);
-  if(!termFileContents[src]&&!termFS[src]){termPrint(`cp: '${args[0]}': No such file or directory`,'#ff453a');return;}
-  if(termFileContents[src])termFileContents[dst]=termFileContents[src];
-  const dstParent=dst.split('/').slice(0,-1).join('/')||'/';
-  const dstName=dst.split('/').pop();
-  if(termFS[dstParent]&&!termFS[dstParent].includes(dstName))termFS[dstParent].push(dstName);
-}
-
-function cmdMv(args){
-  cmdCp(args);
-  const src=resolvePath(args[0]);
-  const parent=src.split('/').slice(0,-1).join('/')||'/';
-  const name=src.split('/').pop();
-  if(termFS[parent])termFS[parent]=termFS[parent].filter(x=>x!==name);
-  delete termFileContents[src];
-}
-
-function cmdFind(args){
-  const path=args.find(a=>!a.startsWith('-'))||termCwd;
-  const rp=resolvePath(path);
-  const nameFlag=args.indexOf('-name');
-  const pattern=nameFlag>=0?args[nameFlag+1]:'*';
-  const results=[];
-  function scan(dir){
-    (termFS[dir]||[]).forEach(f=>{
-      const fp=dir+'/'+f;
-      if(pattern==='*'||f.includes(pattern.replace(/\*/g,'')))results.push(fp);
-      if(termFS[fp])scan(fp);
-    });
-  }
-  scan(rp);
-  results.forEach(r=>termPrint(r));
-  if(!results.length)termPrint('(no results)');
-}
-
-function cmdGrep(args){
-  const pat=args.find(a=>!a.startsWith('-'));
-  const file=args[args.indexOf(pat)+1];
-  if(!pat){termPrint('grep: missing pattern');return;}
-  if(file){
-    const p=resolvePath(file);
-    const content=termFileContents[p];
-    if(!content){termPrint(`grep: ${file}: No such file or directory`,'#ff453a');return;}
-    content.split('\n').filter(l=>l.includes(pat)).forEach(l=>termPrint(l.replace(new RegExp(pat,'g'),`<span style="color:#ff453a">${pat}</span>`)));
-  } else termPrint('(grep: reading from stdin not supported)');
-}
-
-function cmdHead(args){
-  const n=args.includes('-n')?parseInt(args[args.indexOf('-n')+1]):10;
-  const file=args.find(a=>!a.startsWith('-'));
-  if(!file){termPrint('head: missing operand');return;}
-  const p=resolvePath(file);
-  const c=termFileContents[p];
-  if(!c){termPrint(`head: ${file}: No such file`,'#ff453a');return;}
-  c.split('\n').slice(0,n).forEach(l=>termPrint(l));
-}
-
-function cmdTail(args){
-  const n=args.includes('-n')?parseInt(args[args.indexOf('-n')+1]):10;
-  const file=args.find(a=>!a.startsWith('-'));
-  if(!file){termPrint('tail: missing operand');return;}
-  const p=resolvePath(file);
-  const c=termFileContents[p];
-  if(!c){termPrint(`tail: ${file}: No such file`,'#ff453a');return;}
-  c.split('\n').slice(-n).forEach(l=>termPrint(l));
-}
-
-function cmdWc(args){
-  const file=args.find(a=>!a.startsWith('-'));
-  if(!file){termPrint('wc: missing operand');return;}
-  const p=resolvePath(file);
-  const c=termFileContents[p]||'';
-  const lines=c.split('\n').length;
-  const words=c.split(/\s+/).filter(Boolean).length;
-  const bytes=c.length;
-  termPrint(` ${lines} ${words} ${bytes} ${file}`);
-}
-
-function cmdSort(args){
-  const file=args.find(a=>!a.startsWith('-'));
-  if(!file){termPrint('(sort: pipe not supported)');return;}
-  const p=resolvePath(file);
-  const c=termFileContents[p];
-  if(!c){termPrint(`sort: ${file}: No such file`,'#ff453a');return;}
-  c.split('\n').sort().forEach(l=>termPrint(l));
-}
-
-function cmdUname(args){
-  if(args.includes('-a'))termPrint('PartexOS partex-desktop 10.9.0 #1 SMP x86_64 GNU/Linux');
-  else if(args.includes('-r'))termPrint('10.9.0');
-  else if(args.includes('-m'))termPrint('x86_64');
-  else if(args.includes('-s'))termPrint('PartexOS');
-  else termPrint('PartexOS');
-}
-
-function cmdPs(args){
-  const aux=args.includes('aux')||args.includes('-aux');
-  if(aux){
-    termPrint('USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND');
-    [['root','1','0.0','0.1','168512','12456','?','Ss','09:00','0:01','partexd'],
-     [termEnv.USER,'1024','1.2','2.4','542800','98432','?','Sl','09:01','1:23','partex-desktop'],
-     [termEnv.USER,'1025','0.0','0.5','234256','20480','?','S','09:01','0:00','partex-wm'],
-     [termEnv.USER,'2048','0.1','0.3','98256','12288','pts/0','Ss','09:05','0:00','partsh'],
-     [termEnv.USER,'2049','0.0','0.1','32512','4096','pts/0','R+','09:10','0:00','ps aux'],
-    ].forEach(p=>termPrint(p.join('\t')));
-  } else {
-    termPrint('  PID TTY          TIME CMD');
-    termPrint(' 2048 pts/0    00:00:00 partsh');
-    termPrint(' 2049 pts/0    00:00:00 ps');
-  }
-}
-
-function topOutput(){
-  return `top - ${new Date().toTimeString().split(' ')[0]} up 2:30,  1 user,  load average: 0.45, 0.38, 0.29
-Tasks:  87 total,   2 running,  85 sleeping
-%Cpu(s): 12.3 us,  2.1 sy,  0.0 ni, 84.5 id
-MiB Mem :  16384.0 total,   8192.0 free,   6144.0 used
-MiB Swap:   8192.0 total,   8192.0 free,      0.0 used
-
-  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
- 1024 ${termEnv.USER}   20   0  542800  98432  45678 S  12.3   0.6   1:23.45 partex-desktop
- 1025 ${termEnv.USER}   20   0  234256  20480  12345 S   1.2   0.1   0:04.21 partex-wm
-    1 root      20   0  168512  12456   8765 S   0.0   0.1   0:01.00 partexd`;
-}
-
-function cmdDf(args){
-  termPrint('Filesystem      Size  Used Avail Use% Mounted on');
-  termPrint('/dev/sda3       247G   52G  183G  22% /');
-  termPrint('tmpfs           8.0G  1.2M  8.0G   1% /tmp');
-  termPrint('/dev/sda1       511M  5.9M  505M   2% /boot/efi');
-}
-
-function cmdDu(args){
-  const p=args.find(a=>!a.startsWith('-'))||'.';
-  const rp=resolvePath(p);
-  const files=termFS[rp]||[];
-  files.forEach(f=>{termPrint(`${Math.floor(Math.random()*1000+1)}K\t${p}/${f}`);});
-  termPrint(`${Math.floor(Math.random()*10000+5000)}K\t${p}`);
-}
-
-function cmdFree(args){
-  const h=args.includes('-h');
-  const u=h?'G':'M';
-  const m=v=>h?(v/1024).toFixed(1)+u:String(v*1024);
-  termPrint(`              total        used        free      shared  buff/cache   available`);
-  termPrint(`Mem:     ${m(16384).padStart(10)} ${m(6144).padStart(10)} ${m(8192).padStart(10)} ${m(128).padStart(10)} ${m(2048).padStart(10)} ${m(9856).padStart(10)}`);
-  termPrint(`Swap:    ${m(8192).padStart(10)} ${m(0).padStart(10)} ${m(8192).padStart(10)}`);
-}
-
-function cmdIfconfig(){
-  termPrint(`eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 192.168.1.42  netmask 255.255.255.0  broadcast 192.168.1.255
-        inet6 fe80::1  prefixlen 64  scopeid 0x20<link>
-        ether 00:11:22:33:44:55  txqueuelen 1000  (Ethernet)
-        RX packets 12345  bytes 9876543 (9.4 MiB)
-        TX packets 8765  bytes 654321 (639.0 KiB)
-
-lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
-        inet 127.0.0.1  netmask 255.0.0.0
-        inet6 ::1  prefixlen 128  scopeid 0x10<host>`);
-}
-
-function cmdIp(args){
-  if(args[0]==='addr'||args[0]==='a')cmdIfconfig();
-  else if(args[0]==='route'||args[0]==='r')termPrint('default via 192.168.1.1 dev eth0 proto dhcp\n192.168.1.0/24 dev eth0 proto kernel');
-  else termPrint('ip: (simulation)');
-}
-
-function cmdPing(args){
-  const host=args.find(a=>!a.startsWith('-'))||'localhost';
-  termPrint(`PING ${host} (192.168.1.1) 56(84) bytes of data.`);
-  for(let i=0;i<4;i++)termPrint(`64 bytes from ${host}: icmp_seq=${i+1} ttl=64 time=${(Math.random()*20+1).toFixed(2)} ms`);
-  termPrint(`\n--- ${host} ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss`);
-}
-
-function cmdAlias(args,full){
-  if(!full||!full.includes('=')){Object.entries(aliases).forEach(([k,v])=>termPrint(`alias ${k}='${v}'`));return;}
-  const m=full.match(/^(\w+)='?([^']+)'?$/);
-  if(m)aliases[m[1]]=m[2];
-}
-
-function cmdExport(args){
-  args.forEach(a=>{
-    const [k,...vs]=a.split('=');
-    if(vs.length)termEnv[k]=vs.join('=');
-    else termPrint(`declare -x ${k}="${termEnv[k]||''}"`)
-  });
-}
-
-function cmdSystemctl(args){
-  const sub=args[0];const svc=args[1]||'?';
-  const svcs={partexd:'active',networking:'active',bluetooth:'active',printing:'inactive'};
-  if(sub==='status')termPrint(`● ${svc}.service - PartexOS ${svc}\n   Loaded: loaded\n   Active: ${svcs[svc]||'inactive'} since ${new Date().toISOString()}`);
-  else if(sub==='start'||sub==='stop'||sub==='restart'||sub==='enable'||sub==='disable')termPrint(`(systemctl: ${sub} ${svc} — simulated)`);
-  else if(sub==='list-units')termPrint('partexd.service  loaded active running PartexOS daemon\nnetworking.service  loaded active running Network\nbluetooth.service  loaded active running Bluetooth');
-  else termPrint(`systemctl: unknown subcommand: ${sub||'?'}`);
-}
-
-function cmdCrontab(args,full){
-  if(args.includes('-l')){cronJobs.forEach(j=>termPrint(j));if(!cronJobs.length)termPrint('no crontab for '+termEnv.USER);return;}
-  if(args.includes('-e'))termPrint('(crontab editor: not available — use crontab -r to remove)');
-  if(args.includes('-r')){cronJobs=[];termPrint('(crontab cleared)');}
-}
-
-function cmdTar(args){
-  if(args.includes('-xzf')||args.includes('-xf')){const f=args.find(a=>!a.startsWith('-'));termPrint(f?`x ${f}\nextraction complete`:'tar: missing operand');}
-  else if(args.includes('-czf')||args.includes('-cf')){termPrint('(archive created)');}
-  else termPrint('tar: (simulation)');
-}
-
-function cmdDiff(args){
-  if(args.length<2){termPrint('diff: missing operand');return;}
-  const a=termFileContents[resolvePath(args[0])];
-  const b=termFileContents[resolvePath(args[1])];
-  if(!a||!b){termPrint(`diff: ${!a?args[0]:args[1]}: No such file`,'#ff453a');return;}
-  if(a===b)termPrint('(files are identical)');
-  else termPrint(`--- ${args[0]}\n+++ ${args[1]}\n@@ -1 +1 @@\n(files differ)`);
-}
-
-function cmdSeq(args){
-  let start=1,end=1,step=1;
-  if(args.length===1)end=parseInt(args[0]);
-  else if(args.length===2){start=parseInt(args[0]);end=parseInt(args[1]);}
-  else if(args.length===3){start=parseInt(args[0]);step=parseInt(args[1]);end=parseInt(args[2]);}
-  for(let i=start;i<=end;i+=step)termPrint(String(i));
-}
-
-function cmdCal(){
-  const now=new Date();
-  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
-  const days=['Su','Mo','Tu','We','Th','Fr','Sa'];
-  const y=now.getFullYear();const m=now.getMonth();
-  const firstDay=new Date(y,m,1).getDay();
-  const daysInMonth=new Date(y,m+1,0).getDate();
-  termPrint(`   ${months[m]} ${y}`);
-  termPrint(days.join(' '));
-  let row='';
-  for(let i=0;i<firstDay;i++)row+='   ';
-  for(let d=1;d<=daysInMonth;d++){
-    const s=String(d).padStart(2);
-    row+=d===now.getDate()?`<span style="background:#7c5cfc;border-radius:3px;padding:0 2px">${s}</span> `:s+' ';
-    if((firstDay+d)%7===0){termPrint(row);row='';}
-  }
-  if(row)termPrint(row);
-}
-
-function neofetchOutput(){
-  return `<span style="color:#7c5cfc">       ██████╗ ██████╗ ██████╗</span>     user@partex-desktop
-<span style="color:#7c5cfc">       ██╔══██╗╚════██╗╚════██╗</span>    ---------------------
-<span style="color:#4a9eff">       ██████╔╝ █████╔╝ █████╔╝</span>    OS: PartexDesktop OS 10.9
-<span style="color:#4a9eff">       ██╔═══╝ ██╔═══╝ ██╔═══╝ </span>    Host: PartexBook Pro
-<span style="color:#30d158">       ██║     ███████╗███████╗</span>    Kernel: partexOS 10.9.0
-<span style="color:#30d158">       ╚═╝     ╚══════╝╚══════╝</span>    Uptime: 2 hours, 30 mins
-                                   Shell: partsh 2.0
-<span style="color:var(--text2)">Partex</span>                             Resolution: 1920x1080
-                                   DE: PartexDesktop
-                                   WM: PartexWM
-                                   Theme: Partex Dark
-                                   CPU: Intel Core i7-12700K
-                                   GPU: NVIDIA RTX 3070
-                                   Memory: 6144MiB / 16384MiB`;
-}
-
-function cowsay(msg){
-  const l=msg.length+2;
-  const line='-'.repeat(l);
-  return ` ${line}\n< ${msg} >\n ${line}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
-}
-
-function fortune(){
-  const f=['The best way to predict the future is to invent it. — Alan Kay',
-    'Simplicity is the ultimate sophistication. — Leonardo da Vinci',
-    'Programs must be written for people to read. — Harold Abelson',
-    'Any sufficiently advanced technology is indistinguishable from magic. — Clarke',
-    'The most dangerous phrase in the language is: we have always done it this way.',
-    'Move fast and break things. — Facebook (they fixed the things eventually)',
-    'It works on my machine. — Every developer',
-    'There are 10 types of people: those who understand binary, and those who don\'t.'];
-  return f[Math.floor(Math.random()*f.length)];
-}
-
-function rainbow(text){
-  const colors=['#ff453a','#ff9f0a','#ffd60a','#30d158','#4a9eff','#7c5cfc'];
-  return text.split('').map((c,i)=>`<span style="color:${colors[i%colors.length]}">${c}</span>`).join('');
-}
-
-function helpText(){
-  return `<span style="color:#7c5cfc;font-weight:bold">PartexDesktop OS 10.9 — partsh 2.0</span>
-
-<span style="color:#ffd700">FILE SYSTEM</span>
-  ls [-l/-a]  ll  la  cd  pwd  cat  mkdir  rmdir  rm [-r]  touch  cp  mv
-  find  grep  head  tail  wc  sort  diff  tar  gzip  zip  unzip
-
-<span style="color:#ffd700">SYSTEM INFO</span>
-  uname  uptime  date  cal  whoami  id  hostname  ps [aux]  top  htop
-  df  du  free  lsblk  mount  file  which  whereis
-
-<span style="color:#ffd700">NETWORK</span>
-  ifconfig  ip addr  ping  curl  wget  ssh  scp  rsync
-
-<span style="color:#ffd700">PROCESS</span>
-  kill  jobs  bg  fg  nohup  watch  sleep  time
-
-<span style="color:#ffd700">SHELL</span>
-  echo  printf  alias  unalias  export  env  printenv  set  history
-  source  type  test  read  seq  bc  base64  md5sum  sha256sum
-
-<span style="color:#ffd700">SYSTEM CONTROL</span>
-  systemctl  journalctl  crontab  chmod  chown  sudo
-
-<span style="color:#ffd700">DEV TOOLS</span>
-  git  gcc  g++  make  strace  ldd  strings  xxd  objdump
-  openssl  ssh  bash  zsh  fish  nano  vim  python3  node
-
-<span style="color:#ffd700">PACKAGE MANAGER</span>
-  <span style="color:#4a9eff">pkg install &lt;name&gt;</span>  — install a package
-  <span style="color:#4a9eff">pkg remove &lt;name&gt;</span>   — remove a package
-  <span style="color:#4a9eff">pkg list</span>             — list installed packages
-  <span style="color:#4a9eff">pkg search &lt;name&gt;</span>   — search available packages
-  <span style="color:#4a9eff">pkg update</span>           — update all packages
-  <span style="color:#4a9eff">pkg upgrade</span>         — upgrade system
-
-<span style="color:#ffd700">FUN</span>
-  neofetch  cowsay  fortune  lolcat  yes  cal`;
-}
-
-// ── PACKAGE MANAGER ──
-function runPkg(args){
-  const sub=args[0];const name=args[1];
-  switch(sub){
-    case 'install':
-      if(!name){termPrint('pkg: usage: pkg install <package>','#ff453a');return;}
-      if(installedPkgs.includes(name)){termPrint(`pkg: ${name} is already installed`);return;}
-      if(!pkgDB[name]){termPrint(`pkg: package '${name}' not found — try: pkg search ${name}`,'#ff453a');return;}
-      termPrint(`Fetching package information for '${name}'...`);
-      termPrint(`Reading package lists... Done`);
-      termPrint(`The following packages will be installed:\n  ${name} (latest)`);
-      setTimeout(()=>{
-        termPrint(`Get:1 https://repo.partex.os ${name} latest [simulated]`);
-        termPrint(`Unpacking ${name}...`);
-        setTimeout(()=>{
-          termPrint(`Setting up ${name}...`);
-          installedPkgs.push(name);
-          termPrint(`<span style="color:#30d158">✓ ${name} installed successfully.</span>`);
-          if(name==='neofetch')termPrint('  Try: neofetch');
-          if(name==='cowsay')termPrint('  Try: cowsay Hello World');
-        },500);
-      },400);
-      break;
-    case 'remove':case 'uninstall':case 'purge':
-      if(!name){termPrint('pkg: usage: pkg remove <package>','#ff453a');return;}
-      if(!installedPkgs.includes(name)){termPrint(`pkg: ${name} is not installed`,'#ff453a');return;}
-      if(['bash','coreutils','partex-ui'].includes(name)){termPrint(`pkg: cannot remove ${name}: protected system package`,'#ff453a');return;}
-      installedPkgs=installedPkgs.filter(p=>p!==name);
-      termPrint(`Removing ${name}...\n<span style="color:#30d158">✓ ${name} removed.</span>`);
-      break;
-    case 'list':
-      termPrint(`<span style="color:#ffd700">Installed packages (${installedPkgs.length}):</span>`);
-      installedPkgs.forEach(p=>termPrint(`  ✓ <span style="color:#30d158">${p}</span>${pkgDB[p]?' — '+pkgDB[p]:''}` ));
-      break;
-    case 'search':
-      if(!name){
-        termPrint(`<span style="color:#ffd700">Available packages:</span>`);
-        Object.entries(pkgDB).forEach(([p,d])=>{
-          const inst=installedPkgs.includes(p);
-          termPrint(`  ${inst?'<span style="color:#30d158">[installed]</span>':'[available]'} <span style="color:#4a9eff">${p}</span> — ${d}`);
-        });
-      } else {
-        const found=Object.entries(pkgDB).filter(([p])=>p.includes(name));
-        if(!found.length){termPrint(`pkg: no packages found matching '${name}'`);return;}
-        found.forEach(([p,d])=>termPrint(`  <span style="color:#4a9eff">${p}</span> — ${d} ${installedPkgs.includes(p)?'<span style="color:#30d158">[installed]</span>':''}`));
-      }
-      break;
-    case 'update':
-      termPrint('Fetching package index...\nReading package lists... Done\nAll packages are up to date.');
-      break;
-    case 'upgrade':
-      termPrint('Reading package lists... Done\nBuilding dependency tree... Done\n0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.');
-      break;
-    case 'info':case 'show':
-      if(!name){termPrint('pkg: usage: pkg info <package>');return;}
-      if(pkgDB[name])termPrint(`Package: ${name}\nDescription: ${pkgDB[name]}\nStatus: ${installedPkgs.includes(name)?'installed':'not installed'}\nRepository: partex-main`);
-      else termPrint(`pkg: no information for '${name}'`,'#ff453a');
-      break;
-    case 'help':case '--help':
-      termPrint(`<span style="color:#7c5cfc;font-weight:bold">pkg — PartexOS Package Manager</span>
-
-  pkg install &lt;name&gt;    install a package
-  pkg remove &lt;name&gt;     remove a package
-  pkg list               list installed packages
-  pkg search [name]      search available packages
-  pkg update             update package index
-  pkg upgrade            upgrade all packages
-  pkg info &lt;name&gt;       show package details
-  pkg help               show this help
-
-<span style="color:#ffd700">Available:</span> ${Object.keys(pkgDB).join(', ')}`);
-      break;
-    default:
-      termPrint(`pkg: unknown command '${sub||'?'}'\nTry: pkg help`,'#ff453a');
-  }
-}
-
-// ── NOTES ────────────────────────────────────
-let notes=[
-  {id:1,title:'Welcome to Notes',content:'Start writing your notes here.\n\nYou can create, edit, and delete notes.'},
-  {id:2,title:'Shopping List',content:'- Milk\n- Bread\n- Coffee\n- Apples'},
-  {id:3,title:'Ideas',content:'1. Build something cool\n2. Learn new things\n3. Be awesome'},
-];
-let activeNote=1;
-
-function openNotes(){
-  const w=createWindow('notes','Notes',640,420);
-  if(!w)return;
+function openNotes() {
+  createWindow('notes', 'Notizen', 600, 420);
   renderNotes();
 }
 
-function renderNotes(){
-  const body=document.getElementById('winbody-notes');
-  if(!body)return;
-  const note=notes.find(n=>n.id===activeNote)||notes[0];
-  body.innerHTML=`<div id="notes-body">
-    <div id="notes-sidebar">
-      <div style="padding:10px;border-bottom:1px solid var(--border);display:flex;gap:6px;">
-        <button style="flex:1;background:var(--accent);border:none;color:#fff;padding:6px 10px;border-radius:7px;cursor:pointer;font-size:12px;" onclick="newNote()">+ New</button>
+function renderNotes() {
+  const body = document.getElementById('winbody-notes');
+  if (!body) return;
+  const note = notes.find(n => n.id === activeNote) || notes[0];
+  
+  body.innerHTML = `
+    <div style="display:flex;height:100%;">
+      <div style="width:180px;background:rgba(0,0,0,0.25);border-right:1px solid var(--border);display:flex;flex-direction:column;">
+        <div style="padding:10px;">
+          <button onclick="newNote()" style="width:100%;background:var(--accent);border:none;color:#fff;padding:8px;border-radius:8px;cursor:pointer;">+ Neue Notiz</button>
+        </div>
+        <div style="flex:1;overflow-y:auto;padding:8px;">
+          ${notes.map(n => `
+            <div onclick="selectNote(${n.id})" style="padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;${n.id===activeNote?'background:rgba(124,92,252,0.2);':''}">
+              <div style="font-size:13px;font-weight:500;">${n.title}</div>
+              <div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n.content.substring(0,30)}</div>
+            </div>
+          `).join('')}
+        </div>
       </div>
-      <div id="notes-list">
-        ${notes.map(n=>`<div class="note-item${n.id===activeNote?' active':''}" onclick="selectNote(${n.id})">
-          <div class="note-item-title">${n.title}</div>
-          <div class="note-item-preview">${n.content.substring(0,40)}</div>
-        </div>`).join('')}
+      <div style="flex:1;display:flex;flex-direction:column;">
+        <div style="padding:8px 12px;border-bottom:1px solid var(--border);">
+          <button onclick="deleteNote(${note ? note.id : 0})" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">🗑 Löschen</button>
+        </div>
+        <textarea id="note-editor" oninput="saveNoteContent(${note ? note.id : 0}, this.value)" 
+          style="flex:1;background:none;border:none;outline:none;color:var(--text);font-size:var(--text-size);padding:16px;resize:none;font-family:inherit;line-height:1.7;">${note ? note.content : ''}</textarea>
       </div>
-    </div>
-    <div id="notes-main">
-      <div id="notes-toolbar">
-        <button class="notes-tool-btn" onclick="deleteNote(${note?note.id:0})">🗑 Delete</button>
-        <button class="notes-tool-btn" onclick="exportNote(${note?note.id:0})">↓ Export</button>
-      </div>
-      ${note?`<textarea id="note-editor" oninput="saveNote(${note.id},this.value)">${note.content}</textarea>`:'<div style="padding:20px;color:var(--text2);">Select a note</div>'}
-    </div>
-  </div>`;
+    </div>`;
 }
 
-function selectNote(id){activeNote=id;renderNotes();}
-function newNote(){
-  const n={id:Date.now(),title:'New Note',content:''};
-  notes.push(n);activeNote=n.id;renderNotes();
-}
-function deleteNote(id){notes=notes.filter(n=>n.id!==id);if(notes.length)activeNote=notes[0].id;renderNotes();}
-function saveNote(id,val){const n=notes.find(n=>n.id===id);if(n){n.content=val;const lines=val.split('\n');n.title=lines[0]||'Untitled';}}
-function exportNote(id){const n=notes.find(n=>n.id===id);if(n){const b=new Blob([n.content],{type:'text/plain'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=n.title+'.txt';a.click();}}
+function selectNote(id) { activeNote = id; renderNotes(); }
 
-// ── CALCULATOR ────────────────────────────────────
-let calcDisplay='0';
-let calcPrev='';
-let calcOp='';
-let calcJustOp=false;
-
-function openCalculator(){
-  const w=createWindow('calculator','Calculator',280,440);
-  if(!w)return;
-  renderCalculator();
+function newNote() {
+  const n = { id: Date.now(), title: 'Neue Notiz', content: '' };
+  notes.push(n);
+  activeNote = n.id;
+  saveNotes();
+  renderNotes();
 }
 
-function renderCalculator(){
-  const body=document.getElementById('winbody-calculator');
-  if(!body)return;
-  body.style.padding='0';body.style.overflow='hidden';
-  const keys=[
-    ['AC','±','%','÷'],
-    ['7','8','9','×'],
-    ['4','5','6','−'],
-    ['1','2','3','+'],
-    ['0','.','='],
-  ];
-  body.innerHTML=`<div id="calc-body" style="height:100%;display:flex;flex-direction:column;">
-    <div class="calc-display">
-      <div class="calc-display-small" id="calc-prev">${calcPrev}${calcOp}</div>
-      <div class="calc-display-main" id="calc-main">${calcDisplay}</div>
-    </div>
-    <div class="calc-keys" style="flex:1;">
-      ${keys.map(row=>row.map((k,i)=>{
-        const dark=['AC','±','%'].includes(k)?'med':'';
-        const acc=['÷','×','−','+','='].includes(k)?'accent':'dark';
-        const cls=dark||acc;
-        const w=k==='0'?'grid-column:span 2;':'';
-        return `<button class="calc-key ${cls}" style="${w}" onclick="calcPress('${k}')">${k}</button>`;
-      }).join('')).join('')}
-    </div>
-  </div>`;
+function deleteNote(id) {
+  notes = notes.filter(n => n.id !== id);
+  if (notes.length) activeNote = notes[0].id;
+  saveNotes();
+  renderNotes();
 }
 
-function calcPress(k){
-  if(k==='AC'){calcDisplay='0';calcPrev='';calcOp='';calcJustOp=false;}
-  else if(k==='±'){calcDisplay=String(-parseFloat(calcDisplay));}
-  else if(k==='%'){calcDisplay=String(parseFloat(calcDisplay)/100);}
-  else if(['÷','×','−','+'].includes(k)){
-    calcPrev=calcDisplay;calcOp=k;calcJustOp=true;
-  } else if(k==='='){
-    if(!calcOp||!calcPrev)return;
-    const a=parseFloat(calcPrev),b=parseFloat(calcDisplay);
-    let r;
-    if(calcOp==='÷')r=b===0?'Error':a/b;
-    else if(calcOp==='×')r=a*b;
-    else if(calcOp==='−')r=a-b;
-    else r=a+b;
-    calcPrev='';calcOp='';
-    calcDisplay=r==='Error'?'Error':String(parseFloat(r.toFixed(10)));
-    calcJustOp=false;
-  } else if(k==='.'){
-    if(calcJustOp){calcDisplay='0.';calcJustOp=false;return;}
-    if(!calcDisplay.includes('.'))calcDisplay+='.';
-  } else {
-    if(calcJustOp||calcDisplay==='0'){calcDisplay=k;calcJustOp=false;}
-    else calcDisplay+=k;
+function saveNoteContent(id, val) {
+  const n = notes.find(n => n.id === id);
+  if (n) {
+    n.content = val;
+    const lines = val.split('\n');
+    n.title = lines[0] || 'Unbenannt';
+    saveNotes();
   }
-  const m=document.getElementById('calc-main');
-  const p=document.getElementById('calc-prev');
-  if(m)m.textContent=calcDisplay;
-  if(p)p.textContent=calcPrev+(calcOp||'');
 }
 
-// ── MUSIC ────────────────────────────────────
-let musicPlaying=false;
-let musicInterval=null;
-let musicPos=35;
-const tracks=[
-  {title:'Cosmic Wave',artist:'PartexSound',emoji:'🌌'},
-  {title:'Digital Rain',artist:'SynthWave',emoji:'💧'},
-  {title:'Neon Nights',artist:'ElectroPulse',emoji:'🌃'},
-];
-let trackIdx=0;
-
-function openMusic(){
-  const w=createWindow('music','Music',300,400);
-  if(!w)return;
-  renderMusic();
+function saveNotes() {
+  localStorage.setItem('notes', JSON.stringify(notes));
 }
 
-function renderMusic(){
-  const body=document.getElementById('winbody-music');
-  if(!body)return;
-  const t=tracks[trackIdx];
-  body.style.padding='0';body.style.overflow='hidden';
-  body.innerHTML=`<div id="music-body">
-    <div class="music-album">${t.emoji}</div>
-    <div class="music-title">${t.title}</div>
-    <div class="music-artist">${t.artist}</div>
-    <div class="music-progress" onclick="seekMusic(event)">
-      <div class="music-progress-bar" id="music-bar" style="width:${musicPos}%"></div>
-    </div>
-    <div class="music-time"><span id="music-cur">1:${Math.floor(musicPos*2.4/10).toString().padStart(2,'0')}</span><span>4:00</span></div>
-    <div class="music-controls">
-      <div class="music-btn" onclick="prevTrack()">⏮</div>
-      <div class="music-btn" onclick="rewindMusic()">⏪</div>
-      <div class="music-btn main" id="music-play" onclick="toggleMusic()">${musicPlaying?'⏸':'▶️'}</div>
-      <div class="music-btn" onclick="fastForwardMusic()">⏩</div>
-      <div class="music-btn" onclick="nextTrack()">⏭</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:10px;margin-top:16px;padding:0 10px;">
-      <span style="font-size:14px;color:var(--text3);">🔈</span>
-      <input type="range" min="0" max="100" value="70" style="flex:1;" oninput="this.previousElementSibling.textContent=this.value>50?'🔊':this.value>20?'🔉':'🔈'"/>
-      <span style="font-size:14px;color:var(--text3);">🔊</span>
-    </div>
-    <div style="display:flex;justify-content:center;gap:20px;margin-top:12px;">
-      ${tracks.map((t,i)=>`<div style="font-size:11px;color:${i===trackIdx?'var(--accent)':'var(--text3)'};cursor:pointer;" onclick="jumpTrack(${i})">${t.title}</div>`).join('')}
-    </div>
-  </div>`;
-}
-
-function toggleMusic(){
-  musicPlaying=!musicPlaying;
-  if(musicPlaying){
-    musicInterval=setInterval(()=>{
-      musicPos=(musicPos+0.1)%100;
-      const bar=document.getElementById('music-bar');
-      const cur=document.getElementById('music-cur');
-      if(bar)bar.style.width=musicPos+'%';
-      if(cur){const s=Math.floor(musicPos*2.4);cur.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
-    },100);
-  } else {clearInterval(musicInterval);}
-  const btn=document.getElementById('music-play');
-  if(btn)btn.textContent=musicPlaying?'⏸':'▶️';
-}
-
-function nextTrack(){clearInterval(musicInterval);musicPlaying=false;musicPos=0;trackIdx=(trackIdx+1)%tracks.length;renderMusic();}
-function prevTrack(){clearInterval(musicInterval);musicPlaying=false;musicPos=0;trackIdx=(trackIdx-1+tracks.length)%tracks.length;renderMusic();}
-function jumpTrack(i){clearInterval(musicInterval);musicPlaying=false;musicPos=0;trackIdx=i;renderMusic();}
-function seekMusic(e){const r=e.currentTarget.getBoundingClientRect();musicPos=(e.clientX-r.left)/r.width*100;const bar=document.getElementById('music-bar');if(bar)bar.style.width=musicPos+'%';}
-function rewindMusic(){musicPos=Math.max(0,musicPos-5);const bar=document.getElementById('music-bar');if(bar)bar.style.width=musicPos+'%';}
-function fastForwardMusic(){musicPos=Math.min(99,musicPos+5);const bar=document.getElementById('music-bar');if(bar)bar.style.width=musicPos+'%';}
-
-// ── SETTINGS ────────────────────────────────────
-let settingsSection='appearance';
-const settingsState={
-  darkMode:true,transparency:true,animations:true,notifications:true,sounds:false,
-  wifi:true,bluetooth:false,airdrop:true,autosave:true,spellcheck:true,
-  brightness:75,volume:70,textSize:14,
-  wallpaper:0,accent:'#7c5cfc',
-};
-
-function openSettings(){
-  const w=createWindow('settings','System Preferences',720,500);
-  if(!w)return;
+// ── SETTINGS (ECHT FUNKTIONIEREND) ──
+function openSettings() {
+  createWindow('settings', 'Einstellungen', 650, 480);
   renderSettings();
 }
 
-function renderSettings(){
-  const body=document.getElementById('winbody-settings');
-  if(!body)return;
-  const navItems=[
-    {id:'appearance',icon:'🎨',label:'Appearance'},
-    {id:'display',icon:'🖥️',label:'Display'},
-    {id:'sound',icon:'🔊',label:'Sound'},
-    {id:'network',icon:'📶',label:'Network'},
-    {id:'bluetooth',icon:'📡',label:'Bluetooth'},
-    {id:'notifications',icon:'🔔',label:'Notifications'},
-    {id:'general',icon:'⚙️',label:'General'},
-    {id:'privacy',icon:'🔒',label:'Privacy'},
-    {id:'about',icon:'ℹ️',label:'About'},
-  ];
-  body.innerHTML=`<div id="settings-body">
-    <div id="settings-sidebar">
-      ${navItems.map(n=>`<div class="settings-nav-item${n.id===settingsSection?' active':''}" onclick="settingsNav('${n.id}')">${n.icon} ${n.label}</div>`).join('')}
-    </div>
-    <div id="settings-main">${renderSettingsContent()}</div>
-  </div>`;
+function renderSettings() {
+  const body = document.getElementById('winbody-settings');
+  if (!body) return;
+  
+  body.innerHTML = `
+    <div style="display:flex;height:100%;">
+      <div style="width:160px;background:rgba(0,0,0,0.25);border-right:1px solid var(--border);padding:8px;">
+        <div onclick="settingsSection='text'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">📝 Textgröße</div>
+        <div onclick="settingsSection='display'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">🖥️ Anzeige</div>
+        <div onclick="settingsSection='network'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">📶 Netzwerk</div>
+        <div onclick="settingsSection='bluetooth'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">📡 Bluetooth</div>
+      </div>
+      <div style="flex:1;padding:20px;overflow-y:auto;" id="settings-content"></div>
+    </div>`;
+  
+  window.settingsSection = window.settingsSection || 'text';
+  renderSettingsContent();
 }
 
-function settingsNav(s){settingsSection=s;renderSettings();}
-
-function renderSettingsContent(){
-  switch(settingsSection){
-    case 'appearance': return `
-      <div class="settings-section"><h3>Appearance</h3>
-        ${settingToggle('Dark Mode','Reduces eye strain','darkMode')}
-        ${settingToggle('Transparency','Blur effects','transparency')}
-        ${settingToggle('Animations','Motion effects','animations')}
-      </div>
-      <div class="settings-section"><h3>Accent Color</h3>
-        <div style="display:flex;gap:10px;padding:10px 14px;">
-          ${['#7c5cfc','#4a9eff','#30d158','#ff453a','#ff9f0a','#ff2d55','#64d2ff'].map(c=>`<div onclick="setAccent('${c}')" style="width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;border:3px solid ${settingsState.accent===c?'#fff':'transparent'}"></div>`).join('')}
+function renderSettingsContent() {
+  const content = document.getElementById('settings-content');
+  if (!content) return;
+  
+  switch (window.settingsSection) {
+    case 'text':
+      content.innerHTML = `
+        <div class="settings-section"><h3>Textgröße</h3>
+          <div style="padding:10px 14px;background:var(--bg3);border-radius:10px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+              <span class="settings-row-label">Schriftgröße</span>
+              <span style="color:var(--accent);font-weight:600;">${settings.textSize}px</span>
+            </div>
+            <input type="range" min="10" max="24" value="${settings.textSize}" 
+              oninput="settings.textSize=parseInt(this.value);this.nextElementSibling.textContent=this.value+'px';saveSettings();updateAllText();" 
+              style="width:100%;">
+            <span style="font-size:12px;color:var(--text2);">${settings.textSize}px</span>
+          </div>
+          <div style="margin-top:10px;padding:10px 14px;background:var(--bg3);border-radius:10px;">
+            <span style="font-size:${settings.textSize}px;">Vorschau: So sieht Text mit ${settings.textSize}px aus</span>
+          </div>
         </div>
-      </div>
-      <div class="settings-section"><h3>Wallpaper</h3>
-        <div style="display:flex;gap:10px;padding:10px 14px;">
-          ${wallpapers.map((w,i)=>`<div onclick="setWallpaper(${i})" style="width:60px;height:40px;border-radius:8px;background:${w};cursor:pointer;border:2px solid ${wallpaperIdx===i?'#fff':'transparent'}"></div>`).join('')}
+        <div class="settings-section"><h3>Akzentfarbe</h3>
+          <div style="display:flex;gap:8px;padding:10px 14px;">
+            ${['#7c5cfc','#4a9eff','#30d158','#ff453a','#ff9f0a','#ff2d55'].map(c => `
+              <div onclick="settings.accent='${c}';saveSettings();" style="width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;border:3px solid ${settings.accent===c?'#fff':'transparent'};"></div>
+            `).join('')}
+          </div>
+        </div>`;
+      break;
+      
+    case 'display':
+      content.innerHTML = `
+        <div class="settings-section"><h3>Hintergrund</h3>
+          <div style="display:flex;gap:10px;padding:10px 14px;flex-wrap:wrap;">
+            ${wallpapers.map((w, i) => `
+              <div onclick="settings.wallpaperIdx=${i};saveSettings();" style="width:80px;height:50px;border-radius:8px;background:${w};cursor:pointer;border:2px solid ${wallpaperIdx===i?'#fff':'transparent'};"></div>
+            `).join('')}
+          </div>
         </div>
-      </div>`;
-    case 'display': return `
-      <div class="settings-section"><h3>Display</h3>
-        ${settingSlider('Brightness',settingsState.brightness,'brightness')}
-        ${settingSlider('Text Size',settingsState.textSize,'textSize',8,24)}
-      </div>
-      <div class="settings-section"><h3>Resolution</h3>
-        <div class="settings-row"><span class="settings-row-label">Screen Resolution</span><span style="font-size:13px;color:var(--text2);">1920 × 1080</span></div>
-        <div class="settings-row"><span class="settings-row-label">Refresh Rate</span><span style="font-size:13px;color:var(--text2);">60 Hz</span></div>
-      </div>`;
-    case 'sound': return `
-      <div class="settings-section"><h3>Output Volume</h3>
-        ${settingSlider('Volume',settingsState.volume,'volume')}
-        ${settingToggle('System Sounds','UI interaction sounds','sounds')}
-      </div>
-      <div class="settings-section"><h3>Output Device</h3>
-        <div class="settings-row"><span class="settings-row-label">Built-in Speakers</span><span style="color:var(--green);font-size:12px;">● Active</span></div>
-        <div class="settings-row"><span class="settings-row-label">Headphones</span><span style="color:var(--text3);font-size:12px;">Not connected</span></div>
-      </div>`;
-    case 'network': return `
-      <div class="settings-section"><h3>Wi-Fi</h3>
-        ${settingToggle('Wi-Fi','Connect to wireless networks','wifi')}
-        ${settingsState.wifi?`<div class="settings-row"><span class="settings-row-label">Network</span><span style="color:var(--green);font-size:12px;">PartexNet 5G ●</span></div>`:''}
-      </div>
-      <div class="settings-section"><h3>Connection</h3>
-        <div class="settings-row"><span class="settings-row-label">IP Address</span><span style="font-size:13px;color:var(--text2);">192.168.1.42</span></div>
-        <div class="settings-row"><span class="settings-row-label">DNS</span><span style="font-size:13px;color:var(--text2);">1.1.1.1</span></div>
-      </div>`;
-    case 'bluetooth': return `
-      <div class="settings-section"><h3>Bluetooth</h3>
-        ${settingToggle('Bluetooth','Wireless device connections','bluetooth')}
-      </div>
-      ${settingsState.bluetooth?`<div class="settings-section"><h3>Devices</h3><div class="settings-row"><span class="settings-row-label">AirPods Pro</span><span style="color:var(--text3);font-size:12px;">Not paired</span></div><div class="settings-row"><span class="settings-row-label">Magic Keyboard</span><span style="color:var(--text3);font-size:12px;">Not paired</span></div></div>`:'<div style="padding:20px;color:var(--text2);font-size:13px;">Enable Bluetooth to see devices.</div>'}`;
-    case 'notifications': return `
-      <div class="settings-section"><h3>Notifications</h3>
-        ${settingToggle('Allow Notifications','Show system alerts','notifications')}
-      </div>
-      <div class="settings-section"><h3>Apps</h3>
-        ${['Finder','Terminal','Notes','Browser','Music'].map(a=>`<div class="settings-row"><span class="settings-row-label">${a}</span><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>`).join('')}
-      </div>`;
-    case 'general': return `
-      <div class="settings-section"><h3>General</h3>
-        ${settingToggle('Autosave','Save files automatically','autosave')}
-        ${settingToggle('Spellcheck','Check spelling in text','spellcheck')}
-      </div>
-      <div class="settings-section"><h3>Language & Region</h3>
-        <div class="settings-row"><span class="settings-row-label">Language</span><span style="font-size:13px;color:var(--text2);">English (US)</span></div>
-        <div class="settings-row"><span class="settings-row-label">Time Zone</span><span style="font-size:13px;color:var(--text2);">UTC+0</span></div>
-      </div>`;
-    case 'privacy': return `
-      <div class="settings-section"><h3>Privacy</h3>
-        <div class="settings-row"><div><div class="settings-row-label">Location Services</div><div class="settings-row-sub">Apps using your location</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
-        <div class="settings-row"><div><div class="settings-row-label">Camera</div><div class="settings-row-sub">App access to camera</div></div><div class="toggle on" onclick="this.classList.toggle('on')"></div></div>
-        <div class="settings-row"><div><div class="settings-row-label">Analytics</div><div class="settings-row-sub">Send usage data to Partex</div></div><div class="toggle" onclick="this.classList.toggle('on')"></div></div>
-      </div>`;
-    case 'about': return `
-      <div style="text-align:center;padding:30px;">
-        <div style="font-size:60px;margin-bottom:12px;">💻</div>
-        <div style="font-size:22px;font-weight:700;margin-bottom:4px;">PartexDesktop</div>
-        <div style="font-size:16px;color:var(--text2);margin-bottom:20px;">OS 10.9</div>
-        <div style="background:var(--bg3);border-radius:10px;padding:16px;text-align:left;font-size:13px;display:flex;flex-direction:column;gap:8px;">
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">Build</span><span>10.9.0 (2024.12.01)</span></div>
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">Kernel</span><span>PartexKernel 10.9.0</span></div>
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">Memory</span><span>16 GB</span></div>
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">Processor</span><span>Intel Core i7</span></div>
-          <div style="display:flex;justify-content:space-between;"><span style="color:var(--text2);">Graphics</span><span>PartexGPU 3070</span></div>
-        </div>
-        <div style="margin-top:16px;font-size:12px;color:var(--text3);">PartexDesktop OS 10.9 © 2024 Partex Inc.</div>
-      </div>`;
-    default: return '<div style="padding:20px;color:var(--text2);">Select a category</div>';
+        <div class="settings-section"><h3>Dark Mode</h3>
+          ${toggleSetting('darkMode', 'Dunkles Design')}
+        </div>`;
+      break;
+      
+    case 'network':
+      content.innerHTML = `
+        <div class="settings-section"><h3>WLAN</h3>
+          ${toggleSetting('wifi', 'WLAN ein/aus')}
+          <div style="margin-top:8px;padding:10px 14px;background:var(--bg3);border-radius:10px;">
+            <span style="color:${settings.wifi ? 'var(--green)' : 'var(--red)'};font-size:13px;">
+              ${settings.wifi ? '● Verbunden mit PartexNet' : '○ WLAN deaktiviert'}
+            </span>
+          </div>
+        </div>`;
+      break;
+      
+    case 'bluetooth':
+      content.innerHTML = `
+        <div class="settings-section"><h3>Bluetooth</h3>
+          ${toggleSetting('bluetooth', 'Bluetooth ein/aus')}
+          <div style="margin-top:8px;padding:10px 14px;background:var(--bg3);border-radius:10px;">
+            <span style="color:${settings.bluetooth ? 'var(--green)' : 'var(--text2)'};font-size:13px;">
+              ${settings.bluetooth ? '● Bluetooth aktiviert' : '○ Bluetooth deaktiviert'}
+            </span>
+          </div>
+        </div>`;
+      break;
   }
 }
 
-function settingToggle(label,sub,key){
+function toggleSetting(key, label) {
   return `<div class="settings-row">
-    <div><div class="settings-row-label">${label}</div><div class="settings-row-sub">${sub}</div></div>
-    <div class="toggle${settingsState[key]?' on':''}" onclick="toggleSetting('${key}',this)"></div>
+    <div><div class="settings-row-label">${label}</div></div>
+    <div class="toggle${settings[key] ? ' on' : ''}" onclick="settings.${key}=!settings.${key};this.classList.toggle('on');saveSettings();"></div>
   </div>`;
 }
 
-function settingSlider(label,val,key,min=0,max=100){
-  return `<div class="settings-row" style="flex-direction:column;align-items:flex-start;gap:6px;">
-    <div style="display:flex;justify-content:space-between;width:100%;"><span class="settings-row-label">${label}</span><span id="slider-val-${key}" style="font-size:13px;color:var(--text2);">${val}${max===100?'%':''}</span></div>
-    <input type="range" class="slider-input" style="width:100%;" min="${min}" max="${max}" value="${val}" oninput="settingsState.${key}=parseInt(this.value);document.getElementById('slider-val-${key}').textContent=this.value+'${max===100?'%':''}'"/>
-  </div>`;
+function updateAllText() {
+  document.documentElement.style.setProperty('--text-size', settings.textSize + 'px');
+  document.documentElement.style.setProperty('--title-size', (settings.textSize - 1) + 'px');
+  document.documentElement.style.setProperty('--small-size', (settings.textSize - 3) + 'px');
+  
+  // Update all window bodies
+  document.querySelectorAll('.window-body').forEach(el => {
+    el.style.fontSize = settings.textSize + 'px';
+  });
+  
+  // Update desktop icon labels
+  document.querySelectorAll('.desk-icon-label').forEach(el => {
+    el.style.fontSize = (settings.textSize - 3) + 'px';
+  });
 }
 
-function toggleSetting(key,el){settingsState[key]=!settingsState[key];el.classList.toggle('on',settingsState[key]);applySettings();}
-
-function applySettings(){
-  document.querySelector(':root').style.setProperty('--accent',settingsState.accent||'#7c5cfc');
-  document.querySelector(':root').style.setProperty('--accent2',settingsState.accent||'#9b7dff');
-}
-
-function setAccent(c){settingsState.accent=c;applySettings();renderSettings();}
-function setWallpaper(i){wallpaperIdx=i;document.getElementById('wallpaper').style.background=wallpapers[i];renderSettings();}
-
-// ── ABOUT ────────────────────────────────────
-function openAbout(){
-  const w=createWindow('about','About PartexDesktop',400,360);
-  if(!w)return;
-  const body=document.getElementById('winbody-about');
-  body.innerHTML=`<div id="about-body">
-    <div id="about-logo-big">Partex</div>
-    <div style="font-size:16px;color:var(--text2);margin-bottom:20px;">PartexDesktop OS 10.9</div>
-    <div style="font-size:13px;color:var(--text2);line-height:1.8;">
-      <div>Version 10.9.0 (Build 2024.12.01)</div>
-      <div>Kernel: PartexKernel 10.9.0</div>
-      <div style="margin-top:16px;font-size:11px;color:var(--text3);">Copyright © 2024 Partex Inc.<br>All rights reserved.</div>
+// ── WIDGETS ──
+function addWidget(type) {
+  const id = Date.now();
+  const w = document.createElement('div');
+  w.className = 'widget';
+  w.id = 'widget-' + id;
+  w.style.left = (100 + Math.random() * 300) + 'px';
+  w.style.top = (100 + Math.random() * 200) + 'px';
+  
+  let content = '';
+  
+  switch(type) {
+    case 'weather':
+      w.style.width = '220px';
+      content = `<div id="wweather-${id}" style="text-align:center;">
+        <div style="font-size:40px;">⏳</div>
+        <div style="font-size:13px;">Lade Wetter...</div>
+      </div>`;
+      setTimeout(() => fetchWeather(id), 100);
+      break;
+      
+    case 'system':
+      w.style.width = '200px';
+      content = `<div id="wsys-${id}">
+        <div style="margin-bottom:8px;">
+          <div style="font-size:11px;color:var(--text2);margin-bottom:3px;">CPU</div>
+          <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;">
+            <div id="wsys-cpu-${id}" style="width:${Math.random()*30+10}%;height:100%;background:var(--green);border-radius:2px;transition:width 0.5s;"></div>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:11px;color:var(--text2);margin-bottom:3px;">RAM</div>
+          <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;">
+            <div id="wsys-ram-${id}" style="width:${Math.random()*20+40}%;height:100%;background:var(--blue);border-radius:2px;transition:width 0.5s;"></div>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:8px;" id="wsys-text-${id}">${navigator.hardwareConcurrency || 4} Kerne · ${Math.round((navigator.deviceMemory || 8))} GB RAM</div>
+      </div>`;
+      setInterval(() => {
+        const cpuEl = document.getElementById('wsys-cpu-' + id);
+        const ramEl = document.getElementById('wsys-ram-' + id);
+        if (cpuEl) cpuEl.style.width = (Math.random() * 30 + 5) + '%';
+        if (ramEl) ramEl.style.width = (Math.random() * 20 + 50) + '%';
+      }, 2000);
+      break;
+      
+    case 'clock':
+      w.style.width = '180px';
+      content = `<div style="text-align:center;">
+        <div id="wclock-${id}" style="font-size:32px;font-weight:300;"></div>
+        <div id="wdate-${id}" style="font-size:12px;color:var(--text2);margin-top:4px;"></div>
+      </div>`;
+      setInterval(() => {
+        const c = document.getElementById('wclock-' + id);
+        const d = document.getElementById('wdate-' + id);
+        if (c && d) {
+          const n = new Date();
+          c.textContent = n.toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
+          d.textContent = n.toLocaleDateString('de-DE', {weekday:'long',day:'numeric',month:'long'});
+        }
+      }, 1000);
+      break;
+  }
+  
+  w.innerHTML = `
+    <div class="widget-header" onmousedown="widgetDragStart(event, ${id})">
+      <div class="widget-title">${type}</div>
+      <div class="widget-remove" onclick="this.closest('.widget').remove()">×</div>
     </div>
-    <div style="margin-top:20px;display:flex;gap:10px;justify-content:center;">
-      <button onclick="showNotif('PartexDesktop','Checking for updates…')" style="background:var(--accent);border:none;color:#fff;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;">Software Update</button>
-      <button onclick="closeWindow('about')" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;">Close</button>
-    </div>
-  </div>`;
+    ${content}`;
+  
+  document.getElementById('widgets-layer').appendChild(w);
 }
 
-// ══════════════════════════════════════════════
-// SEARCH / SPOTLIGHT
-// ══════════════════════════════════════════════
-const allApps=[
-  {name:'Finder',desc:'File browser',icon:'🗂️',id:'finder'},
-  {name:'Browser',desc:'Browse the web',icon:'🌐',id:'browser'},
-  {name:'Terminal',desc:'Command line',icon:'💻',id:'terminal'},
-  {name:'Notes',desc:'Write notes',icon:'📝',id:'notes'},
-  {name:'Calculator',desc:'Do math',icon:'🔢',id:'calculator'},
-  {name:'Music',desc:'Play music',icon:'🎵',id:'music'},
-  {name:'Settings',desc:'System preferences',icon:'⚙️',id:'settings'},
-];
+function widgetDragStart(e, id) {
+  e.preventDefault();
+  const w = document.getElementById('widget-' + id);
+  if (!w) return;
+  const rect = w.getBoundingClientRect();
+  dragState = { id, offX: e.clientX - rect.left, offY: e.clientY - rect.top, type: 'widget' };
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+}
 
-function openSearch(){
-  closeMenus();
-  document.getElementById('search-overlay').classList.add('open');
-  setTimeout(()=>document.getElementById('search-input').focus(),50);
+async function fetchWeather(widgetId) {
+  try {
+    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true');
+    const data = await response.json();
+    const weather = data.current_weather;
+    const el = document.getElementById('wweather-' + widgetId);
+    if (el) {
+      const weatherIcons = { 0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 51: '🌧️', 61: '🌧️', 71: '🌨️', 95: '⛈️' };
+      const icon = weatherIcons[weather.weathercode] || '🌡️';
+      el.innerHTML = `
+        <div style="text-align:center;">
+          <div style="font-size:48px;">${icon}</div>
+          <div style="font-size:28px;font-weight:300;">${weather.temperature}°C</div>
+          <div style="font-size:12px;color:var(--text2);">Wind: ${weather.windspeed} km/h</div>
+          <div style="font-size:10px;color:var(--text3);margin-top:4px;">Live aus Berlin</div>
+        </div>`;
+    }
+  } catch(e) {
+    const el = document.getElementById('wweather-' + widgetId);
+    if (el) el.innerHTML = `<div style="text-align:center;color:var(--red);">Wetter nicht verfügbar</div>`;
+  }
+}
+
+// =============================================
+// UTILITY
+// =============================================
+function showNotif(title, body) {
+  const area = document.getElementById('notif-area');
+  const n = document.createElement('div');
+  n.style.cssText = 'background:rgba(40,40,40,0.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;min-width:280px;margin-bottom:8px;animation:slideIn 0.3s ease;pointer-events:all;';
+  n.innerHTML = `<div style="font-size:13px;font-weight:600;">${title}</div><div style="font-size:12px;color:var(--text2);">${body}</div>`;
+  n.addEventListener('click', () => n.remove());
+  area.appendChild(n);
+  setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 400); }, 4000);
+}
+
+function toggleWidgetPanel() {
+  const panel = document.getElementById('widget-panel');
+  panel.style.display = panel.style.display === 'none' || !panel.style.display ? 'block' : 'none';
+}
+
+function openSearch() {
+  const overlay = document.getElementById('search-overlay');
+  overlay.style.display = 'flex';
+  document.getElementById('search-input').focus();
   doSearch('');
 }
 
-function closeSearch(e){
-  if(e&&e.target!==document.getElementById('search-overlay'))return;
-  document.getElementById('search-overlay').classList.remove('open');
+function closeSearch(e) {
+  if (e && e.target !== document.getElementById('search-overlay')) return;
+  document.getElementById('search-overlay').style.display = 'none';
 }
 
-function doSearch(q){
-  const res=document.getElementById('search-results');
-  const query=q.toLowerCase();
-  const matches=allApps.filter(a=>!q||a.name.toLowerCase().includes(query)||a.desc.toLowerCase().includes(query));
-  if(!matches.length&&q){res.innerHTML=`<div style="padding:16px 20px;color:var(--text2);font-size:13px;">No results for "${q}"</div>`;return;}
-  res.innerHTML=matches.map((a,i)=>`
-    <div class="search-result${i===0?' active-result':''}" onclick="launchSearchResult('${a.id}')">
-      <div class="search-result-icon">${a.icon}</div>
-      <div class="search-result-info">
-        <div class="search-result-name">${a.name}</div>
-        <div class="search-result-desc">${a.desc}</div>
-      </div>
+function doSearch(q) {
+  const res = document.getElementById('search-results');
+  const apps = [
+    { name: 'Taschenrechner', icon: '🔢', id: 'calculator' },
+    { name: 'Kalender', icon: '📅', id: 'calendar' },
+    { name: 'Notizen', icon: '📝', id: 'notes' },
+    { name: 'Einstellungen', icon: '⚙️', id: 'settings' },
+    { name: 'Finder', icon: '🗂️', id: 'finder' },
+  ];
+  const matches = apps.filter(a => !q || a.name.toLowerCase().includes(q.toLowerCase()));
+  res.innerHTML = matches.map(a => `
+    <div onclick="openApp('${a.id}');closeSearch({target:null});" style="padding:10px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
+      <span style="font-size:24px;">${a.icon}</span>
+      <span>${a.name}</span>
     </div>`).join('');
 }
 
-function searchKeyDown(e){
-  if(e.key==='Escape')closeSearch({target:document.getElementById('search-overlay')});
-  if(e.key==='Enter'){const first=document.querySelector('.search-result');if(first)first.click();}
-}
-
-function launchSearchResult(id){
-  document.getElementById('search-overlay').classList.remove('open');
-  openApp(id);
-}
-
-// ══════════════════════════════════════════════
-// WIDGETS
-// ══════════════════════════════════════════════
-let widgetId=0;
-
-function addWidget(type){
-  const id=++widgetId;
-  const w=document.createElement('div');
-  w.className='widget';
-  w.id='widget-'+id;
-  const startX=100+Math.random()*300;
-  const startY=100+Math.random()*200;
-  w.style.left=startX+'px';w.style.top=startY+'px';
-  let content='';
-  switch(type){
-    case 'clock':
-      w.style.width='180px';
-      content=`<div id="wclock-${id}" style="font-size:32px;font-weight:200;text-align:center;"></div>
-        <div id="wdate-${id}" style="font-size:12px;color:var(--text2);text-align:center;margin-top:4px;"></div>`;
-      break;
-    case 'weather':
-      w.style.width='200px';
-      content=`<div style="text-align:center;padding:4px 0;">
-        <div style="font-size:40px;">⛅</div>
-        <div style="font-size:28px;font-weight:200;margin:4px 0;">18°C</div>
-        <div style="font-size:12px;color:var(--text2);">Partly cloudy · Wildeshausen</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:6px;">H: 21° L: 12°</div>
-      </div>`;
-      break;
-    case 'system':
-      w.style.width='220px';
-      content=`<div id="wsys-${id}"></div>`;
-      break;
-    case 'notes-quick':
-      w.style.width='200px';w.style.height='150px';
-      content=`<textarea placeholder="Quick note…" style="width:100%;height:100px;background:none;border:none;outline:none;color:var(--text);font-size:13px;resize:none;font-family:inherit;line-height:1.6;"></textarea>`;
-      break;
-    case 'battery':
-      w.style.width='180px';
-      content=`<div style="display:flex;align-items:center;gap:12px;">
-        <div style="font-size:32px;">🔋</div>
-        <div><div style="font-size:22px;font-weight:300;">87%</div><div style="font-size:11px;color:var(--text2);">Plugged in</div></div>
-      </div>
-      <div style="margin-top:10px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;"><div style="width:87%;height:100%;background:var(--green);border-radius:2px;"></div></div>`;
-      break;
-    case 'calendar':
-      w.style.width='220px';
-      const now=new Date();
-      const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      content=`<div style="text-align:center;">
-        <div style="font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">${months[now.getMonth()]} ${now.getFullYear()}</div>
-        <div style="font-size:42px;font-weight:200;line-height:1;">${now.getDate()}</div>
-        <div style="font-size:14px;color:var(--accent);margin-top:2px;">${days[now.getDay()]}</div>
-      </div>`;
-      break;
+function searchKeyDown(e) {
+  if (e.key === 'Escape') closeSearch({ target: null });
+  if (e.key === 'Enter') {
+    const first = document.querySelector('#search-results div');
+    if (first) first.click();
   }
-  w.innerHTML=`
-    <div class="widget-header">
-      <div class="widget-title">${type==='notes-quick'?'Quick Note':type==='system'?'System Monitor':type.charAt(0).toUpperCase()+type.slice(1)}</div>
-      <div class="widget-remove" onclick="removeWidget(${id})">×</div>
-    </div>
-    ${content}
-    <div class="widget-resize" onmousedown="wResizeDown(event,${id})">⌟</div>`;
-  document.getElementById('widgets-layer').appendChild(w);
-  w.querySelector('.widget-header').addEventListener('mousedown',e=>wDragDown(e,id));
-  // Live clock
-  if(type==='clock'){
-    function tickWidget(){
-      const c=document.getElementById('wclock-'+id);
-      const d=document.getElementById('wdate-'+id);
-      if(!c){clearInterval(wiv);return;}
-      const n=new Date();
-      c.textContent=n.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-      d.textContent=n.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-    }tickWidget();
-    const wiv=setInterval(tickWidget,1000);
-  }
-  if(type==='system'){
-    function tickSys(){
-      const s=document.getElementById('wsys-'+id);
-      if(!s){clearInterval(siv);return;}
-      const cpu=Math.floor(Math.random()*30+5);
-      const ram=Math.floor(Math.random()*20+50);
-      s.innerHTML=`
-        <div style="margin-bottom:8px;">
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:3px;"><span>CPU</span><span>${cpu}%</span></div>
-          <div style="height:3px;background:rgba(255,255,255,0.1);border-radius:2px;"><div style="width:${cpu}%;height:100%;background:${cpu>70?'var(--red)':cpu>40?'var(--orange)':'var(--green)'};border-radius:2px;transition:width 0.5s;"></div></div>
-        </div>
-        <div>
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:3px;"><span>RAM</span><span>${ram}%</span></div>
-          <div style="height:3px;background:rgba(255,255,255,0.1);border-radius:2px;"><div style="width:${ram}%;height:100%;background:${ram>80?'var(--red)':ram>60?'var(--orange)':'var(--blue)'};border-radius:2px;transition:width 0.5s;"></div></div>
-        </div>`;
-    }tickSys();
-    const siv=setInterval(tickSys,2000);
-  }
-  showNotif('Widget Added',`${type.charAt(0).toUpperCase()+type.slice(1)} widget added to desktop.`);
 }
 
-function removeWidget(id){
-  const w=document.getElementById('widget-'+id);
-  if(w)w.remove();
+function changeWallpaper() {
+  wallpaperIdx = (wallpaperIdx + 1) % wallpapers.length;
+  settings.wallpaperIdx = wallpaperIdx;
+  document.getElementById('wallpaper').style.background = wallpapers[wallpaperIdx];
+  saveSettings();
+  showNotif('Hintergrund', 'Wallpaper geändert');
 }
 
-function wDragDown(e,id){
+function showContextMenu(e) {
   e.preventDefault();
-  const w=document.getElementById('widget-'+id);
-  const r=w.getBoundingClientRect();
-  dragState={id,offX:e.clientX-r.left,offY:e.clientY-r.top,type:'widget'};
-  document.addEventListener('mousemove',onMouseMove);
-  document.addEventListener('mouseup',onMouseUp);
-}
-
-function wResizeDown(e,id){
-  e.preventDefault();e.stopPropagation();
-  const w=document.getElementById('widget-'+id);
-  dragState={id,sx:e.clientX,sy:e.clientY,sw:w.offsetWidth,sh:w.offsetHeight,type:'wresz'};
-  document.addEventListener('mousemove',onMouseMove);
-  document.addEventListener('mouseup',onMouseUp);
-}
-
-function toggleWidgetPanel(){
-  document.getElementById('widget-panel').classList.toggle('open');
-}
-
-// ══════════════════════════════════════════════
-// NOTIFICATIONS
-// ══════════════════════════════════════════════
-function showNotif(title,body){
-  const area=document.getElementById('notif-area');
-  const n=document.createElement('div');
-  n.className='notif';
-  n.innerHTML=`<div class="notif-title">${title}</div><div class="notif-body">${body}</div>`;
-  n.addEventListener('click',()=>n.remove());
-  area.appendChild(n);
-  setTimeout(()=>{n.style.transition='opacity 0.4s';n.style.opacity='0';setTimeout(()=>n.remove(),400);},4000);
-}
-
-// ══════════════════════════════════════════════
-// PARTEX MENU
-// ══════════════════════════════════════════════
-function togglePartexMenu(){
-  document.getElementById('partex-menu').classList.toggle('open');
-}
-
-function closeMenus(){
-  document.getElementById('partex-menu').classList.remove('open');
-  document.getElementById('context-menu').classList.remove('open');
-}
-
-// ══════════════════════════════════════════════
-// SYSTEM ACTIONS
-// ══════════════════════════════════════════════
-function changeWallpaper(){
-  wallpaperIdx=(wallpaperIdx+1)%wallpapers.length;
-  document.getElementById('wallpaper').style.background=wallpapers[wallpaperIdx];
-  showNotif('Wallpaper Changed','Click to cycle through wallpapers.');
-}
-
-function lockScreen(){
-  closeMenus();
-  const lock=document.createElement('div');
-  lock.style.cssText='position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;';
-  lock.innerHTML=`<div style="font-size:64px;margin-bottom:12px;">🔒</div>
-    <div style="font-size:18px;color:#fff;margin-bottom:6px;">PartexDesktop OS 10.9</div>
-    <div style="font-size:13px;color:#555;margin-top:8px;">Click or press any key to unlock</div>`;
-  document.body.appendChild(lock);
-  const unlock=()=>lock.remove();
-  lock.addEventListener('click',unlock);
-  document.addEventListener('keydown',unlock,{once:true});
-}
-
-function doSleep(){
-  closeMenus();
-  const s=document.createElement('div');
-  s.style.cssText='position:fixed;inset:0;background:#000;z-index:99999;display:flex;align-items:center;justify-content:center;cursor:pointer;';
-  s.innerHTML='<div style="color:#222;font-size:14px;">Display off — click to wake</div>';
-  document.body.appendChild(s);
-  s.addEventListener('click',()=>s.remove());
-}
-
-function doRestart(){
-  closeMenus();
-  if(!confirm('Restart PartexDesktop OS 10.9?'))return;
-  Object.keys(openWindows).forEach(id=>closeWindow(id));
-  const r=document.createElement('div');
-  r.style.cssText='position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
-  r.innerHTML=`<div style="color:#fff;font-size:14px;margin-bottom:20px;">Restarting…</div>
-    <div style="width:200px;height:2px;background:#222;border-radius:1px;overflow:hidden;">
-      <div id="restart-bar" style="height:100%;background:#7c5cfc;width:0;transition:width 0.3s;"></div>
-    </div>`;
-  document.body.appendChild(r);
-  let p=0;const iv=setInterval(()=>{
-    p+=8;document.getElementById('restart-bar').style.width=p+'%';
-    if(p>=100){clearInterval(iv);r.remove();location.reload();}
-  },150);
-}
-
-function doShutdown(){
-  closeMenus();
-  if(!confirm('Shut down PartexDesktop OS 10.9?'))return;
-  document.body.innerHTML='<div style="background:#000;height:100vh;display:flex;align-items:center;justify-content:center;color:#333;font-size:13px;">System shut down. Reload the page to restart.</div>';
-}
-
-function doLogout(){
-  closeMenus();
-  lockScreen();
-}
-
-// ══════════════════════════════════════════════
-// CONTEXT MENU
-// ══════════════════════════════════════════════
-function showContextMenu(e){
-  e.preventDefault();
-  closeMenus();
-  const cm=document.getElementById('context-menu');
-  cm.style.left=Math.min(e.clientX,window.innerWidth-200)+'px';
-  cm.style.top=Math.min(e.clientY,window.innerHeight-200)+'px';
+  const cm = document.getElementById('context-menu');
+  cm.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
+  cm.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px';
   cm.classList.add('open');
 }
 
-// ══════════════════════════════════════════════
-// KEYBOARD SHORTCUTS
-// ══════════════════════════════════════════════
-document.addEventListener('keydown',e=>{
-  if(e.metaKey||e.ctrlKey){
-    switch(e.key){
-      case ' ': e.preventDefault();openSearch(); break;
-      case 'f': e.preventDefault();openApp('finder'); break;
-      case 't': e.preventDefault();openApp('terminal'); break;
-      case 'n': e.preventDefault();openApp('notes'); break;
-      case ',': e.preventDefault();openApp('settings'); break;
-    }
-  }
-  if(e.key==='Escape'){
-    closeSearch({target:document.getElementById('search-overlay')});
-    closeMenus();
-    document.querySelectorAll('.desk-icon').forEach(i=>i.classList.remove('selected'));
+function closeMenus() {
+  document.getElementById('context-menu').classList.remove('open');
+  const pm = document.getElementById('partex-menu');
+  if (pm) pm.style.display = 'none';
+}
+
+function togglePartexMenu() {
+  const pm = document.getElementById('partex-menu');
+  pm.style.display = pm.style.display === 'block' ? 'none' : 'block';
+}
+
+function doRestart() {
+  if (!confirm('Neustarten?')) return;
+  location.reload();
+}
+
+// Click outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#context-menu')) document.getElementById('context-menu').classList.remove('open');
+  if (!e.target.closest('#partex-menu') && !e.target.closest('#menubar-logo')) {
+    document.getElementById('partex-menu').style.display = 'none';
   }
 });
 
-// Click outside closes menus
-document.addEventListener('click',e=>{
-  if(!e.target.closest('#partex-menu')&&!e.target.closest('#menubar-logo'))
-    document.getElementById('partex-menu').classList.remove('open');
-  if(!e.target.closest('#context-menu'))
-    document.getElementById('context-menu').classList.remove('open');
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === ' ') {
+    e.preventDefault();
+    openSearch();
+  }
+  if (e.key === 'Escape') {
+    closeSearch({ target: null });
+    closeMenus();
+  }
 });
+
+// =============================================
+// INIT
+// =============================================
+function initOS() {
+  applyAllSettings();
+  setupDeskIcons();
+  updateClock();
+  showNotif('PartexDesktop OS 10.9', 'System bereit. Alle Apps funktionieren! 🚀');
+}
+
+initOS();
 </script>
 </body>
 </html>
