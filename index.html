@@ -3,1565 +3,2425 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PartexDesktop OS 10.9</title>
+<title>PartexDesktop OS 10.9.1</title>
 <style>
-:root {
-  --bg: #0d0d0d;
-  --bg2: #1a1a1a;
-  --bg3: #242424;
-  --bg4: #2e2e2e;
-  --accent: #7c5cfc;
-  --accent2: #9b7dff;
-  --text: #f0f0f0;
-  --text2: #a0a0a0;
-  --text3: #606060;
-  --border: #333;
-  --border2: #444;
-  --radius: 10px;
-  --radius2: 14px;
-  --dock-bg: rgba(255,255,255,0.08);
-  --win-bg: #1a1a1a;
-  --text-size: 14px;
-  --title-size: 13px;
-  --small-size: 11px;
-  --purple: #7c5cfc;
-  --blue: #4a9eff;
-  --green: #30d158;
-  --red: #ff453a;
-  --orange: #ff9f0a;
-  --pink: #ff2d55;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  user-select: none;
-}
-
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', system-ui, sans-serif;
-  height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  font-size: var(--text-size);
-}
-
-#menubar {
-  height: 28px;
-  background: rgba(0,0,0,0.75);
-  backdrop-filter: blur(20px);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  gap: 6px;
-  flex-shrink: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  z-index: 9999;
-  position: relative;
-}
-
-#menubar-logo {
-  font-size: var(--title-size);
-  font-weight: 700;
-  background: linear-gradient(135deg, #7c5cfc, #4a9eff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  cursor: pointer;
-  padding: 2px 8px;
-  border-radius: 5px;
-}
-
-.menu-item {
-  font-size: var(--title-size);
-  color: rgba(255,255,255,0.85);
-  padding: 2px 8px;
-  border-radius: 5px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.menu-item:hover {
-  background: rgba(255,255,255,0.12);
-}
-
-#menubar-right {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-#menubar-clock {
-  font-size: var(--title-size);
-  color: rgba(255,255,255,0.85);
-  font-weight: 400;
-}
-
-.mb-icon {
-  color: rgba(255,255,255,0.8);
-  font-size: 14px;
-  padding: 2px 6px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-#desktop {
-  flex: 1;
-  position: relative;
-  overflow: hidden;
-}
-
-#wallpaper {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 30% 60%, #1a0a3e 0%, #0a0a1a 50%, #000 100%);
-  transition: background 0.5s ease;
-}
-
-#wallpaper::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 70% 30%, rgba(124,92,252,0.15) 0%, transparent 60%);
-}
-
-#desktop-icons {
-  position: absolute;
-  inset: 0;
-  padding: 20px;
-}
-
-.desk-icon {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 10px;
-  width: 76px;
-}
-
-.desk-icon:hover {
-  background: rgba(255,255,255,0.08);
-}
-
-.desk-icon.selected {
-  background: rgba(124,92,252,0.3);
-}
-
-.desk-icon-img {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 24px;
-  flex-shrink: 0;
-}
-
-.desk-icon-label {
-  font-size: var(--small-size);
-  color: var(--text);
-  text-align: center;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-  word-break: break-word;
-  line-height: 1.3;
-}
-
-.window {
-  position: absolute;
-  background: var(--win-bg);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius2);
-  box-shadow: 0 25px 80px rgba(0,0,0,0.7);
-  min-width: 280px;
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.window.active {
-  border-color: rgba(255,255,255,0.15);
-  z-index: 1000;
-}
-
-.window-titlebar {
-  height: 38px;
-  background: rgba(255,255,255,0.04);
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  gap: 8px;
-  cursor: move;
-  flex-shrink: 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.win-btn {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.win-btn.close { background: #ff5f57; }
-.win-btn.min { background: #febc2e; }
-.win-btn.max { background: #28c840; }
-.win-btn:hover { filter: brightness(1.2); }
-
-.window-title {
-  flex: 1;
-  text-align: center;
-  font-size: var(--title-size);
-  color: var(--text2);
-  font-weight: 500;
-}
-
-.window-body {
-  flex: 1;
-  overflow: auto;
-  position: relative;
-  font-size: var(--text-size);
-}
-
-.resize-handle {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 16px;
-  height: 16px;
-  cursor: se-resize;
-}
-
-#dock {
-  position: absolute;
-  bottom: 12px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(30px);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 18px;
-  padding: 8px 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  z-index: 9000;
-}
-
-.dock-item {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 26px;
-  transition: transform 0.15s ease;
-  position: relative;
-}
-
-.dock-item:hover {
-  transform: scale(1.25) translateY(-8px);
-}
-
-.dock-item-tooltip {
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0,0,0,0.8);
-  color: #fff;
-  font-size: var(--small-size);
-  padding: 4px 8px;
-  border-radius: 6px;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s;
-  margin-bottom: 6px;
-}
-
-.dock-item:hover .dock-item-tooltip {
-  opacity: 1;
-}
-
-#widgets-layer {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.widget {
-  position: absolute;
-  pointer-events: all;
-  background: rgba(30,30,30,0.85);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: var(--radius2);
-  padding: 14px;
-  color: var(--text);
-  min-width: 160px;
-  min-height: 80px;
-}
-
-.widget-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-  cursor: move;
-}
-
-.widget-title {
-  font-size: var(--small-size);
-  font-weight: 600;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.widget-remove {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 10px;
-  color: var(--text2);
-}
-
-.widget-remove:hover {
-  background: var(--red);
-}
-
-.toggle {
-  width: 44px;
-  height: 26px;
-  background: var(--border2);
-  border-radius: 13px;
-  cursor: pointer;
-  position: relative;
-  transition: background 0.2s;
-}
-
-.toggle.on {
-  background: var(--green);
-}
-
-.toggle::after {
-  content: '';
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform 0.2s;
-}
-
-.toggle.on::after {
-  transform: translateX(18px);
-}
-
-#context-menu {
-  position: absolute;
-  background: rgba(30,30,30,0.95);
-  backdrop-filter: blur(20px);
-  border: 1px solid var(--border2);
-  border-radius: 12px;
-  padding: 6px;
-  min-width: 180px;
-  z-index: 10001;
-  display: none;
-  box-shadow: 0 15px 50px rgba(0,0,0,0.6);
-}
-
-#context-menu.open {
-  display: block;
-}
-
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-
-/* CALCULATOR - EIGENES DESIGN */
-#calc-body {
-  background: #1a1a2e;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.calc-display {
-  background: #0f0f23;
-  padding: 20px 16px;
-  text-align: right;
-  border-bottom: 1px solid rgba(124,92,252,0.2);
-}
-
-.calc-expression {
-  font-size: 13px;
-  color: var(--text2);
-  min-height: 20px;
-  word-break: break-all;
-}
-
-.calc-result {
-  font-size: 38px;
-  font-weight: 300;
-  color: #fff;
-  margin-top: 4px;
-}
-
-.calc-keys {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  flex: 1;
-  background: #16213e;
-}
-
-.calc-key {
-  background: #1a1a2e;
-  border: none;
-  color: #e0e0e0;
-  font-size: 18px;
-  font-weight: 400;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.1s;
-}
-
-.calc-key:hover {
-  background: #252545;
-}
-
-.calc-key:active {
-  background: #7c5cfc;
-}
-
-.calc-key.func {
-  color: #7c5cfc;
-}
-
-.calc-key.op {
-  color: #ff9f0a;
-  font-weight: 500;
-}
-
-.calc-key.equals {
-  background: #7c5cfc;
-  color: #fff;
-}
-
-.calc-key.equals:hover {
-  background: #9b7dff;
-}
-
-/* SETTINGS */
-.settings-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 14px;
-  background: var(--bg3);
-  border-radius: 10px;
-  margin-bottom: 2px;
-}
-
-.settings-row-label {
-  font-size: var(--text-size);
-  color: var(--text);
-}
-
-.settings-row-sub {
-  font-size: var(--small-size);
-  color: var(--text2);
-  margin-top: 2px;
-}
-
-.settings-section h3 {
-  font-size: var(--small-size);
-  font-weight: 600;
-  color: var(--text2);
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 10px;
-}
-
-/* KALENDER */
-.calendar-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 16px;
-  background: rgba(124,92,252,0.1);
-}
-
-.calendar-nav {
-  cursor: pointer;
-  padding: 4px 10px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.05);
-  color: var(--text);
-  font-size: 16px;
-}
-
-.calendar-nav:hover {
-  background: rgba(255,255,255,0.12);
-}
-
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  background: var(--border);
-}
-
-.calendar-cell {
-  aspect-ratio: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg2);
-  font-size: 13px;
-  cursor: pointer;
-  color: var(--text);
-}
-
-.calendar-cell:hover {
-  background: rgba(124,92,252,0.2);
-}
-
-.calendar-cell.today {
-  background: var(--accent);
-  color: #fff;
-  font-weight: 600;
-}
-
-.calendar-cell.other-month {
-  color: var(--text3);
-}
-
-.calendar-cell-header {
-  background: var(--bg3);
-  color: var(--text2);
-  font-weight: 600;
-  font-size: 11px;
-  text-transform: uppercase;
-  padding: 8px 4px;
-}
+*{margin:0;padding:0;box-sizing:border-box;user-select:none;}
+:root{
+  --bg:#0f0f10;--bg2:#1a1a1c;--bg3:#232326;--bg4:#2c2c30;
+  --accent:#6c4ff8;--accent-h:255;--accent-s:92%;--accent-l:64%;
+  --text:#efefef;--text2:#9a9aaa;--text3:#555560;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --radius:9px;--radius2:13px;--radius3:18px;
+  --win-bg:#18181b;--win-border:rgba(255,255,255,0.09);
+  --shadow:0 24px 80px rgba(0,0,0,0.75);
+  --green:#2cc06b;--red:#f04055;--orange:#f0960a;--blue:#3a8ef5;--yellow:#f5c842;
+  --sidebar-w:160px;
+  --font:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',system-ui,sans-serif;
+  --mono:'SF Mono','Cascadia Code','Fira Code',monospace;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font);height:100vh;overflow:hidden;display:flex;flex-direction:column;font-size:13px;}
+
+/* ─── SCROLLBAR ─── */
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:4px;}
+
+/* ─── MENUBAR ─── */
+#menubar{height:26px;background:rgba(12,12,14,0.88);backdrop-filter:blur(24px) saturate(180%);display:flex;align-items:center;padding:0 10px;gap:4px;flex-shrink:0;border-bottom:1px solid rgba(255,255,255,0.05);z-index:9999;position:relative;}
+#mb-logo{font-size:12px;font-weight:700;color:var(--accent);padding:2px 8px;border-radius:5px;cursor:pointer;letter-spacing:.3px;}
+#mb-logo:hover{background:rgba(255,255,255,0.08);}
+.mb-item{font-size:12px;color:rgba(255,255,255,0.8);padding:2px 7px;border-radius:5px;cursor:pointer;white-space:nowrap;}
+.mb-item:hover{background:rgba(255,255,255,0.1);}
+#mb-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+#mb-clock{font-size:12px;color:rgba(255,255,255,0.75);font-weight:500;letter-spacing:.2px;}
+.mb-status{font-size:13px;cursor:pointer;padding:0 4px;border-radius:4px;color:rgba(255,255,255,0.7);}
+.mb-status:hover{background:rgba(255,255,255,0.1);}
+
+/* ─── PARTEX MENU ─── */
+#partex-menu{position:absolute;top:28px;left:6px;background:rgba(22,22,26,0.97);backdrop-filter:blur(30px);border:1px solid var(--border2);border-radius:var(--radius2);padding:5px;min-width:210px;z-index:10000;display:none;box-shadow:var(--shadow);}
+#partex-menu.open{display:block;}
+.pm-item{padding:6px 12px;border-radius:7px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:9px;color:var(--text);}
+.pm-item:hover{background:var(--accent);}
+.pm-sep{height:1px;background:var(--border);margin:4px 0;}
+
+/* ─── DESKTOP ─── */
+#desktop{flex:1;position:relative;overflow:hidden;}
+#wallpaper{position:absolute;inset:0;transition:background 0.6s ease;}
+
+/* ─── WINDOWS ─── */
+.window{position:absolute;background:var(--win-bg);border:1px solid var(--win-border);border-radius:var(--radius2);box-shadow:var(--shadow);min-width:280px;min-height:180px;display:flex;flex-direction:column;overflow:hidden;transition:opacity .15s;}
+.window.active{border-color:rgba(255,255,255,0.13);box-shadow:0 32px 100px rgba(0,0,0,0.85);}
+.window.minimized{display:none;}
+.titlebar{height:36px;background:rgba(255,255,255,0.03);display:flex;align-items:center;padding:0 11px;gap:7px;cursor:move;flex-shrink:0;border-bottom:1px solid var(--border);}
+.tb-btns{display:flex;gap:6px;}
+.tb-btn{width:11px;height:11px;border-radius:50%;cursor:pointer;flex-shrink:0;border:none;transition:filter .1s;}
+.tb-btn.cl{background:#e8584a;}
+.tb-btn.mn{background:#e8b84a;}
+.tb-btn.mx{background:#28b540;}
+.tb-btn:hover{filter:brightness(1.25);}
+.win-title{flex:1;text-align:center;font-size:12px;color:var(--text2);font-weight:500;letter-spacing:.2px;}
+.winbody{flex:1;overflow:auto;position:relative;}
+.resize-h{position:absolute;bottom:0;right:0;width:14px;height:14px;cursor:se-resize;z-index:10;}
+
+/* ─── DOCK ─── */
+#dock{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.07);backdrop-filter:blur(28px);border:1px solid rgba(255,255,255,0.1);border-radius:17px;padding:7px 10px;display:flex;align-items:center;gap:5px;z-index:9000;}
+.dock-app{width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:24px;transition:transform .15s,filter .15s;position:relative;}
+.dock-app:hover{transform:scale(1.22) translateY(-7px);}
+.dock-app .tip{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:rgba(10,10,14,0.9);color:#fff;font-size:11px;padding:3px 8px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;border:1px solid var(--border2);}
+.dock-app:hover .tip{opacity:1;}
+.dock-dot{width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,0.45);position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);}
+.dock-sep{width:1px;height:36px;background:rgba(255,255,255,0.12);margin:0 3px;}
+
+/* ─── WIDGETS ─── */
+#widget-layer{position:absolute;inset:0;pointer-events:none;}
+.widget{position:absolute;pointer-events:all;background:rgba(22,22,28,0.82);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.09);border-radius:var(--radius2);padding:12px;color:var(--text);}
+.w-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;cursor:move;}
+.w-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;}
+.w-close{width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:10px;color:var(--text3);border:none;}
+.w-close:hover{background:var(--red);color:#fff;}
+.w-resize{position:absolute;bottom:3px;right:4px;color:var(--text3);cursor:se-resize;font-size:11px;opacity:.5;}
+
+/* ─── SEARCH ─── */
+#search-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.45);backdrop-filter:blur(12px);z-index:9500;display:none;align-items:flex-start;justify-content:center;padding-top:110px;}
+#search-overlay.open{display:flex;}
+#search-box{background:rgba(28,28,34,0.97);backdrop-filter:blur(30px);border:1px solid var(--border2);border-radius:var(--radius3);width:560px;overflow:hidden;box-shadow:0 30px 90px rgba(0,0,0,0.8);}
+#search-input{width:100%;background:none;border:none;outline:none;color:var(--text);font-size:18px;padding:15px 18px;font-family:var(--font);}
+#search-input::placeholder{color:var(--text3);}
+#search-res{border-top:1px solid var(--border);max-height:380px;overflow-y:auto;}
+.s-result{padding:9px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;border-radius:8px;margin:3px 6px;}
+.s-result:hover,.s-result.s-active{background:var(--accent);}
+.s-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.s-name{font-size:13px;font-weight:500;}
+.s-desc{font-size:11px;color:rgba(255,255,255,0.55);margin-top:1px;}
+
+/* ─── WIDGET PANEL ─── */
+#wpanel{position:absolute;right:0;top:26px;bottom:0;width:260px;background:rgba(16,16,20,0.97);backdrop-filter:blur(24px);border-left:1px solid var(--border);z-index:8000;display:none;flex-direction:column;overflow-y:auto;padding:14px;}
+#wpanel.open{display:flex;}
+.wt{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:7px;cursor:pointer;display:flex;align-items:center;gap:10px;}
+.wt:hover{border-color:var(--accent);background:rgba(108,79,248,0.1);}
+.wt-icon{font-size:20px;width:36px;text-align:center;}
+.wt-name{font-size:12px;font-weight:600;}
+.wt-desc{font-size:11px;color:var(--text2);margin-top:1px;}
+
+/* ─── CONTEXT MENU ─── */
+#ctx{position:absolute;background:rgba(20,20,26,0.97);backdrop-filter:blur(24px);border:1px solid var(--border2);border-radius:12px;padding:5px;min-width:175px;z-index:10001;display:none;box-shadow:var(--shadow);}
+#ctx.open{display:block;}
+.ctx-item{padding:6px 11px;border-radius:7px;cursor:pointer;font-size:12px;color:var(--text);display:flex;align-items:center;gap:8px;}
+.ctx-item:hover{background:var(--accent);}
+.ctx-sep{height:1px;background:var(--border);margin:3px 0;}
+
+/* ─── NOTIFICATIONS ─── */
+#notif-area{position:absolute;top:34px;right:10px;display:flex;flex-direction:column;gap:7px;z-index:9800;pointer-events:none;}
+.notif{background:rgba(28,28,34,0.97);backdrop-filter:blur(20px);border:1px solid var(--border2);border-radius:12px;padding:11px 13px;min-width:260px;pointer-events:all;animation:nIn .25s ease;cursor:pointer;}
+@keyframes nIn{from{transform:translateX(110%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+.notif-title{font-size:12px;font-weight:600;margin-bottom:2px;}
+.notif-body{font-size:11px;color:var(--text2);line-height:1.5;}
+.notif-app{font-size:10px;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.4px;}
+
+/* ─── LOCK ─── */
+#lock{position:fixed;inset:0;background:#000;z-index:99998;display:none;flex-direction:column;align-items:center;justify-content:center;}
+#lock.on{display:flex;}
+
+/* ─── BOOT ─── */
+#boot{position:fixed;inset:0;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;}
+#boot-logo{font-size:22px;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:.5px;}
+#boot-ver{font-size:11px;color:#333;margin-bottom:48px;}
+#boot-bar-wrap{width:180px;height:2px;background:#1a1a1a;border-radius:1px;overflow:hidden;}
+#boot-bar{height:100%;background:#6c4ff8;width:0;transition:width .25s ease;}
+
+/* ─── TERMINAL ─── */
+#term-body{background:#0a0a0c;font-family:var(--mono);font-size:12.5px;padding:10px;height:100%;overflow-y:auto;display:flex;flex-direction:column;color:#d4d4d8;}
+#term-out{flex:1;white-space:pre-wrap;word-break:break-all;line-height:1.55;}
+#term-in-line{display:flex;align-items:center;gap:5px;margin-top:3px;}
+#term-prompt{color:var(--accent);flex-shrink:0;white-space:nowrap;}
+#term-in{background:none;border:none;outline:none;color:#d4d4d8;font-family:var(--mono);font-size:12.5px;flex:1;caret-color:#d4d4d8;}
+
+/* ─── FINDER ─── */
+.finder-wrap{display:flex;height:100%;}
+.finder-sb{width:var(--sidebar-w);background:rgba(0,0,0,0.25);border-right:1px solid var(--border);padding:8px 5px;flex-shrink:0;overflow-y:auto;}
+.finder-sb-section{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;padding:8px 8px 4px;}
+.finder-sb-item{padding:5px 8px;border-radius:6px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:7px;color:var(--text2);}
+.finder-sb-item:hover,.finder-sb-item.active{background:rgba(108,79,248,0.18);color:var(--text);}
+.finder-main{flex:1;padding:12px;overflow-y:auto;}
+.finder-toolbar{display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.finder-path{font-size:11px;color:var(--text2);flex:1;}
+.finder-view-btn{padding:3px 8px;border-radius:5px;border:1px solid var(--border);background:none;color:var(--text2);cursor:pointer;font-size:11px;}
+.finder-view-btn.active,.finder-view-btn:hover{background:var(--bg4);color:var(--text);}
+.finder-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:8px;}
+.finder-list{display:flex;flex-direction:column;gap:1px;}
+.finder-file-grid{display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 5px;border-radius:7px;cursor:pointer;text-align:center;}
+.finder-file-grid:hover,.finder-file-grid.selected{background:rgba(108,79,248,0.15);}
+.finder-file-grid .fi{font-size:30px;}
+.finder-file-grid .fn{font-size:10px;color:var(--text2);word-break:break-word;line-height:1.3;}
+.finder-file-list{display:flex;align-items:center;gap:10px;padding:5px 8px;border-radius:6px;cursor:pointer;}
+.finder-file-list:hover{background:rgba(255,255,255,0.05);}
+.finder-file-list .fi{font-size:16px;}
+.finder-file-list .fn{font-size:12px;flex:1;}
+.finder-file-list .fmeta{font-size:11px;color:var(--text3);text-align:right;}
+.finder-status{padding:6px 12px;border-top:1px solid var(--border);font-size:11px;color:var(--text3);flex-shrink:0;}
+
+/* ─── EDITOR / TEXT ─── */
+.editor-wrap{display:flex;height:100%;}
+.editor-sb{width:180px;background:rgba(0,0,0,0.2);border-right:1px solid var(--border);display:flex;flex-direction:column;}
+.editor-sb-top{padding:8px;border-bottom:1px solid var(--border);display:flex;gap:5px;}
+.editor-list{flex:1;overflow-y:auto;padding:5px;}
+.editor-item{padding:7px 9px;border-radius:7px;cursor:pointer;margin-bottom:2px;}
+.editor-item:hover,.editor-item.active{background:rgba(255,255,255,0.07);}
+.editor-item-title{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.editor-item-date{font-size:10px;color:var(--text3);margin-top:1px;}
+.editor-main{flex:1;display:flex;flex-direction:column;}
+.editor-bar{padding:7px 10px;border-bottom:1px solid var(--border);display:flex;gap:6px;align-items:center;}
+.editor-btn{padding:3px 9px;border-radius:5px;cursor:pointer;font-size:11px;background:var(--bg3);color:var(--text2);border:1px solid var(--border);}
+.editor-btn:hover{background:var(--bg4);color:var(--text);}
+#note-editor{flex:1;background:none;border:none;outline:none;color:var(--text);font-size:13px;padding:14px 16px;font-family:var(--font);resize:none;line-height:1.75;user-select:text;}
+
+/* ─── SETTINGS ─── */
+.settings-wrap{display:flex;height:100%;}
+.settings-sb{width:185px;background:rgba(0,0,0,0.2);border-right:1px solid var(--border);padding:8px 6px;overflow-y:auto;flex-shrink:0;}
+.settings-sb-section{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;padding:8px 8px 4px;}
+.snav{padding:6px 9px;border-radius:7px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:8px;color:var(--text2);}
+.snav:hover,.snav.active{background:rgba(108,79,248,0.18);color:var(--text);}
+.snav-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.settings-main{flex:1;padding:18px;overflow-y:auto;}
+.s-section{margin-bottom:20px;}
+.s-section-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:7px;padding-left:2px;}
+.s-card{background:var(--bg3);border-radius:10px;overflow:hidden;border:1px solid var(--border);}
+.s-row{display:flex;align-items:center;padding:10px 13px;border-bottom:1px solid var(--border);gap:10px;}
+.s-row:last-child{border-bottom:none;}
+.s-row-label{flex:1;}
+.s-label{font-size:12px;color:var(--text);}
+.s-sub{font-size:11px;color:var(--text2);margin-top:1px;}
+.toggle{width:40px;height:22px;background:var(--bg4);border-radius:11px;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;border:none;}
+.toggle.on{background:var(--green);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,0.4);}
+.toggle.on::after{transform:translateX(18px);}
+.s-select{background:var(--bg4);border:1px solid var(--border2);border-radius:6px;color:var(--text);padding:4px 8px;font-size:12px;outline:none;cursor:pointer;font-family:var(--font);}
+.s-range{-webkit-appearance:none;width:120px;height:3px;border-radius:2px;background:var(--bg4);outline:none;}
+.s-range::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 0 3px rgba(108,79,248,0.3);}
+.s-val{font-size:11px;color:var(--text2);min-width:32px;text-align:right;}
+.color-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color .15s;}
+.color-dot.active{border-color:#fff;}
+.wallpaper-thumb{width:56px;height:36px;border-radius:7px;cursor:pointer;border:2px solid transparent;transition:border-color .15s;object-fit:cover;flex-shrink:0;}
+.wallpaper-thumb.active{border-color:var(--accent);}
+.font-preview{font-size:13px;color:var(--text2);padding:4px 0;}
+
+/* ─── CALCULATOR ─── */
+#calc-wrap{background:#111113;display:flex;flex-direction:column;height:100%;}
+.calc-disp{background:#0a0a0d;padding:16px 14px 10px;text-align:right;flex-shrink:0;}
+.calc-expr{font-size:13px;color:var(--text3);min-height:18px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.calc-num{font-size:40px;font-weight:200;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:1.2;}
+.calc-grid{display:grid;grid-template-columns:repeat(4,1fr);flex:1;}
+.ck{border:none;font-size:18px;font-weight:300;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text);transition:filter .1s;border-top:1px solid rgba(255,255,255,0.05);font-family:var(--font);}
+.ck:active{filter:brightness(1.35);}
+.ck.dk{background:#1e1e22;}
+.ck.md{background:#2a2a2e;}
+.ck.ac{background:var(--accent);color:#fff;font-weight:500;}
+.ck.wide{grid-column:span 2;}
+
+/* ─── MUSIC ─── */
+.music-wrap{padding:18px;display:flex;flex-direction:column;align-items:center;height:100%;overflow-y:auto;}
+.music-art{width:130px;height:130px;border-radius:14px;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-size:52px;box-shadow:0 10px 40px rgba(0,0,0,0.5);}
+.music-track-title{font-size:15px;font-weight:600;text-align:center;margin-bottom:3px;}
+.music-artist{font-size:12px;color:var(--text2);text-align:center;margin-bottom:16px;}
+.music-prog-wrap{width:100%;margin:0 0 4px;}
+.music-prog{height:3px;background:rgba(255,255,255,0.1);border-radius:2px;cursor:pointer;position:relative;}
+.music-prog-bar{height:100%;background:var(--accent);border-radius:2px;transition:width .1s;}
+.music-times{display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:3px;margin-bottom:14px;}
+.music-controls{display:flex;align-items:center;justify-content:center;gap:20px;width:100%;}
+.mc{font-size:20px;cursor:pointer;color:var(--text2);background:none;border:none;padding:4px;}
+.mc:hover{color:var(--text);}
+.mc.main{font-size:34px;color:var(--text);}
+.music-vol{display:flex;align-items:center;gap:8px;width:100%;margin-top:16px;padding:0 4px;}
+.music-queue{width:100%;margin-top:14px;border-top:1px solid var(--border);padding-top:10px;}
+.mq-item{display:flex;align-items:center;gap:10px;padding:6px 4px;border-radius:7px;cursor:pointer;}
+.mq-item:hover,.mq-item.active{background:rgba(255,255,255,0.06);}
+.mq-art{width:32px;height:32px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:16px;}
+.mq-title{font-size:12px;font-weight:500;}
+.mq-artist{font-size:11px;color:var(--text2);}
+
+/* ─── BROWSER ─── */
+.browser-wrap{display:flex;flex-direction:column;height:100%;}
+.browser-nav{padding:7px 8px;background:rgba(0,0,0,0.2);display:flex;gap:5px;align-items:center;border-bottom:1px solid var(--border);flex-shrink:0;}
+.bnav-btn{width:26px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,0.05);font-size:13px;border:none;color:var(--text2);}
+.bnav-btn:hover{background:rgba(255,255,255,0.1);color:var(--text);}
+#browser-url-bar{flex:1;background:rgba(255,255,255,0.05);border:1px solid var(--border2);border-radius:18px;padding:4px 13px;color:var(--text);font-size:12px;outline:none;font-family:var(--font);}
+#browser-url-bar:focus{border-color:var(--accent);background:rgba(255,255,255,0.08);}
+#browser-frame{flex:1;background:#fff;border:none;width:100%;}
+
+/* ─── CODE EDITOR ─── */
+.code-wrap{display:flex;height:100%;}
+.code-sb{width:200px;background:rgba(0,0,0,0.3);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;}
+.code-sb-top{padding:8px;border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);font-weight:600;}
+.code-tree{flex:1;overflow-y:auto;padding:5px;}
+.code-tree-item{padding:4px 8px;border-radius:5px;cursor:pointer;font-size:11px;font-family:var(--mono);color:var(--text2);display:flex;align-items:center;gap:6px;white-space:nowrap;}
+.code-tree-item:hover{background:rgba(255,255,255,0.05);color:var(--text);}
+.code-tree-item.active{background:rgba(108,79,248,0.2);color:var(--text);}
+.code-main{flex:1;display:flex;flex-direction:column;}
+.code-tabs{display:flex;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.2);flex-shrink:0;overflow-x:auto;}
+.code-tab{padding:6px 14px;font-size:11px;font-family:var(--mono);color:var(--text2);cursor:pointer;border-right:1px solid var(--border);white-space:nowrap;display:flex;align-items:center;gap:6px;}
+.code-tab.active{background:var(--bg2);color:var(--text);}
+.code-tab-close{opacity:0;font-size:12px;line-height:1;}
+.code-tab:hover .code-tab-close{opacity:0.6;}
+.code-area{flex:1;background:none;border:none;outline:none;color:#d4d4d8;font-size:12.5px;font-family:var(--mono);padding:12px 14px;resize:none;line-height:1.65;tab-size:2;user-select:text;}
+.code-status{height:22px;background:rgba(0,0,0,0.3);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:16px;flex-shrink:0;}
+.code-status-item{font-size:10px;color:var(--text3);}
+
+/* ─── MAIL ─── */
+.mail-wrap{display:flex;height:100%;}
+.mail-sb{width:var(--sidebar-w);background:rgba(0,0,0,0.25);border-right:1px solid var(--border);padding:8px 5px;flex-shrink:0;}
+.mail-list{width:220px;border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;}
+.mail-item{padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;}
+.mail-item:hover,.mail-item.active{background:rgba(108,79,248,0.12);}
+.mail-item-from{font-size:12px;font-weight:600;display:flex;justify-content:space-between;}
+.mail-item-subj{font-size:11px;color:var(--text2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mail-item-time{font-size:10px;color:var(--text3);}
+.mail-unread{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:5px;}
+.mail-view{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.mail-view-head{padding:14px 16px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.mail-view-subj{font-size:14px;font-weight:600;margin-bottom:6px;}
+.mail-view-meta{font-size:11px;color:var(--text2);line-height:1.8;}
+.mail-view-body{flex:1;padding:16px;overflow-y:auto;font-size:12.5px;line-height:1.75;color:var(--text2);user-select:text;}
+.mail-compose-btn{width:100%;padding:7px;border-radius:8px;background:var(--accent);border:none;color:#fff;cursor:pointer;font-size:12px;margin-bottom:8px;font-family:var(--font);}
+
+/* ─── CALENDAR ─── */
+.cal-wrap{display:flex;flex-direction:column;height:100%;}
+.cal-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.cal-nav{background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:3px 9px;cursor:pointer;font-size:13px;color:var(--text);font-family:var(--font);}
+.cal-nav:hover{background:var(--bg4);}
+.cal-month{flex:1;text-align:center;font-size:14px;font-weight:600;}
+.cal-grid{flex:1;padding:10px;display:flex;flex-direction:column;overflow:hidden;}
+.cal-days-header{display:grid;grid-template-columns:repeat(7,1fr);margin-bottom:4px;}
+.cal-day-label{text-align:center;font-size:10px;font-weight:600;color:var(--text3);padding:4px 0;text-transform:uppercase;}
+.cal-cells{display:grid;grid-template-columns:repeat(7,1fr);flex:1;}
+.cal-cell{border:1px solid var(--border);margin:-0.5px;display:flex;flex-direction:column;padding:4px 6px;min-height:60px;cursor:pointer;transition:background .1s;}
+.cal-cell:hover{background:rgba(255,255,255,0.03);}
+.cal-cell.today .cal-day-num{background:var(--accent);border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-weight:600;}
+.cal-cell.other-month .cal-day-num{color:var(--text3);}
+.cal-day-num{font-size:11px;color:var(--text);margin-bottom:2px;}
+.cal-event{font-size:9px;background:rgba(108,79,248,0.35);border-left:2px solid var(--accent);padding:1px 4px;border-radius:2px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+/* ─── MAPS (placeholder) ─── */
+.maps-wrap{display:flex;flex-direction:column;height:100%;}
+.maps-search-bar{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;gap:6px;flex-shrink:0;}
+#maps-search{flex:1;background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:16px;padding:5px 13px;color:var(--text);font-size:12px;outline:none;font-family:var(--font);}
+#maps-search:focus{border-color:var(--accent);}
+.maps-map{flex:1;background:linear-gradient(145deg,#141418 0%,#1a1a20 100%);position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+.maps-placeholder{text-align:center;color:var(--text3);}
+.maps-placeholder .mp-icon{font-size:48px;margin-bottom:10px;}
+.maps-placeholder p{font-size:12px;line-height:1.7;}
+.maps-sidebar{width:220px;border-left:1px solid var(--border);background:rgba(0,0,0,0.2);overflow-y:auto;display:flex;flex-direction:column;}
+.maps-result{padding:10px 12px;border-bottom:1px solid var(--border);cursor:pointer;}
+.maps-result:hover{background:rgba(255,255,255,0.04);}
+.maps-result-name{font-size:12px;font-weight:600;}
+.maps-result-addr{font-size:11px;color:var(--text2);margin-top:1px;}
+
+/* ─── ABOUT ─── */
+.about-wrap{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.about-logo{font-size:52px;}
+.about-name{font-size:20px;font-weight:700;color:var(--text);}
+.about-ver{font-size:13px;color:var(--text2);}
+.about-info{background:var(--bg3);border-radius:10px;width:100%;padding:12px 14px;text-align:left;border:1px solid var(--border);}
+.about-row{display:flex;justify-content:space-between;padding:5px 0;font-size:12px;border-bottom:1px solid var(--border);}
+.about-row:last-child{border-bottom:none;}
+.about-key{color:var(--text2);}
+
+/* ─── UTILITY BTNS ─── */
+.btn{padding:6px 14px;border-radius:7px;border:none;cursor:pointer;font-size:12px;font-family:var(--font);font-weight:500;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-secondary{background:var(--bg4);color:var(--text);border:1px solid var(--border2);}
+.btn:hover{filter:brightness(1.12);}
+
+/* ─── STARS ─── */
+.star{position:absolute;border-radius:50%;background:#fff;animation:tw var(--d,3s) ease-in-out infinite;}
+@keyframes tw{0%,100%{opacity:var(--o,.3);}50%{opacity:.8;}}
 </style>
 </head>
 <body>
 
+<!-- BOOT -->
+<div id="boot">
+  <div id="boot-logo">PartexDesktop</div>
+  <div id="boot-ver">OS 10.9.1</div>
+  <div id="boot-bar-wrap"><div id="boot-bar"></div></div>
+</div>
+
+<!-- MENUBAR -->
 <div id="menubar">
-  <div id="menubar-logo" onclick="togglePartexMenu()">Partex</div>
-  <div class="menu-item">Finder</div>
-  <div class="menu-item">Edit</div>
-  <div class="menu-item">View</div>
-  <div class="menu-item">Window</div>
-  <div id="menubar-right">
-    <div class="mb-icon" onclick="toggleWidgetPanel()" title="Widgets">⊞</div>
-    <div class="mb-icon" onclick="openSearch()" title="Search">⌕</div>
-    <div id="menubar-clock"></div>
+  <div id="mb-logo" onclick="togglePMenu()">Partex</div>
+  <div class="mb-item" id="mb-app-title">Finder</div>
+  <div class="mb-item">Bearbeiten</div>
+  <div class="mb-item">Ansicht</div>
+  <div class="mb-item">Fenster</div>
+  <div id="mb-right">
+    <div class="mb-status" onclick="toggleWPanel()" title="Widgets">▦</div>
+    <div class="mb-status" onclick="openSearch()" title="Suche">⌕</div>
+    <div class="mb-status" id="mb-wifi">󰤨</div>
+    <div class="mb-status" id="mb-bat">🔋</div>
+    <div id="mb-clock"></div>
   </div>
 </div>
 
-<div id="partex-menu" style="display:none;position:absolute;top:30px;left:6px;background:rgba(28,28,28,0.95);backdrop-filter:blur(30px);border:1px solid var(--border2);border-radius:12px;padding:6px;min-width:220px;z-index:10000;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
-  <div class="menu-item" onclick="openApp('settings')" style="display:block;padding:7px 14px;">⚙️ Einstellungen</div>
-  <div class="menu-item" onclick="openApp('calculator')" style="display:block;padding:7px 14px;">🔢 Taschenrechner</div>
-  <div class="menu-item" onclick="openApp('calendar')" style="display:block;padding:7px 14px;">📅 Kalender</div>
-  <hr style="border-color:var(--border);margin:4px 0;">
-  <div class="menu-item" onclick="doRestart()" style="display:block;padding:7px 14px;">🔄 Neustart</div>
+<!-- PARTEX MENU -->
+<div id="partex-menu">
+  <div class="pm-item" onclick="openAbout()"><span>💻</span> Über PartexDesktop</div>
+  <div class="pm-sep"></div>
+  <div class="pm-item" onclick="openApp('settings')"><span>⚙️</span> Einstellungen</div>
+  <div class="pm-sep"></div>
+  <div class="pm-item" onclick="toggleWPanel()"><span>▦</span> Widgets verwalten</div>
+  <div class="pm-sep"></div>
+  <div class="pm-item" onclick="doLock()"><span>🔒</span> Bildschirm sperren</div>
+  <div class="pm-item" onclick="doSleep()"><span>💤</span> Ruhezustand</div>
+  <div class="pm-sep"></div>
+  <div class="pm-item" onclick="doRestart()"><span>🔄</span> Neustart…</div>
+  <div class="pm-item" onclick="doShutdown()"><span>⏻</span> Ausschalten…</div>
 </div>
 
-<div id="desktop" oncontextmenu="showContextMenu(event)">
+<!-- DESKTOP -->
+<div id="desktop" oncontextmenu="showCtx(event)" onclick="closeAll(event)">
   <div id="wallpaper"></div>
-  <div id="widgets-layer"></div>
-  <div id="desktop-icons"></div>
+  <div id="widget-layer"></div>
 
+  <!-- DOCK -->
   <div id="dock">
-    <div class="dock-item" onclick="openApp('finder')" style="background:linear-gradient(135deg,#4a9eff,#0055d4);">
-      <span class="dock-item-tooltip">Finder</span>🗂️
-    </div>
-    <div class="dock-item" onclick="openApp('calculator')" style="background:linear-gradient(135deg,#1a1a2e,#16213e);border:1px solid #7c5cfc;">
-      <span class="dock-item-tooltip">Taschenrechner</span>🔢
-    </div>
-    <div class="dock-item" onclick="openApp('calendar')" style="background:linear-gradient(135deg,#ff6b35,#ffd700);">
-      <span class="dock-item-tooltip">Kalender</span>📅
-    </div>
-    <div class="dock-item" onclick="openApp('notes')" style="background:linear-gradient(135deg,#ffd700,#ff9500);">
-      <span class="dock-item-tooltip">Notizen</span>📝
-    </div>
-    <div class="dock-item" onclick="openApp('settings')" style="background:linear-gradient(135deg,#636363,#3a3a3a);">
-      <span class="dock-item-tooltip">Einstellungen</span>⚙️
-    </div>
+    <div class="dock-app" onclick="openApp('finder')" style="background:linear-gradient(145deg,#3b8ef5,#0048c9)"><span class="tip">Finder</span>🗂️</div>
+    <div class="dock-app" onclick="openApp('browser')" style="background:linear-gradient(145deg,#e8632a,#f0b429)"><span class="tip">Browser</span>🌐</div>
+    <div class="dock-app" onclick="openApp('mail')" style="background:linear-gradient(145deg,#2a85e8,#0f5ab5)"><span class="tip">Mail</span>✉️</div>
+    <div class="dock-app" onclick="openApp('calendar')" style="background:linear-gradient(145deg,#e84040,#c02020)"><span class="tip">Kalender</span>📅</div>
+    <div class="dock-app" onclick="openApp('notes')" style="background:linear-gradient(145deg,#f5c429,#e89420)"><span class="tip">Notizen</span>📝</div>
+    <div class="dock-app" onclick="openApp('music')" style="background:linear-gradient(145deg,#d03050,#100d20)"><span class="tip">Musik</span>🎵</div>
+    <div class="dock-app" onclick="openApp('terminal')" style="background:linear-gradient(145deg,#181820,#2a2a38);border:1px solid #333"><span class="tip">Terminal</span>💻</div>
+    <div class="dock-app" onclick="openApp('code')" style="background:linear-gradient(145deg,#1e60b0,#0d3a7a)"><span class="tip">Code Editor</span>🖊️</div>
+    <div class="dock-app" onclick="openApp('calculator')" style="background:linear-gradient(145deg,#1a1a1e,#2e2e36);border:1px solid #333"><span class="tip">Rechner</span>🔢</div>
+    <div class="dock-app" onclick="openApp('maps')" style="background:linear-gradient(145deg,#2ab060,#167040)"><span class="tip">Karten</span>🗺️</div>
+    <div class="dock-sep"></div>
+    <div class="dock-app" onclick="openApp('settings')" style="background:linear-gradient(145deg,#555,#333)"><span class="tip">Einstellungen</span>⚙️</div>
   </div>
 </div>
 
-<div id="search-overlay" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);z-index:9500;align-items:flex-start;justify-content:center;padding-top:120px;" onclick="closeSearch(event)">
-  <div style="background:rgba(40,40,40,0.95);backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,0.15);border-radius:16px;width:580px;box-shadow:0 30px 80px rgba(0,0,0,0.8);" onclick="event.stopPropagation()">
-    <input id="search-input" placeholder="Suchen..." style="width:100%;background:none;border:none;outline:none;color:var(--text);font-size:20px;padding:16px 20px;" oninput="doSearch(this.value)" onkeydown="searchKeyDown(event)">
-    <div id="search-results" style="border-top:1px solid var(--border);max-height:400px;overflow-y:auto;"></div>
+<!-- SEARCH OVERLAY -->
+<div id="search-overlay" onclick="closeSearch(event)">
+  <div id="search-box" onclick="event.stopPropagation()">
+    <input id="search-input" placeholder="Apps, Dateien, Einstellungen…" oninput="doSearch(this.value)" onkeydown="searchKey(event)" autocomplete="off"/>
+    <div id="search-res"></div>
   </div>
 </div>
 
-<div id="widget-panel" style="display:none;position:absolute;right:0;top:28px;bottom:0;width:280px;background:rgba(20,20,20,0.95);backdrop-filter:blur(20px);border-left:1px solid var(--border);z-index:8000;padding:16px;">
-  <h3 style="margin-bottom:14px;color:var(--text);font-size:15px;">Widgets</h3>
-  <div onclick="addWidget('weather')" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;">⛅ Wetter (Live)</div>
-  <div onclick="addWidget('system')" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;">📊 System Monitor</div>
-  <div onclick="addWidget('clock')" style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;cursor:pointer;">🕐 Uhr</div>
-  <button onclick="toggleWidgetPanel()" style="margin-top:10px;width:100%;padding:8px;background:var(--accent);border:none;color:#fff;border-radius:8px;cursor:pointer;">Schließen</button>
+<!-- WIDGET PANEL -->
+<div id="wpanel">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+    <div style="font-size:14px;font-weight:600;">Widgets</div>
+    <div style="cursor:pointer;color:var(--text2);font-size:18px;line-height:1;" onclick="toggleWPanel()">×</div>
+  </div>
+  <div id="wpanel-items"></div>
 </div>
 
-<div id="context-menu">
-  <div onclick="addWidget('clock')" style="padding:7px 12px;cursor:pointer;">📐 Widget hinzufügen</div>
-  <div onclick="changeWallpaper()" style="padding:7px 12px;cursor:pointer;">🖼️ Hintergrund ändern</div>
-  <hr style="border-color:var(--border);margin:4px 0;">
-  <div onclick="openApp('settings')" style="padding:7px 12px;cursor:pointer;">⚙️ Einstellungen</div>
+<!-- CONTEXT MENU -->
+<div id="ctx">
+  <div class="ctx-item" onclick="changeWallpaper()">🖼️ Hintergrundbild ändern</div>
+  <div class="ctx-item" onclick="toggleWPanel()">▦ Widget hinzufügen</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="openApp('settings')">⚙️ Anzeigeeinstellungen</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="showNotif('System','PartexDesktop OS 10.9.1 — Alles läuft normal.')">ℹ️ Systeminfo</div>
 </div>
 
-<div id="notif-area" style="position:absolute;top:36px;right:12px;display:flex;flex-direction:column;gap:8px;z-index:9800;pointer-events:none;"></div>
+<!-- NOTIFICATIONS -->
+<div id="notif-area"></div>
+
+<!-- LOCK SCREEN -->
+<div id="lock">
+  <div style="font-size:56px;margin-bottom:12px;">🔒</div>
+  <div style="font-size:32px;font-weight:200;color:#fff;margin-bottom:6px;" id="lock-time"></div>
+  <div style="font-size:15px;color:#666;margin-bottom:30px;" id="lock-date"></div>
+  <input id="lock-input" placeholder="Passwort" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:10px 16px;color:#fff;font-size:14px;outline:none;text-align:center;width:200px;font-family:var(--font);" onkeydown="if(event.key==='Enter')unlockScreen()"/>
+  <div style="margin-top:10px;font-size:11px;color:#444;">Beliebige Taste drücken oder Passwort eingeben</div>
+</div>
 
 <script>
-// =============================================
-// OS CORE
-// =============================================
-let zTop = 100;
-let openWindows = {};
-let wallpaperIdx = 0;
-const wallpapers = [
-  'radial-gradient(ellipse at 30% 60%, #1a0a3e 0%, #0a0a1a 50%, #000 100%)',
-  'radial-gradient(ellipse at 80% 20%, #0a1e3e 0%, #000a14 60%, #000 100%)',
-  'radial-gradient(ellipse at 50% 50%, #0a2010 0%, #000a00 60%, #000 100%)',
-  'radial-gradient(ellipse at 20% 80%, #1e0a10 0%, #0a0006 60%, #000 100%)',
-];
+'use strict';
+// ══════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════
+let zTop = 200;
+let openWins = {};
+let wIdCounter = 0;
 
-// Einstellungen mit localStorage
-let settings = JSON.parse(localStorage.getItem('partexSettings') || '{"textSize":14,"darkMode":true,"wifi":true,"bluetooth":false,"sound":true,"accent":"#7c5cfc","wallpaperIdx":0}');
-
-function saveSettings() {
-  localStorage.setItem('partexSettings', JSON.stringify(settings));
-  applyAllSettings();
-}
-
-function applyAllSettings() {
-  document.documentElement.style.setProperty('--text-size', settings.textSize + 'px');
-  document.documentElement.style.setProperty('--title-size', (settings.textSize - 1) + 'px');
-  document.documentElement.style.setProperty('--small-size', (settings.textSize - 3) + 'px');
-  document.documentElement.style.setProperty('--accent', settings.accent);
-  wallpaperIdx = settings.wallpaperIdx;
-  document.getElementById('wallpaper').style.background = wallpapers[wallpaperIdx];
-  
-  // Update all open windows
-  Object.keys(openWindows).forEach(id => {
-    const win = openWindows[id].el;
-    if (win) {
-      win.style.fontSize = settings.textSize + 'px';
-    }
-  });
-}
-
-// Clock
-function updateClock() {
-  const now = new Date();
-  const d = now.toLocaleDateString('de-DE', { weekday: 'short', month: 'short', day: 'numeric' });
-  const t = now.toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' });
-  document.getElementById('menubar-clock').textContent = d + ' ' + t;
-}
-setInterval(updateClock, 1000);
-updateClock();
-
-// Desktop Icons
-const desktopApps = [
-  { id: 'finder', icon: '🗂️', label: 'Finder', x: 20, y: 60 },
-  { id: 'calculator', icon: '🔢', label: 'Rechner', x: 20, y: 160 },
-  { id: 'calendar', icon: '📅', label: 'Kalender', x: 20, y: 260 },
-  { id: 'notes', icon: '📝', label: 'Notizen', x: 20, y: 360 },
-  { id: 'settings', icon: '⚙️', label: 'Einstellungen', x: 110, y: 60 },
-];
-
-function setupDeskIcons() {
-  const layer = document.getElementById('desktop-icons');
-  layer.innerHTML = '';
-  desktopApps.forEach(app => {
-    const el = document.createElement('div');
-    el.className = 'desk-icon';
-    el.style.left = app.x + 'px';
-    el.style.top = app.y + 'px';
-    el.id = 'deskicon-' + app.id;
-    el.innerHTML = `<div class="desk-icon-img">${app.icon}</div><div class="desk-icon-label">${app.label}</div>`;
-    el.addEventListener('dblclick', () => openApp(app.id));
-    el.addEventListener('click', (e) => { e.stopPropagation(); selectIcon(app.id); });
-    makeDraggable(el);
-    layer.appendChild(el);
-  });
-}
-
-function selectIcon(id) {
-  document.querySelectorAll('.desk-icon').forEach(e => e.classList.remove('selected'));
-  const el = document.getElementById('deskicon-' + id);
-  if (el) el.classList.add('selected');
-}
-
-// Window System
-function createWindow(id, title, w, h, x, y) {
-  if (openWindows[id]) {
-    bringToFront(id);
-    return openWindows[id].el;
-  }
-  
-  const win = document.createElement('div');
-  win.className = 'window';
-  win.id = 'win-' + id;
-  win.style.width = w + 'px';
-  win.style.height = h + 'px';
-  win.style.left = (x || 200 + Math.random() * 100) + 'px';
-  win.style.top = (y || 80 + Math.random() * 60) + 'px';
-  win.style.zIndex = ++zTop;
-  win.style.fontSize = settings.textSize + 'px';
-  
-  win.innerHTML = `
-    <div class="window-titlebar" onmousedown="winDragStart(event, '${id}')">
-      <div class="win-btn close" onclick="closeWindow('${id}')"></div>
-      <div class="win-btn min" onclick="minimizeWindow('${id}')"></div>
-      <div class="win-btn max" onclick="maximizeWindow('${id}')"></div>
-      <div class="window-title">${title}</div>
-    </div>
-    <div class="window-body" id="winbody-${id}"></div>
-    <div class="resize-handle" onmousedown="resizeStart(event, '${id}')"></div>
-  `;
-  
-  win.addEventListener('mousedown', () => bringToFront(id));
-  document.getElementById('desktop').appendChild(win);
-  
-  openWindows[id] = { el: win, title, minimized: false };
-  return win;
-}
-
-function bringToFront(id) {
-  if (openWindows[id]) {
-    openWindows[id].el.style.zIndex = ++zTop;
-    document.querySelectorAll('.window').forEach(w => w.classList.remove('active'));
-    openWindows[id].el.classList.add('active');
-  }
-}
-
-function closeWindow(id) {
-  if (openWindows[id]) {
-    openWindows[id].el.remove();
-    delete openWindows[id];
-  }
-}
-
-function minimizeWindow(id) {
-  if (openWindows[id]) {
-    const win = openWindows[id].el;
-    win.style.display = win.style.display === 'none' ? 'flex' : 'none';
-  }
-}
-
-function maximizeWindow(id) {
-  if (openWindows[id]) {
-    const win = openWindows[id].el;
-    if (win.dataset.maxed) {
-      win.style.left = win.dataset.ox;
-      win.style.top = win.dataset.oy;
-      win.style.width = win.dataset.ow;
-      win.style.height = win.dataset.oh;
-      delete win.dataset.maxed;
-    } else {
-      win.dataset.ox = win.style.left;
-      win.dataset.oy = win.style.top;
-      win.dataset.ow = win.style.width;
-      win.dataset.oh = win.style.height;
-      win.style.left = '0';
-      win.style.top = '28px';
-      win.style.width = window.innerWidth + 'px';
-      win.style.height = (window.innerHeight - 28 - 80) + 'px';
-      win.dataset.maxed = '1';
-    }
-  }
-}
-
-// Dragging
-let dragState = null;
-
-function winDragStart(e, id) {
-  if (e.target.classList.contains('win-btn')) return;
-  e.preventDefault();
-  const win = document.getElementById('win-' + id);
-  if (!win) return;
-  const rect = win.getBoundingClientRect();
-  dragState = { id, startX: e.clientX - rect.left, startY: e.clientY - rect.top, type: 'window' };
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-}
-
-function resizeStart(e, id) {
-  e.preventDefault();
-  e.stopPropagation();
-  const win = document.getElementById('win-' + id);
-  if (!win) return;
-  dragState = { id, startX: e.clientX, startY: e.clientY, startW: win.offsetWidth, startH: win.offsetHeight, type: 'resize' };
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
-}
-
-function onMouseMove(e) {
-  if (!dragState) return;
-  
-  if (dragState.type === 'window') {
-    const win = document.getElementById('win-' + dragState.id);
-    if (!win) return;
-    let nx = e.clientX - dragState.startX;
-    let ny = e.clientY - dragState.startY;
-    ny = Math.max(28, ny);
-    win.style.left = nx + 'px';
-    win.style.top = ny + 'px';
-  }
-  
-  if (dragState.type === 'resize') {
-    const win = document.getElementById('win-' + dragState.id);
-    if (!win) return;
-    const nw = Math.max(280, dragState.startW + (e.clientX - dragState.startX));
-    const nh = Math.max(200, dragState.startH + (e.clientY - dragState.startY));
-    win.style.width = nw + 'px';
-    win.style.height = nh + 'px';
-  }
-  
-  if (dragState.type === 'widget') {
-    const w = document.getElementById('widget-' + dragState.id);
-    if (!w) return;
-    w.style.left = (e.clientX - dragState.offX) + 'px';
-    w.style.top = (e.clientY - dragState.offY) + 'px';
-  }
-}
-
-function onMouseUp() {
-  dragState = null;
-  document.removeEventListener('mousemove', onMouseMove);
-  document.removeEventListener('mouseup', onMouseUp);
-}
-
-// Draggable icons
-function makeDraggable(el) {
-  let ds = null;
-  el.addEventListener('mousedown', e => {
-    const r = el.getBoundingClientRect();
-    ds = { sx: e.clientX - r.left, sy: e.clientY - r.top };
-    const mv = e2 => {
-      el.style.left = (e2.clientX - ds.sx) + 'px';
-      el.style.top = Math.max(0, e2.clientY - ds.sy) + 'px';
-    };
-    const up = () => {
-      ds = null;
-      document.removeEventListener('mousemove', mv);
-      document.removeEventListener('mouseup', up);
-    };
-    document.addEventListener('mousemove', mv);
-    document.addEventListener('mouseup', up);
-  });
-}
-
-// =============================================
-// APPS
-// =============================================
-function openApp(id) {
-  closeMenus();
-  switch (id) {
-    case 'finder': openFinder(); break;
-    case 'calculator': openCalculator(); break;
-    case 'calendar': openCalendar(); break;
-    case 'notes': openNotes(); break;
-    case 'settings': openSettings(); break;
-    case 'search': openSearch(); break;
-  }
-}
-
-// ── FINDER ──────────────────────────────────
-function openFinder() {
-  createWindow('finder', 'Finder', 600, 400);
-  const body = document.getElementById('winbody-finder');
-  if (!body) return;
-  body.innerHTML = `
-    <div style="padding:20px;color:var(--text2);text-align:center;">
-      <div style="font-size:40px;margin-bottom:12px;">🗂️</div>
-      <div style="font-size:var(--text-size);">Finder</div>
-      <div style="margin-top:8px;color:var(--text3);">Dateien werden im localStorage gespeichert</div>
-    </div>`;
-}
-
-// ── CALCULATOR (KOMPLETT NEU, EIGENES DESIGN) ──
-let calcState = {
-  display: '0',
-  expression: '',
-  prevValue: null,
-  operator: null,
-  justPressedOp: false,
-  history: [],
-  memory: 0
+const OS = {
+  version: '10.9.1',
+  build: '2026.06.15',
+  user: 'user',
+  hostname: 'partex-desktop',
+  accentColor: '#6c4ff8',
+  wallpaperIdx: 0,
+  fontSize: 13,
+  brightness: 100,
+  volume: 70,
+  darkMode: true,
+  transparency: true,
+  animations: true,
+  notifications: true,
+  wifi: true,
+  bluetooth: false,
+  language: 'de-DE',
+  timezone: 'Europe/Berlin',
 };
 
-function openCalculator() {
-  createWindow('calculator', 'Taschenrechner', 300, 480);
-  const body = document.getElementById('winbody-calculator');
-  if (!body) return;
-  
-  const keys = [
-    ['MC', 'MR', 'M+', 'M-'],
-    ['C', '⌫', '%', '÷'],
-    ['7', '8', '9', '×'],
-    ['4', '5', '6', '−'],
-    ['1', '2', '3', '+'],
-    ['±', '0', '.', '=']
-  ];
-  
-  body.innerHTML = `
-    <div id="calc-body">
-      <div class="calc-display">
-        <div class="calc-expression" id="calc-expr">${calcState.expression || ''}</div>
-        <div class="calc-result" id="calc-result">${calcState.display}</div>
-      </div>
-      <div class="calc-keys">
-        ${keys.map(row => row.map(k => {
-          let cls = 'calc-key';
-          if (['C', '⌫', '±', 'MC', 'MR', 'M+', 'M-', '%'].includes(k)) cls += ' func';
-          if (['÷', '×', '−', '+'].includes(k)) cls += ' op';
-          if (k === '=') cls += ' equals';
-          if (k === '0') return `<button class="${cls}" style="grid-column:span 2;" onclick="calcInput('${k}')">${k}</button>`;
-          return `<button class="${cls}" onclick="calcInput('${k}')">${k}</button>`;
-        }).join('')).join('')}
-      </div>
-    </div>`;
+const WALLPAPERS = [
+  {bg:'radial-gradient(ellipse at 25% 65%,#18063a 0%,#080810 55%,#000 100%)', label:'Mitternacht'},
+  {bg:'radial-gradient(ellipse at 75% 25%,#061830 0%,#000810 60%,#000 100%)', label:'Ozean'},
+  {bg:'radial-gradient(ellipse at 50% 50%,#061a0a 0%,#00050a 60%,#000 100%)', label:'Wald'},
+  {bg:'radial-gradient(ellipse at 15% 85%,#1a0610 0%,#050005 60%,#000 100%)', label:'Bordeaux'},
+  {bg:'linear-gradient(135deg,#0a0a14 0%,#141428 50%,#0a1020 100%)', label:'Tiefe'},
+  {bg:'radial-gradient(ellipse at 80% 20%,#1a1006 0%,#0a0804 60%,#000 100%)', label:'Dämmerung'},
+];
+
+const ACCENT_COLORS = [
+  '#6c4ff8','#3a8ef5','#2cc06b','#f04055','#f0960a','#e840a0','#00b8d9'
+];
+
+// ══════════════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════════════
+(function boot(){
+  const bar = document.getElementById('boot-bar');
+  let p = 0;
+  const iv = setInterval(() => {
+    p += Math.random() * 12 + 4;
+    if (p >= 100) {
+      p = 100; clearInterval(iv);
+      setTimeout(() => {
+        const b = document.getElementById('boot');
+        b.style.transition = 'opacity .7s';
+        b.style.opacity = '0';
+        setTimeout(() => { b.style.display = 'none'; initOS(); }, 700);
+      }, 200);
+    }
+    bar.style.width = p + '%';
+  }, 120);
+})();
+
+// ══════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════
+function initOS() {
+  updateClock();
+  setInterval(updateClock, 1000);
+  applyWallpaper();
+  makeStars();
+  buildWPanel();
+  setTimeout(() => showNotif('PartexDesktop OS 10.9.1','Willkommen zurück. System bereit.'), 800);
 }
 
-function calcInput(key) {
-  const numKeys = ['0','1','2','3','4','5','6','7','8','9','.'];
-  const ops = ['+', '−', '×', '÷'];
-  
-  if (key === 'C') {
-    calcState.display = '0';
-    calcState.expression = '';
-    calcState.prevValue = null;
-    calcState.operator = null;
-    calcState.justPressedOp = false;
-  } else if (key === '⌫') {
-    calcState.display = calcState.display.length > 1 ? calcState.display.slice(0, -1) : '0';
-  } else if (key === '±') {
-    calcState.display = String(-parseFloat(calcState.display));
-  } else if (key === '%') {
-    calcState.display = String(parseFloat(calcState.display) / 100);
-  } else if (ops.includes(key)) {
-    if (calcState.prevValue !== null && !calcState.justPressedOp) {
-      calcEqual();
-    }
-    calcState.prevValue = parseFloat(calcState.display);
-    calcState.operator = key;
-    calcState.expression = calcState.display + ' ' + key;
-    calcState.justPressedOp = true;
-  } else if (key === '=') {
-    if (calcState.operator && calcState.prevValue !== null) {
-      calcState.expression = calcState.prevValue + ' ' + calcState.operator + ' ' + calcState.display + ' =';
-      calcEqual();
-      calcState.history.push(calcState.expression + ' ' + calcState.display);
-    }
-  } else if (numKeys.includes(key)) {
-    if (calcState.justPressedOp) {
-      calcState.display = key === '.' ? '0.' : key;
-      calcState.justPressedOp = false;
-    } else {
-      if (key === '.' && calcState.display.includes('.')) return;
-      calcState.display = calcState.display === '0' && key !== '.' ? key : calcState.display + key;
-    }
-  } else if (key === 'MC') {
-    calcState.memory = 0;
-  } else if (key === 'MR') {
-    calcState.display = String(calcState.memory);
-  } else if (key === 'M+') {
-    calcState.memory += parseFloat(calcState.display);
-  } else if (key === 'M-') {
-    calcState.memory -= parseFloat(calcState.display);
+function updateClock() {
+  const now = new Date();
+  const d = now.toLocaleDateString('de-DE', {weekday:'short', month:'short', day:'numeric'});
+  const t = now.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+  document.getElementById('mb-clock').textContent = `${d}  ${t}`;
+  // Lock screen
+  if (document.getElementById('lock').classList.contains('on')) {
+    document.getElementById('lock-time').textContent = now.toLocaleTimeString('de-DE', {hour:'2-digit', minute:'2-digit'});
+    document.getElementById('lock-date').textContent = now.toLocaleDateString('de-DE', {weekday:'long', month:'long', day:'numeric'});
   }
-  
-  updateCalcDisplay();
 }
 
-function calcEqual() {
-  const a = calcState.prevValue;
-  const b = parseFloat(calcState.display);
-  let result;
-  
-  switch (calcState.operator) {
-    case '+': result = a + b; break;
-    case '−': result = a - b; break;
-    case '×': result = a * b; break;
-    case '÷': result = b === 0 ? 'Error' : a / b; break;
-    default: return;
+function applyWallpaper() {
+  document.getElementById('wallpaper').style.background = WALLPAPERS[OS.wallpaperIdx].bg;
+  document.documentElement.style.setProperty('--accent', OS.accentColor);
+}
+
+function makeStars() {
+  const wp = document.getElementById('wallpaper');
+  for (let i = 0; i < 100; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 1.8 + 0.4;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--o:${Math.random()*.35+.05};--d:${Math.random()*4+2}s;animation-delay:${Math.random()*6}s;`;
+    wp.appendChild(s);
   }
-  
-  calcState.display = result === 'Error' ? 'Error' : String(parseFloat(result.toFixed(10)));
-  calcState.prevValue = null;
-  calcState.operator = null;
 }
 
-function updateCalcDisplay() {
-  const exprEl = document.getElementById('calc-expr');
-  const resultEl = document.getElementById('calc-result');
-  if (exprEl) exprEl.textContent = calcState.expression;
-  if (resultEl) resultEl.textContent = calcState.display;
-}
-
-// ── KALENDER 2024-2026 (ECHT) ──
-let calendarDate = new Date();
-let calendarEvents = JSON.parse(localStorage.getItem('calendarEvents') || '{}');
-
-function openCalendar() {
-  createWindow('calendar', 'Kalender', 420, 500);
-  renderCalendar();
-}
-
-function renderCalendar() {
-  const body = document.getElementById('winbody-calendar');
-  if (!body) return;
-  
-  const year = calendarDate.getFullYear();
-  const month = calendarDate.getMonth();
-  const today = new Date();
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const prevDays = new Date(year, month, 0).getDate();
-  
-  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
-  const dayNames = ['So','Mo','Di','Mi','Do','Fr','Sa'];
-  
-  body.innerHTML = `
-    <div class="calendar-header">
-      <button class="calendar-nav" onclick="calendarNav(-1)">◀</button>
-      <span style="font-weight:600;font-size:16px;">${months[month]} ${year}</span>
-      <button class="calendar-nav" onclick="calendarNav(1)">▶</button>
-      <select onchange="calendarJump(this.value)" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 8px;border-radius:6px;margin-left:8px;">
-        <option value="2024" ${year===2024?'selected':''}>2024</option>
-        <option value="2025" ${year===2025?'selected':''}>2025</option>
-        <option value="2026" ${year===2026?'selected':''}>2026</option>
-      </select>
-    </div>
-    <div class="calendar-grid">
-      ${dayNames.map(d => `<div class="calendar-cell calendar-cell-header">${d}</div>`).join('')}
-      ${(() => {
-        let cells = '';
-        // Previous month days
-        for (let i = firstDay - 1; i >= 0; i--) {
-          cells += `<div class="calendar-cell other-month">${prevDays - i}</div>`;
-        }
-        // Current month days
-        for (let d = 1; d <= daysInMonth; d++) {
-          const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-          const isToday = d === today.getDate() && month === today.getMonth() && year === today.getFullYear();
-          const hasEvent = calendarEvents[dateStr];
-          cells += `<div class="calendar-cell${isToday ? ' today' : ''}" 
-            onclick="addCalendarEvent('${dateStr}')" 
-            title="${hasEvent || 'Keine Events'}">
-            ${d}${hasEvent ? '<span style="position:absolute;bottom:2px;font-size:8px;">●</span>' : ''}
-          </div>`;
-        }
-        // Next month days
-        const remaining = (7 - ((firstDay + daysInMonth) % 7)) % 7;
-        for (let d = 1; d <= remaining; d++) {
-          cells += `<div class="calendar-cell other-month">${d}</div>`;
-        }
-        return cells;
-      })()}
-    </div>
-    <div style="padding:12px;border-top:1px solid var(--border);margin-top:8px;">
-      <div style="font-weight:600;margin-bottom:8px;">Events:</div>
-      <div id="calendar-event-list" style="max-height:120px;overflow-y:auto;">
-        ${renderEventList()}
+// ══════════════════════════════════════════════════════
+// WINDOW SYSTEM
+// ══════════════════════════════════════════════════════
+function createWin(id, title, w, h, x, y) {
+  if (openWins[id]) { bringFront(id); return null; }
+  const win = document.createElement('div');
+  win.className = 'window active';
+  win.id = 'win-' + id;
+  const sx = x ?? (180 + Math.random() * 120);
+  const sy = y ?? (60 + Math.random() * 60);
+  win.style.cssText = `width:${w}px;height:${h}px;left:${sx}px;top:${sy}px;z-index:${++zTop};`;
+  win.innerHTML = `
+    <div class="titlebar" id="tb-${id}" onmousedown="tbDown(event,'${id}')">
+      <div class="tb-btns">
+        <div class="tb-btn cl" onmousedown="event.stopPropagation()" onclick="closeWin('${id}')"></div>
+        <div class="tb-btn mn" onmousedown="event.stopPropagation()" onclick="minWin('${id}')"></div>
+        <div class="tb-btn mx" onmousedown="event.stopPropagation()" onclick="maxWin('${id}')"></div>
       </div>
-    </div>`;
-}
-
-function renderEventList() {
-  const year = calendarDate.getFullYear();
-  const month = calendarDate.getMonth();
-  const entries = Object.entries(calendarEvents).filter(([date]) => {
-    const d = new Date(date);
-    return d.getFullYear() === year && d.getMonth() === month;
-  });
-  
-  if (entries.length === 0) return '<div style="color:var(--text3);font-size:13px;">Keine Events diesen Monat</div>';
-  
-  return entries.map(([date, event]) => `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 8px;background:var(--bg3);border-radius:6px;margin-bottom:4px;">
-      <span style="font-size:12px;color:var(--text2);">${date.split('-')[2]}.</span>
-      <span style="flex:1;margin-left:8px;font-size:13px;">${event}</span>
-      <button onclick="deleteEvent('${date}')" style="background:none;border:none;color:var(--red);cursor:pointer;">×</button>
+      <div class="win-title">${title}</div>
+      <div style="width:53px;"></div>
     </div>
-  `).join('');
+    <div class="winbody" id="wb-${id}"></div>
+    <div class="resize-h" onmousedown="rsDown(event,'${id}')"></div>`;
+  win.addEventListener('mousedown', () => bringFront(id));
+  document.getElementById('desktop').appendChild(win);
+  openWins[id] = { title, minimized: false };
+  updateDots();
+  return document.getElementById('wb-' + id);
 }
 
-function calendarNav(dir) {
-  calendarDate.setMonth(calendarDate.getMonth() + dir);
-  renderCalendar();
+function bringFront(id) {
+  const w = document.getElementById('win-' + id);
+  if (!w) return;
+  document.querySelectorAll('.window').forEach(e => e.classList.remove('active'));
+  w.style.zIndex = ++zTop;
+  w.classList.add('active');
+  // Update menubar app title
+  if (openWins[id]) document.getElementById('mb-app-title').textContent = openWins[id].title;
 }
 
-function calendarJump(year) {
-  calendarDate.setFullYear(parseInt(year));
-  renderCalendar();
+function closeWin(id) {
+  const w = document.getElementById('win-' + id);
+  if (w) w.remove();
+  delete openWins[id];
+  updateDots();
 }
 
-function addCalendarEvent(dateStr) {
-  const event = prompt('Event für ' + dateStr + ':', calendarEvents[dateStr] || '');
-  if (event === null) return;
-  if (event === '') {
-    delete calendarEvents[dateStr];
+function minWin(id) {
+  const w = document.getElementById('win-' + id);
+  if (!w) return;
+  if (openWins[id].minimized) { w.classList.remove('minimized'); openWins[id].minimized = false; }
+  else { w.classList.add('minimized'); openWins[id].minimized = true; }
+}
+
+function maxWin(id) {
+  const w = document.getElementById('win-' + id);
+  if (!w) return;
+  if (w.dataset.maxed) {
+    w.style.left = w.dataset.ox; w.style.top = w.dataset.oy;
+    w.style.width = w.dataset.ow; w.style.height = w.dataset.oh;
+    delete w.dataset.maxed;
   } else {
-    calendarEvents[dateStr] = event;
-  }
-  localStorage.setItem('calendarEvents', JSON.stringify(calendarEvents));
-  renderCalendar();
-  showNotif('Kalender', 'Event gespeichert');
-}
-
-function deleteEvent(dateStr) {
-  delete calendarEvents[dateStr];
-  localStorage.setItem('calendarEvents', JSON.stringify(calendarEvents));
-  renderCalendar();
-}
-
-// ── NOTES ──────────────────────────────────
-let notes = JSON.parse(localStorage.getItem('notes') || '[{"id":1,"title":"Willkommen","content":"Schreibe hier deine Notizen...\\n\\n- Alles wird automatisch gespeichert\\n- Klicke auf + für neue Notiz"}]');
-let activeNote = 1;
-
-function openNotes() {
-  createWindow('notes', 'Notizen', 600, 420);
-  renderNotes();
-}
-
-function renderNotes() {
-  const body = document.getElementById('winbody-notes');
-  if (!body) return;
-  const note = notes.find(n => n.id === activeNote) || notes[0];
-  
-  body.innerHTML = `
-    <div style="display:flex;height:100%;">
-      <div style="width:180px;background:rgba(0,0,0,0.25);border-right:1px solid var(--border);display:flex;flex-direction:column;">
-        <div style="padding:10px;">
-          <button onclick="newNote()" style="width:100%;background:var(--accent);border:none;color:#fff;padding:8px;border-radius:8px;cursor:pointer;">+ Neue Notiz</button>
-        </div>
-        <div style="flex:1;overflow-y:auto;padding:8px;">
-          ${notes.map(n => `
-            <div onclick="selectNote(${n.id})" style="padding:8px 10px;border-radius:8px;cursor:pointer;margin-bottom:4px;${n.id===activeNote?'background:rgba(124,92,252,0.2);':''}">
-              <div style="font-size:13px;font-weight:500;">${n.title}</div>
-              <div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${n.content.substring(0,30)}</div>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-      <div style="flex:1;display:flex;flex-direction:column;">
-        <div style="padding:8px 12px;border-bottom:1px solid var(--border);">
-          <button onclick="deleteNote(${note ? note.id : 0})" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;cursor:pointer;font-size:12px;">🗑 Löschen</button>
-        </div>
-        <textarea id="note-editor" oninput="saveNoteContent(${note ? note.id : 0}, this.value)" 
-          style="flex:1;background:none;border:none;outline:none;color:var(--text);font-size:var(--text-size);padding:16px;resize:none;font-family:inherit;line-height:1.7;">${note ? note.content : ''}</textarea>
-      </div>
-    </div>`;
-}
-
-function selectNote(id) { activeNote = id; renderNotes(); }
-
-function newNote() {
-  const n = { id: Date.now(), title: 'Neue Notiz', content: '' };
-  notes.push(n);
-  activeNote = n.id;
-  saveNotes();
-  renderNotes();
-}
-
-function deleteNote(id) {
-  notes = notes.filter(n => n.id !== id);
-  if (notes.length) activeNote = notes[0].id;
-  saveNotes();
-  renderNotes();
-}
-
-function saveNoteContent(id, val) {
-  const n = notes.find(n => n.id === id);
-  if (n) {
-    n.content = val;
-    const lines = val.split('\n');
-    n.title = lines[0] || 'Unbenannt';
-    saveNotes();
+    w.dataset.ox = w.style.left; w.dataset.oy = w.style.top;
+    w.dataset.ow = w.style.width; w.dataset.oh = w.style.height;
+    w.style.left = '0'; w.style.top = '26px';
+    w.style.width = window.innerWidth + 'px';
+    w.style.height = (window.innerHeight - 26 - 72) + 'px';
+    w.dataset.maxed = '1';
   }
 }
 
-function saveNotes() {
-  localStorage.setItem('notes', JSON.stringify(notes));
+// Drag windows
+let drag = null;
+function tbDown(e, id) {
+  if (e.target.classList.contains('tb-btn')) return;
+  e.preventDefault();
+  const w = document.getElementById('win-' + id);
+  const r = w.getBoundingClientRect();
+  drag = { id, type:'win', ox: e.clientX - r.left, oy: e.clientY - r.top };
+  on();
 }
 
-// ── SETTINGS (ECHT FUNKTIONIEREND) ──
-function openSettings() {
-  createWindow('settings', 'Einstellungen', 650, 480);
-  renderSettings();
+// Resize
+let rsState = null;
+function rsDown(e, id) {
+  e.preventDefault(); e.stopPropagation();
+  const w = document.getElementById('win-' + id);
+  rsState = { id, sx: e.clientX, sy: e.clientY, sw: w.offsetWidth, sh: w.offsetHeight };
+  document.addEventListener('mousemove', rsMove);
+  document.addEventListener('mouseup', rsUp);
+}
+function rsMove(e) {
+  if (!rsState) return;
+  const w = document.getElementById('win-' + rsState.id);
+  if (!w) return;
+  w.style.width = Math.max(300, rsState.sw + (e.clientX - rsState.sx)) + 'px';
+  w.style.height = Math.max(200, rsState.sh + (e.clientY - rsState.sy)) + 'px';
+}
+function rsUp() { rsState = null; document.removeEventListener('mousemove', rsMove); document.removeEventListener('mouseup', rsUp); }
+
+function on() { document.addEventListener('mousemove', mmove); document.addEventListener('mouseup', mup); }
+function off() { document.removeEventListener('mousemove', mmove); document.removeEventListener('mouseup', mup); }
+function mmove(e) {
+  if (!drag) return;
+  if (drag.type === 'win') {
+    const w = document.getElementById('win-' + drag.id);
+    if (!w) return;
+    w.style.left = (e.clientX - drag.ox) + 'px';
+    w.style.top = Math.max(26, e.clientY - drag.oy) + 'px';
+  } else if (drag.type === 'widget') {
+    const w = document.getElementById('wd-' + drag.id);
+    if (!w) return;
+    w.style.left = (e.clientX - drag.ox) + 'px';
+    w.style.top = (e.clientY - drag.oy) + 'px';
+  } else if (drag.type === 'wrs') {
+    const w = document.getElementById('wd-' + drag.id);
+    if (!w) return;
+    w.style.width = Math.max(150, drag.sw + (e.clientX - drag.sx)) + 'px';
+    w.style.height = Math.max(80, drag.sh + (e.clientY - drag.sy)) + 'px';
+  }
+}
+function mup() { drag = null; off(); }
+
+function updateDots() {
+  document.querySelectorAll('.dock-app .dock-dot').forEach(d => d.remove());
 }
 
-function renderSettings() {
-  const body = document.getElementById('winbody-settings');
-  if (!body) return;
-  
-  body.innerHTML = `
-    <div style="display:flex;height:100%;">
-      <div style="width:160px;background:rgba(0,0,0,0.25);border-right:1px solid var(--border);padding:8px;">
-        <div onclick="settingsSection='text'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">📝 Textgröße</div>
-        <div onclick="settingsSection='display'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">🖥️ Anzeige</div>
-        <div onclick="settingsSection='network'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">📶 Netzwerk</div>
-        <div onclick="settingsSection='bluetooth'" style="padding:8px 12px;border-radius:8px;cursor:pointer;font-size:13px;">📡 Bluetooth</div>
-      </div>
-      <div style="flex:1;padding:20px;overflow-y:auto;" id="settings-content"></div>
-    </div>`;
-  
-  window.settingsSection = window.settingsSection || 'text';
-  renderSettingsContent();
-}
-
-function renderSettingsContent() {
-  const content = document.getElementById('settings-content');
-  if (!content) return;
-  
-  switch (window.settingsSection) {
-    case 'text':
-      content.innerHTML = `
-        <div class="settings-section"><h3>Textgröße</h3>
-          <div style="padding:10px 14px;background:var(--bg3);border-radius:10px;">
-            <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
-              <span class="settings-row-label">Schriftgröße</span>
-              <span style="color:var(--accent);font-weight:600;">${settings.textSize}px</span>
-            </div>
-            <input type="range" min="10" max="24" value="${settings.textSize}" 
-              oninput="settings.textSize=parseInt(this.value);this.nextElementSibling.textContent=this.value+'px';saveSettings();updateAllText();" 
-              style="width:100%;">
-            <span style="font-size:12px;color:var(--text2);">${settings.textSize}px</span>
-          </div>
-          <div style="margin-top:10px;padding:10px 14px;background:var(--bg3);border-radius:10px;">
-            <span style="font-size:${settings.textSize}px;">Vorschau: So sieht Text mit ${settings.textSize}px aus</span>
-          </div>
-        </div>
-        <div class="settings-section"><h3>Akzentfarbe</h3>
-          <div style="display:flex;gap:8px;padding:10px 14px;">
-            ${['#7c5cfc','#4a9eff','#30d158','#ff453a','#ff9f0a','#ff2d55'].map(c => `
-              <div onclick="settings.accent='${c}';saveSettings();" style="width:28px;height:28px;border-radius:50%;background:${c};cursor:pointer;border:3px solid ${settings.accent===c?'#fff':'transparent'};"></div>
-            `).join('')}
-          </div>
-        </div>`;
-      break;
-      
-    case 'display':
-      content.innerHTML = `
-        <div class="settings-section"><h3>Hintergrund</h3>
-          <div style="display:flex;gap:10px;padding:10px 14px;flex-wrap:wrap;">
-            ${wallpapers.map((w, i) => `
-              <div onclick="settings.wallpaperIdx=${i};saveSettings();" style="width:80px;height:50px;border-radius:8px;background:${w};cursor:pointer;border:2px solid ${wallpaperIdx===i?'#fff':'transparent'};"></div>
-            `).join('')}
-          </div>
-        </div>
-        <div class="settings-section"><h3>Dark Mode</h3>
-          ${toggleSetting('darkMode', 'Dunkles Design')}
-        </div>`;
-      break;
-      
-    case 'network':
-      content.innerHTML = `
-        <div class="settings-section"><h3>WLAN</h3>
-          ${toggleSetting('wifi', 'WLAN ein/aus')}
-          <div style="margin-top:8px;padding:10px 14px;background:var(--bg3);border-radius:10px;">
-            <span style="color:${settings.wifi ? 'var(--green)' : 'var(--red)'};font-size:13px;">
-              ${settings.wifi ? '● Verbunden mit PartexNet' : '○ WLAN deaktiviert'}
-            </span>
-          </div>
-        </div>`;
-      break;
-      
-    case 'bluetooth':
-      content.innerHTML = `
-        <div class="settings-section"><h3>Bluetooth</h3>
-          ${toggleSetting('bluetooth', 'Bluetooth ein/aus')}
-          <div style="margin-top:8px;padding:10px 14px;background:var(--bg3);border-radius:10px;">
-            <span style="color:${settings.bluetooth ? 'var(--green)' : 'var(--text2)'};font-size:13px;">
-              ${settings.bluetooth ? '● Bluetooth aktiviert' : '○ Bluetooth deaktiviert'}
-            </span>
-          </div>
-        </div>`;
-      break;
+// ══════════════════════════════════════════════════════
+// APPS
+// ══════════════════════════════════════════════════════
+function openApp(id) {
+  closeAll();
+  switch (id) {
+    case 'finder': openFinder(); break;
+    case 'browser': openBrowser(); break;
+    case 'mail': openMail(); break;
+    case 'calendar': openCalendar(); break;
+    case 'notes': openNotes(); break;
+    case 'music': openMusic(); break;
+    case 'terminal': openTerminal(); break;
+    case 'code': openCode(); break;
+    case 'calculator': openCalculator(); break;
+    case 'maps': openMaps(); break;
+    case 'settings': openSettings(); break;
+    case 'about': openAbout(); break;
   }
 }
 
-function toggleSetting(key, label) {
-  return `<div class="settings-row">
-    <div><div class="settings-row-label">${label}</div></div>
-    <div class="toggle${settings[key] ? ' on' : ''}" onclick="settings.${key}=!settings.${key};this.classList.toggle('on');saveSettings();"></div>
+// ══ FINDER ══
+const FS = {
+  '/': { type:'dir', children:['Zuhause','System','Programme'] },
+  '/Zuhause': { type:'dir', children:['Schreibtisch','Dokumente','Downloads','Bilder','Musik','Filme'] },
+  '/Zuhause/Schreibtisch': { type:'dir', children:[] },
+  '/Zuhause/Dokumente': { type:'dir', children:['Bericht_Q2_2026.pdf','Präsentation.pptx','Haushalt.xlsx','Lebenslauf.pdf'] },
+  '/Zuhause/Downloads': { type:'dir', children:['PartexOS_10.9.1.dmg','Firefox_126.pkg','foto_2026.jpg'] },
+  '/Zuhause/Bilder': { type:'dir', children:['Urlaub_2025.jpg','Screenshot_2026.png','Profilbild.jpg'] },
+  '/Zuhause/Musik': { type:'dir', children:['Playlist_Sommer.m3u'] },
+  '/Zuhause/Filme': { type:'dir', children:[] },
+  '/Programme': { type:'dir', children:['Browser.app','Terminal.app','Notizen.app','Rechner.app'] },
+  '/System': { type:'dir', children:['Library','Kernel','Extensions'] },
+  '/System/Library': { type:'dir', children:['Fonts','Frameworks'] },
+  '/System/Kernel': { type:'dir', children:[] },
+  '/System/Extensions': { type:'dir', children:[] },
+};
+const FILE_ICONS = {
+  'pdf':'📄','pptx':'📊','xlsx':'📈','jpg':'🖼️','png':'🖼️','mp3':'🎵','m3u':'🎵',
+  'dmg':'💿','pkg':'📦','app':'🟦','mp4':'🎬','docx':'📝','txt':'📄',
+  'dir':'📁',
+};
+function getIcon(name) {
+  if (FS['/' + name]) return '📁';
+  const ext = name.split('.').pop().toLowerCase();
+  return FILE_ICONS[ext] || '📄';
+}
+
+let finderPath = '/Zuhause';
+let finderView = 'grid';
+let finderSelected = null;
+
+function openFinder() {
+  const wb = createWin('finder', 'Finder', 720, 480);
+  if (!wb) return;
+  renderFinder(wb);
+}
+
+function renderFinder(wb) {
+  wb = wb || document.getElementById('wb-finder');
+  if (!wb) return;
+  const node = FS[finderPath] || { children: [] };
+  const files = node.children || [];
+  const pathParts = finderPath.split('/').filter(Boolean);
+
+  const FAVES = [
+    { label:'Zuhause', path:'/Zuhause', icon:'🏠' },
+    { label:'Schreibtisch', path:'/Zuhause/Schreibtisch', icon:'🖥️' },
+    { label:'Dokumente', path:'/Zuhause/Dokumente', icon:'📁' },
+    { label:'Downloads', path:'/Zuhause/Downloads', icon:'📥' },
+    { label:'Bilder', path:'/Zuhause/Bilder', icon:'🖼️' },
+    { label:'Musik', path:'/Zuhause/Musik', icon:'🎵' },
+  ];
+
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="finder-wrap">
+    <div class="finder-sb">
+      <div class="finder-sb-section">Favoriten</div>
+      ${FAVES.map(f=>`<div class="finder-sb-item${finderPath===f.path?' active':''}" onclick="finderNav('${f.path}')">${f.icon} ${f.label}</div>`).join('')}
+      <div class="finder-sb-section" style="margin-top:8px;">Orte</div>
+      <div class="finder-sb-item${finderPath==='/'?' active':''}" onclick="finderNav('/')">💻 Dieser Computer</div>
+      <div class="finder-sb-item" onclick="finderNav('/Programme')">📦 Programme</div>
+      <div class="finder-sb-item" onclick="finderNav('/System')">⚙️ System</div>
+    </div>
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;">
+      <div class="finder-toolbar">
+        <button class="finder-view-btn" onclick="finderNav(finderPath.split('/').slice(0,-1).join('/')||'/')">←</button>
+        <div class="finder-path">/${pathParts.join(' › ')}</div>
+        <button class="finder-view-btn${finderView==='grid'?' active':''}" onclick="finderView='grid';renderFinder()">⊞</button>
+        <button class="finder-view-btn${finderView==='list'?' active':''}" onclick="finderView='list';renderFinder()">≡</button>
+      </div>
+      <div id="finder-files" style="flex:1;overflow-y:auto;padding:0 12px 12px;">
+        ${finderView==='grid'
+          ? `<div class="finder-grid">${files.map(f=>`<div class="finder-file-grid${finderSelected===f?' selected':''}" onclick="finderSelected='${f}';renderFinder()" ondblclick="finderOpen('${f}')"><div class="fi">${getIcon(f)}</div><div class="fn">${f}</div></div>`).join('')}${files.length===0?'<div style="color:var(--text3);font-size:12px;padding:20px;">Dieser Ordner ist leer</div>':''}</div>`
+          : `<div class="finder-list"><div style="display:flex;font-size:10px;color:var(--text3);padding:4px 8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border);gap:10px;"><span style="flex:1;">Name</span><span style="width:80px;">Art</span><span style="width:80px;">Datum</span></div>${files.map(f=>{const ext=f.split('.').pop();const isDir=FS[finderPath+'/'+f];return`<div class="finder-file-list${finderSelected===f?' selected':''}" onclick="finderSelected='${f}';renderFinder()" ondblclick="finderOpen('${f}')"><span class="fi">${getIcon(f)}</span><span class="fn">${f}</span><span class="fmeta" style="width:80px;">${isDir?'Ordner':ext.toUpperCase()}</span><span class="fmeta" style="width:80px;">Heute</span></div>`}).join('')}</div>`
+        }
+      </div>
+      <div class="finder-status">${files.length} Objekte${finderSelected?' · '+finderSelected+' ausgewählt':''}</div>
+    </div>
   </div>`;
 }
 
-function updateAllText() {
-  document.documentElement.style.setProperty('--text-size', settings.textSize + 'px');
-  document.documentElement.style.setProperty('--title-size', (settings.textSize - 1) + 'px');
-  document.documentElement.style.setProperty('--small-size', (settings.textSize - 3) + 'px');
-  
-  // Update all window bodies
-  document.querySelectorAll('.window-body').forEach(el => {
-    el.style.fontSize = settings.textSize + 'px';
-  });
-  
-  // Update desktop icon labels
-  document.querySelectorAll('.desk-icon-label').forEach(el => {
-    el.style.fontSize = (settings.textSize - 3) + 'px';
-  });
+function finderNav(path) {
+  if (FS[path]) { finderPath = path; finderSelected = null; renderFinder(); }
+}
+function finderOpen(name) {
+  const fullPath = finderPath + '/' + name;
+  if (FS[fullPath]) finderNav(fullPath);
+  else showNotif('Finder', `"${name}" kann nicht geöffnet werden.`);
 }
 
-// ── WIDGETS ──
-function addWidget(type) {
-  const id = Date.now();
-  const w = document.createElement('div');
-  w.className = 'widget';
-  w.id = 'widget-' + id;
-  w.style.left = (100 + Math.random() * 300) + 'px';
-  w.style.top = (100 + Math.random() * 200) + 'px';
-  
-  let content = '';
-  
-  switch(type) {
-    case 'weather':
-      w.style.width = '220px';
-      content = `<div id="wweather-${id}" style="text-align:center;">
-        <div style="font-size:40px;">⏳</div>
-        <div style="font-size:13px;">Lade Wetter...</div>
-      </div>`;
-      setTimeout(() => fetchWeather(id), 100);
-      break;
-      
-    case 'system':
-      w.style.width = '200px';
-      content = `<div id="wsys-${id}">
-        <div style="margin-bottom:8px;">
-          <div style="font-size:11px;color:var(--text2);margin-bottom:3px;">CPU</div>
-          <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;">
-            <div id="wsys-cpu-${id}" style="width:${Math.random()*30+10}%;height:100%;background:var(--green);border-radius:2px;transition:width 0.5s;"></div>
-          </div>
-        </div>
-        <div>
-          <div style="font-size:11px;color:var(--text2);margin-bottom:3px;">RAM</div>
-          <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:2px;">
-            <div id="wsys-ram-${id}" style="width:${Math.random()*20+40}%;height:100%;background:var(--blue);border-radius:2px;transition:width 0.5s;"></div>
-          </div>
-        </div>
-        <div style="font-size:10px;color:var(--text3);margin-top:8px;" id="wsys-text-${id}">${navigator.hardwareConcurrency || 4} Kerne · ${Math.round((navigator.deviceMemory || 8))} GB RAM</div>
-      </div>`;
-      setInterval(() => {
-        const cpuEl = document.getElementById('wsys-cpu-' + id);
-        const ramEl = document.getElementById('wsys-ram-' + id);
-        if (cpuEl) cpuEl.style.width = (Math.random() * 30 + 5) + '%';
-        if (ramEl) ramEl.style.width = (Math.random() * 20 + 50) + '%';
-      }, 2000);
-      break;
-      
-    case 'clock':
-      w.style.width = '180px';
-      content = `<div style="text-align:center;">
-        <div id="wclock-${id}" style="font-size:32px;font-weight:300;"></div>
-        <div id="wdate-${id}" style="font-size:12px;color:var(--text2);margin-top:4px;"></div>
-      </div>`;
-      setInterval(() => {
-        const c = document.getElementById('wclock-' + id);
-        const d = document.getElementById('wdate-' + id);
-        if (c && d) {
-          const n = new Date();
-          c.textContent = n.toLocaleTimeString('de-DE', {hour:'2-digit',minute:'2-digit'});
-          d.textContent = n.toLocaleDateString('de-DE', {weekday:'long',day:'numeric',month:'long'});
-        }
-      }, 1000);
-      break;
-  }
-  
-  w.innerHTML = `
-    <div class="widget-header" onmousedown="widgetDragStart(event, ${id})">
-      <div class="widget-title">${type}</div>
-      <div class="widget-remove" onclick="this.closest('.widget').remove()">×</div>
+// ══ BROWSER ══
+function openBrowser() {
+  const wb = createWin('browser', 'Browser', 900, 600);
+  if (!wb) return;
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="browser-wrap">
+    <div class="browser-nav">
+      <button class="bnav-btn" onclick="bBack()">←</button>
+      <button class="bnav-btn" onclick="bFwd()">→</button>
+      <button class="bnav-btn" onclick="bRefresh()">↻</button>
+      <input id="browser-url-bar" value="partex://newtab" onkeydown="if(event.key==='Enter')bNav(this.value)"/>
+      <button class="bnav-btn" onclick="bNav(document.getElementById('browser-url-bar').value)">→</button>
     </div>
-    ${content}`;
-  
-  document.getElementById('widgets-layer').appendChild(w);
+    <iframe id="browser-frame" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>`;
+  bShowHome();
 }
 
-function widgetDragStart(e, id) {
-  e.preventDefault();
-  const w = document.getElementById('widget-' + id);
-  if (!w) return;
-  const rect = w.getBoundingClientRect();
-  dragState = { id, offX: e.clientX - rect.left, offY: e.clientY - rect.top, type: 'widget' };
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+function bShowHome() {
+  const f = document.getElementById('browser-frame');
+  if (!f) return;
+  const t = new Date().getHours();
+  const greeting = t < 12 ? 'Guten Morgen' : t < 18 ? 'Guten Tag' : 'Guten Abend';
+  f.srcdoc = `<!DOCTYPE html><html><head><style>*{margin:0;padding:0;box-sizing:border-box;}body{background:#0f0f10;color:#efefef;font-family:system-ui,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:60px 20px 40px;}h1{font-size:22px;font-weight:300;margin-bottom:30px;color:#9a9aaa;}input{width:500px;max-width:90vw;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);border-radius:24px;padding:12px 20px;color:#fff;font-size:15px;outline:none;text-align:center;}input:focus{border-color:#6c4ff8;}.grid{display:grid;grid-template-columns:repeat(4,100px);gap:14px;margin-top:36px;}.tile{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:18px 10px;text-align:center;cursor:pointer;font-size:11px;color:#9a9aaa;}.tile:hover{background:rgba(108,79,248,0.15);border-color:#6c4ff8;}.tile-icon{font-size:28px;margin-bottom:6px;}.tag{font-size:10px;background:rgba(108,79,248,0.2);color:#9b7dff;padding:3px 8px;border-radius:6px;margin-top:6px;display:inline-block;}</style></head><body><h1>${greeting}</h1><input placeholder="Suchen oder URL eingeben…"/><div class="grid"><div class="tile"><div class="tile-icon">📰</div>Nachrichten</div><div class="tile"><div class="tile-icon">🎬</div>Videos</div><div class="tile"><div class="tile-icon">🛒</div>Shop</div><div class="tile"><div class="tile-icon">📧</div>Mail</div><div class="tile"><div class="tile-icon">📊</div>Finanzen</div><div class="tile"><div class="tile-icon">🗺️</div>Karten</div><div class="tile"><div class="tile-icon">📖</div>Lesen</div><div class="tile"><div class="tile-icon">⚙️</div>Einstellungen</div></div></body></html>`;
 }
 
-async function fetchWeather(widgetId) {
-  try {
-    const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current_weather=true');
-    const data = await response.json();
-    const weather = data.current_weather;
-    const el = document.getElementById('wweather-' + widgetId);
-    if (el) {
-      const weatherIcons = { 0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 51: '🌧️', 61: '🌧️', 71: '🌨️', 95: '⛈️' };
-      const icon = weatherIcons[weather.weathercode] || '🌡️';
-      el.innerHTML = `
-        <div style="text-align:center;">
-          <div style="font-size:48px;">${icon}</div>
-          <div style="font-size:28px;font-weight:300;">${weather.temperature}°C</div>
-          <div style="font-size:12px;color:var(--text2);">Wind: ${weather.windspeed} km/h</div>
-          <div style="font-size:10px;color:var(--text3);margin-top:4px;">Live aus Berlin</div>
-        </div>`;
+function bNav(url) {
+  const f = document.getElementById('browser-frame');
+  if (!f) return;
+  const bar = document.getElementById('browser-url-bar');
+  if (!url.startsWith('http') && !url.startsWith('partex:')) url = 'https://' + url;
+  if (bar) bar.value = url;
+  if (url.startsWith('partex:')) { bShowHome(); return; }
+  try { f.src = url; } catch(e) {}
+}
+function bBack() { try { document.getElementById('browser-frame').contentWindow.history.back(); } catch(e) {} }
+function bFwd() { try { document.getElementById('browser-frame').contentWindow.history.forward(); } catch(e) {} }
+function bRefresh() { try { document.getElementById('browser-frame').contentWindow.location.reload(); } catch(e) {} }
+
+// ══ MAIL ══
+const MAILS = [
+  { id:1, from:'Max Mustermann', addr:'max@example.de', subj:'Projektupdate Q2', time:'09:14', body:`Hallo,\n\nich wollte kurz über den Stand des Q2-Projekts informieren. Alles läuft nach Plan, die Meilensteine wurden erreicht.\n\nDer Bericht wird bis Freitag fertiggestellt.\n\nViele Grüße\nMax`, unread:true },
+  { id:2, from:'Anna Schmidt', addr:'anna.schmidt@firma.de', subj:'Meeting morgen um 10 Uhr', time:'08:30', body:`Hallo,\n\nkurze Erinnerung: Morgen findet unser wöchentliches Meeting um 10:00 Uhr statt.\n\nTagesordnung:\n- Review der letzten Woche\n- Planung neue Sprint\n- Sonstiges\n\nBis morgen!\nAnna`, unread:true },
+  { id:3, from:'PartexStore', addr:'noreply@partexstore.de', subj:'Ihre Bestellung wurde versendet', time:'Gestern', body:`Guten Tag,\n\nIhre Bestellung #PX-2026-4821 wurde heute versandt und ist auf dem Weg zu Ihnen.\n\nVoraussichtliche Lieferung: 17. Juni 2026\n\nTracking-Nummer: PT826491DE\n\nMit freundlichen Grüßen\nPartexStore`, unread:false },
+  { id:4, from:'Julia Weber', addr:'j.weber@uni.de', subj:'Re: Frage zur Hausarbeit', time:'Mo', body:`Hallo,\n\ndanke für Ihre Frage. Die Hausarbeit soll bis zum 30. Juni abgegeben werden.\n\nBitte achten Sie auf die Formatierungsrichtlinien (APA 7. Auflage).\n\nBei weiteren Fragen melden Sie sich gerne.\n\nFreundliche Grüße\nDr. Julia Weber`, unread:false },
+];
+let activeMail = 1;
+
+function openMail() {
+  const wb = createWin('mail', 'Mail', 780, 520);
+  if (!wb) return;
+  renderMail(wb);
+}
+
+function renderMail(wb) {
+  wb = wb || document.getElementById('wb-mail');
+  if (!wb) return;
+  const mail = MAILS.find(m => m.id === activeMail);
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="mail-wrap">
+    <div class="mail-sb">
+      <div class="finder-sb-section">Postfächer</div>
+      <div class="finder-sb-item active">📥 Eingang <span style="margin-left:auto;background:var(--accent);border-radius:8px;padding:1px 6px;font-size:10px;color:#fff;">${MAILS.filter(m=>m.unread).length}</span></div>
+      <div class="finder-sb-item">📤 Gesendet</div>
+      <div class="finder-sb-item">📝 Entwürfe</div>
+      <div class="finder-sb-item">🗑️ Papierkorb</div>
+    </div>
+    <div class="mail-list">
+      <div style="padding:8px;border-bottom:1px solid var(--border);">
+        <button class="mail-compose-btn" onclick="showNotif('Mail','Neuer Entwurf erstellt.')">✏️ Neue Mail</button>
+      </div>
+      ${MAILS.map(m=>`<div class="mail-item${m.id===activeMail?' active':''}" onclick="activeMail=${m.id};renderMail()">
+        <div class="mail-item-from">${m.unread?'<span class="mail-unread"></span>':'<span style="display:inline-block;width:12px;"></span>'}<span style="flex:1;">${m.from}</span><span class="mail-item-time">${m.time}</span></div>
+        <div class="mail-item-subj">${m.subj}</div>
+      </div>`).join('')}
+    </div>
+    <div class="mail-view">
+      ${mail ? `
+      <div class="mail-view-head">
+        <div class="mail-view-subj">${mail.subj}</div>
+        <div class="mail-view-meta">
+          Von: <b>${mail.from}</b> &lt;${mail.addr}&gt;<br>
+          An: Ich &lt;${OS.user}@partex.local&gt;<br>
+          Zeit: ${mail.time}
+        </div>
+      </div>
+      <div class="mail-view-body">${mail.body.replace(/\n/g,'<br>')}</div>` : '<div style="padding:20px;color:var(--text3);">Keine Mail ausgewählt</div>'}
+    </div>
+  </div>`;
+}
+
+// ══ CALENDAR ══
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+const EVENTS = {
+  [`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()}`]: ['Meeting 10:00'],
+  [`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()+2}`]: ['Zahnarzt 14:30','Sport 18:00'],
+  [`${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDate()+5}`]: ['Geburtstag Anna'],
+};
+
+function openCalendar() {
+  const wb = createWin('calendar', 'Kalender', 800, 560);
+  if (!wb) return;
+  renderCalendar(wb);
+}
+
+function renderCalendar(wb) {
+  wb = wb || document.getElementById('wb-calendar');
+  if (!wb) return;
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const dayLabels = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const now = new Date();
+  const first = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+
+  let cells = '';
+  // Prev month filler
+  for (let i = first - 1; i >= 0; i--) {
+    cells += `<div class="cal-cell other-month"><div class="cal-day-num">${daysInPrev - i}</div></div>`;
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const isToday = d === now.getDate() && calMonth === now.getMonth() && calYear === now.getFullYear();
+    const key = `${calYear}-${calMonth}-${d}`;
+    const evs = EVENTS[key] || [];
+    cells += `<div class="cal-cell${isToday?' today':''}">
+      <div class="cal-day-num">${d}</div>
+      ${evs.map(e=>`<div class="cal-event">${e}</div>`).join('')}
+    </div>`;
+  }
+
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="cal-wrap">
+    <div class="cal-header">
+      <button class="cal-nav" onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--;}renderCalendar()">←</button>
+      <div class="cal-month">${months[calMonth]} ${calYear}</div>
+      <button class="cal-nav" onclick="calMonth++;if(calMonth>11){calMonth=0;calYear++;}renderCalendar()">→</button>
+      <button class="cal-nav" onclick="calYear=new Date().getFullYear();calMonth=new Date().getMonth();renderCalendar()">Heute</button>
+    </div>
+    <div class="cal-grid">
+      <div class="cal-days-header">${dayLabels.map(d=>`<div class="cal-day-label">${d}</div>`).join('')}</div>
+      <div class="cal-cells">${cells}</div>
+    </div>
+  </div>`;
+}
+
+// ══ NOTES ══
+let notes = [
+  { id:1, content:'Einkaufsliste\n\nMilch\nBrot\nKaffee\nÄpfel\nEier', modified: new Date() },
+  { id:2, content:'Projekt-Ideen\n\nApp für Zeiterfassung\nDashboard redesign\nAPI-Dokumentation aktualisieren', modified: new Date(Date.now()-3600000) },
+];
+let activeNote = 1;
+
+function openNotes() {
+  const wb = createWin('notes', 'Notizen', 640, 440);
+  if (!wb) return;
+  renderNotes(wb);
+}
+
+function renderNotes(wb) {
+  wb = wb || document.getElementById('wb-notes');
+  if (!wb) return;
+  const note = notes.find(n => n.id === activeNote) || notes[0];
+  const title = note ? note.content.split('\n')[0] || 'Neue Notiz' : '';
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="editor-wrap">
+    <div class="editor-sb">
+      <div class="editor-sb-top">
+        <button class="btn btn-primary" style="flex:1;padding:5px 8px;" onclick="newNote()">+ Neu</button>
+      </div>
+      <div class="editor-list">
+        ${notes.map(n=>{const t=n.content.split('\n')[0]||'Neue Notiz';const d=n.modified.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});return`<div class="editor-item${n.id===activeNote?' active':''}" onclick="activeNote=${n.id};renderNotes()">
+          <div class="editor-item-title">${t}</div>
+          <div class="editor-item-date">${d}</div>
+        </div>`;}).join('')}
+      </div>
+    </div>
+    <div class="editor-main">
+      <div class="editor-bar">
+        <button class="editor-btn" onclick="deleteNote()">🗑 Löschen</button>
+        <button class="editor-btn" onclick="exportNote()">↓ Export</button>
+        <span style="flex:1;"></span>
+        <span style="font-size:11px;color:var(--text3);">${note ? note.modified.toLocaleDateString('de-DE') : ''}</span>
+      </div>
+      ${note ? `<textarea id="note-editor" oninput="saveNote(${note.id},this.value)" placeholder="Notiz schreiben…">${note.content}</textarea>` : '<div style="padding:20px;color:var(--text3);">Keine Notiz ausgewählt</div>'}
+    </div>
+  </div>`;
+}
+
+function newNote() {
+  const n = { id: Date.now(), content: '', modified: new Date() };
+  notes.unshift(n); activeNote = n.id; renderNotes();
+  setTimeout(() => { const e = document.getElementById('note-editor'); if (e) e.focus(); }, 50);
+}
+function deleteNote() {
+  notes = notes.filter(n => n.id !== activeNote);
+  if (notes.length) activeNote = notes[0].id; else activeNote = null;
+  renderNotes();
+}
+function saveNote(id, val) {
+  const n = notes.find(n => n.id === id);
+  if (n) { n.content = val; n.modified = new Date(); }
+}
+function exportNote() {
+  const n = notes.find(n => n.id === activeNote);
+  if (!n) return;
+  const title = n.content.split('\n')[0] || 'Notiz';
+  const b = new Blob([n.content], { type:'text/plain' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(b);
+  a.download = title + '.txt'; a.click();
+}
+
+// ══ MUSIC ══
+const TRACKS = [
+  { title:'Cosmic Wave', artist:'PartexSound', emoji:'🌌', color:'#6c4ff8,#3a1a80', dur:247 },
+  { title:'Digital Rain', artist:'SynthWave', emoji:'💧', color:'#1a6080,#0a2040', dur:193 },
+  { title:'Neon Nights', artist:'ElectroPulse', emoji:'🌃', color:'#80201a,#3a0010', dur:221 },
+  { title:'Aurora', artist:'AmbientFM', emoji:'🌅', color:'#20601a,#0a2808', dur:318 },
+  { title:'Pulsar', artist:'DeepSpace', emoji:'⭐', color:'#604010,#2a1800', dur:175 },
+];
+let musicIdx = 0;
+let musicPos = 0;
+let musicPlaying = false;
+let musicIv = null;
+
+function openMusic() {
+  const wb = createWin('music', 'Musik', 310, 520);
+  if (!wb) return;
+  renderMusic(wb);
+}
+
+function renderMusic(wb) {
+  wb = wb || document.getElementById('wb-music');
+  if (!wb) return;
+  const t = TRACKS[musicIdx];
+  const pct = (musicPos / t.dur * 100).toFixed(1);
+  const cur = `${Math.floor(musicPos/60)}:${String(musicPos%60).padStart(2,'0')}`;
+  const tot = `${Math.floor(t.dur/60)}:${String(t.dur%60).padStart(2,'0')}`;
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="music-wrap">
+    <div class="music-art" style="background:linear-gradient(135deg,${t.color})">${t.emoji}</div>
+    <div class="music-track-title">${t.title}</div>
+    <div class="music-artist">${t.artist}</div>
+    <div class="music-prog-wrap">
+      <div class="music-prog" onclick="musicSeek(event,${t.dur})">
+        <div class="music-prog-bar" id="mpbar" style="width:${pct}%"></div>
+      </div>
+      <div class="music-times"><span>${cur}</span><span>${tot}</span></div>
+    </div>
+    <div class="music-controls">
+      <button class="mc" onclick="musicPrev()">⏮</button>
+      <button class="mc" onclick="musicRw()">⏪</button>
+      <button class="mc main" id="mplay-btn" onclick="toggleMusic()">${musicPlaying?'⏸':'▶'}</button>
+      <button class="mc" onclick="musicFf()">⏩</button>
+      <button class="mc" onclick="musicNext()">⏭</button>
+    </div>
+    <div class="music-vol">
+      <span style="font-size:12px;">🔈</span>
+      <input type="range" class="s-range" style="flex:1;" min="0" max="100" value="${OS.volume}"
+        oninput="OS.volume=parseInt(this.value);document.getElementById('mvol-val').textContent=this.value+'%'"/>
+      <span style="font-size:11px;color:var(--text2);" id="mvol-val">${OS.volume}%</span>
+      <span style="font-size:12px;">🔊</span>
+    </div>
+    <div class="music-queue">
+      <div style="font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;">Warteschlange</div>
+      ${TRACKS.map((tr,i)=>`<div class="mq-item${i===musicIdx?' active':''}" onclick="musicIdx=${i};musicPos=0;renderMusic()">
+        <div class="mq-art" style="background:linear-gradient(135deg,${tr.color})">${tr.emoji}</div>
+        <div><div class="mq-title">${tr.title}</div><div class="mq-artist">${tr.artist}</div></div>
+        <div style="margin-left:auto;font-size:11px;color:var(--text3);">${Math.floor(tr.dur/60)}:${String(tr.dur%60).padStart(2,'0')}</div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function toggleMusic() {
+  musicPlaying = !musicPlaying;
+  if (musicPlaying) {
+    musicIv = setInterval(() => {
+      const t = TRACKS[musicIdx];
+      musicPos = Math.min(musicPos + 1, t.dur);
+      if (musicPos >= t.dur) { musicNext(); return; }
+      const bar = document.getElementById('mpbar');
+      if (bar) bar.style.width = (musicPos/t.dur*100) + '%';
+    }, 1000);
+  } else clearInterval(musicIv);
+  const btn = document.getElementById('mplay-btn');
+  if (btn) btn.textContent = musicPlaying ? '⏸' : '▶';
+}
+function musicNext() { clearInterval(musicIv); musicPlaying = false; musicPos = 0; musicIdx = (musicIdx+1)%TRACKS.length; renderMusic(); }
+function musicPrev() { clearInterval(musicIv); musicPlaying = false; musicPos = 0; musicIdx = (musicIdx-1+TRACKS.length)%TRACKS.length; renderMusic(); }
+function musicSeek(e, dur) { const r=e.currentTarget.getBoundingClientRect(); musicPos=Math.floor((e.clientX-r.left)/r.width*dur); renderMusic(); }
+function musicFf() { musicPos = Math.min(musicPos+10, TRACKS[musicIdx].dur); renderMusic(); }
+function musicRw() { musicPos = Math.max(0, musicPos-10); renderMusic(); }
+
+// ══ TERMINAL ══
+let termCwd = '/Zuhause';
+let termHistory = [];
+let termHistIdx = -1;
+let termFS2 = JSON.parse(JSON.stringify(FS));
+let termFiles = {
+  '/Zuhause/Dokumente/Bericht_Q2_2026.pdf': '(Binärdatei — PDF)',
+  '/Zuhause/Dokumente/Lebenslauf.pdf': '(Binärdatei — PDF)',
+};
+let termAliases = {};
+let termVars = {};
+let termPkgs = ['bash','coreutils','partex-ui','curl'];
+const termPkgDB = {
+  'htop':'Interaktiver Prozessmonitor','vim':'Fortgeschrittener Texteditor','git':'Versionskontrolle',
+  'python3':'Python 3 Interpreter','node':'Node.js Laufzeit','ffmpeg':'Audio/Video-Konverter',
+  'wget':'Web-Downloader','neofetch':'Systeminfo-Anzeige','tmux':'Terminal-Multiplexer',
+  'zsh':'Z-Shell','cowsay':'Sprechende Kuh','fortune':'Zufallszitate','lolcat':'Bunt',
+  'unzip':'Archiv-Entpacker','gcc':'GNU C Compiler','make':'Build-Automatisierung',
+};
+
+function openTerminal() {
+  const wb = createWin('terminal', 'Terminal', 720, 460);
+  if (!wb) return;
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div id="term-body">
+    <div id="term-out"></div>
+    <div id="term-in-line">
+      <span id="term-prompt"></span>
+      <input id="term-in" autocomplete="off" spellcheck="false" onkeydown="termKey(event)"/>
+    </div>
+  </div>`;
+  updateTermPrompt();
+  termPrint('PartexDesktop OS 10.9.1 — partsh 2.1');
+  termPrint('Tippe <b style="color:var(--accent)">help</b> für Befehle, <b style="color:#f5c842">pkg help</b> für Paketmanager.\n');
+  document.getElementById('term-in').focus();
+}
+
+function updateTermPrompt() {
+  const p = document.getElementById('term-prompt');
+  if (!p) return;
+  const cwd = termCwd.replace('/Zuhause','~');
+  p.innerHTML = `<span style="color:var(--accent)">${OS.user}@${OS.hostname}</span><span style="color:var(--text3)">:</span><span style="color:var(--blue)">${cwd}</span><span style="color:var(--text3)"> $ </span>`;
+}
+
+function termPrint(html, color) {
+  const out = document.getElementById('term-out');
+  if (!out) return;
+  const d = document.createElement('div');
+  d.innerHTML = html;
+  if (color) d.style.color = color;
+  out.appendChild(d);
+  const tb = document.getElementById('term-body');
+  if (tb) tb.scrollTop = tb.scrollHeight;
+}
+
+function termKey(e) {
+  const inp = document.getElementById('term-in');
+  if (!inp) return;
+  if (e.key === 'Enter') {
+    const cmd = inp.value.trim();
+    const promptSnap = document.getElementById('term-prompt').innerHTML;
+    termPrint(promptSnap + cmd);
+    if (cmd) { termHistory.unshift(cmd); termHistIdx = -1; termRun(cmd); }
+    inp.value = '';
+    updateTermPrompt();
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (termHistIdx < termHistory.length-1) { termHistIdx++; inp.value = termHistory[termHistIdx]; }
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (termHistIdx > 0) { termHistIdx--; inp.value = termHistory[termHistIdx]; }
+    else { termHistIdx = -1; inp.value = ''; }
+  } else if (e.key === 'Tab') {
+    e.preventDefault();
+    const CMDS = ['ls','ll','la','cd','pwd','cat','echo','clear','mkdir','rmdir','rm','touch','cp','mv','find','grep','head','tail','wc','date','whoami','hostname','uname','uptime','ps','df','free','history','alias','export','env','which','man','nano','git','pkg','neofetch','cowsay','fortune','cal','seq','base64','ping','ifconfig','help','exit'];
+    const parts = inp.value.split(' ');
+    const last = parts[parts.length-1];
+    const matches = CMDS.filter(c => c.startsWith(last));
+    if (matches.length === 1) { parts[parts.length-1] = matches[0]; inp.value = parts.join(' '); }
+    else if (matches.length > 1) termPrint(matches.join('  '));
+  } else if (e.ctrlKey && e.key === 'c') { termPrint('^C'); inp.value = ''; }
+  else if (e.ctrlKey && e.key === 'l') { e.preventDefault(); document.getElementById('term-out').innerHTML = ''; }
+}
+
+function resolvePath(p) {
+  if (!p) return termCwd;
+  if (p === '~') return '/Zuhause';
+  if (p.startsWith('~/')) p = '/Zuhause/' + p.slice(2);
+  if (!p.startsWith('/')) p = termCwd + '/' + p;
+  const parts = p.split('/').filter(Boolean);
+  const res = [];
+  for (const pt of parts) { if (pt === '..') res.pop(); else if (pt !== '.') res.push(pt); }
+  return '/' + res.join('/');
+}
+
+function termRun(raw) {
+  const parts = raw.trim().split(/\s+/);
+  let cmd = parts[0];
+  if (termAliases[cmd]) cmd = termAliases[cmd].split(' ')[0];
+  const args = parts.slice(1);
+  const full = parts.slice(1).join(' ');
+
+  if (cmd === 'pkg' || cmd === 'apt' || cmd === 'pacman') { termPkg(args); return; }
+
+  switch (cmd) {
+    case 'help': termPrint(termHelp()); break;
+    case 'ls': case 'll': case 'la': termLs(cmd, args); break;
+    case 'cd': termCd(args[0]); break;
+    case 'pwd': termPrint(termCwd); break;
+    case 'cat': termCat(args); break;
+    case 'echo': termPrint(full.replace(/\$(\w+)/g,(_,v)=>termVars[v]||process_env(v)||'')); break;
+    case 'clear': document.getElementById('term-out').innerHTML = ''; break;
+    case 'mkdir': {
+      if (!args[0]) { termPrint('mkdir: fehlendes Argument','#f04055'); break; }
+      const p = resolvePath(args[0]);
+      if (FS[p]) { termPrint(`mkdir: ${args[0]}: Existiert bereits`,'#f04055'); break; }
+      FS[p] = { type:'dir', children:[] };
+      const par = p.split('/').slice(0,-1).join('/') || '/';
+      const name = p.split('/').pop();
+      if (FS[par] && !FS[par].children.includes(name)) FS[par].children.push(name);
+      break;
     }
-  } catch(e) {
-    const el = document.getElementById('wweather-' + widgetId);
-    if (el) el.innerHTML = `<div style="text-align:center;color:var(--red);">Wetter nicht verfügbar</div>`;
+    case 'touch': {
+      if (!args[0]) break;
+      const p = resolvePath(args[0]);
+      if (!termFiles[p]) termFiles[p] = '';
+      const par = p.split('/').slice(0,-1).join('/') || '/';
+      const name = p.split('/').pop();
+      if (FS[par] && !FS[par].children.includes(name)) FS[par].children.push(name);
+      break;
+    }
+    case 'rm': termRm(args); break;
+    case 'rmdir': {
+      const p = resolvePath(args[0]);
+      if (!FS[p]) { termPrint(`rmdir: ${args[0]}: Nicht gefunden`,'#f04055'); break; }
+      if (FS[p].children.length) { termPrint(`rmdir: ${args[0]}: Ordner nicht leer`,'#f04055'); break; }
+      const par = p.split('/').slice(0,-1).join('/') || '/';
+      const name = p.split('/').pop();
+      if (FS[par]) FS[par].children = FS[par].children.filter(x=>x!==name);
+      delete FS[p];
+      break;
+    }
+    case 'cp': {
+      if (args.length < 2) { termPrint('cp: fehlendes Argument'); break; }
+      const s = resolvePath(args[0]), d = resolvePath(args[1]);
+      if (!termFiles[s] && !FS[s]) { termPrint(`cp: ${args[0]}: Nicht gefunden`,'#f04055'); break; }
+      if (termFiles[s] !== undefined) termFiles[d] = termFiles[s];
+      const dp = d.split('/').slice(0,-1).join('/') || '/';
+      const dn = d.split('/').pop();
+      if (FS[dp] && !FS[dp].children.includes(dn)) FS[dp].children.push(dn);
+      break;
+    }
+    case 'mv': {
+      if (args.length < 2) { termPrint('mv: fehlendes Argument'); break; }
+      const s = resolvePath(args[0]), d = resolvePath(args[1]);
+      if (termFiles[s] !== undefined) { termFiles[d] = termFiles[s]; delete termFiles[s]; }
+      if (FS[s]) { FS[d] = FS[s]; delete FS[s]; }
+      const sp = s.split('/').slice(0,-1).join('/') || '/';
+      const sn = s.split('/').pop();
+      if (FS[sp]) FS[sp].children = FS[sp].children.filter(x=>x!==sn);
+      const dp = d.split('/').slice(0,-1).join('/') || '/';
+      const dn = d.split('/').pop();
+      if (FS[dp] && !FS[dp].children.includes(dn)) FS[dp].children.push(dn);
+      break;
+    }
+    case 'find': {
+      const basePath = args.find(a=>!a.startsWith('-')) || termCwd;
+      const rp = resolvePath(basePath);
+      const nameI = args.indexOf('-name');
+      const pattern = nameI >= 0 ? args[nameI+1] : '*';
+      const results = [];
+      function scanDir(dir) {
+        (FS[dir]?.children || []).forEach(f => {
+          const fp = dir + '/' + f;
+          if (pattern === '*' || f.includes(pattern.replace(/\*/g,''))) results.push(fp);
+          if (FS[fp]) scanDir(fp);
+        });
+      }
+      scanDir(rp);
+      results.forEach(r => termPrint(r));
+      if (!results.length) termPrint('(keine Ergebnisse)');
+      break;
+    }
+    case 'grep': {
+      const pat = args.find(a=>!a.startsWith('-'));
+      const file = args[args.indexOf(pat)+1];
+      if (!pat) { termPrint('grep: fehlendes Muster'); break; }
+      if (file) {
+        const p = resolvePath(file);
+        const c = termFiles[p];
+        if (!c) { termPrint(`grep: ${file}: Nicht gefunden`,'#f04055'); break; }
+        c.split('\n').filter(l=>l.includes(pat)).forEach(l=>termPrint(l.replace(new RegExp(pat,'g'),`<span style="color:var(--red)">${pat}</span>`)));
+      } else termPrint('(grep: stdin nicht unterstützt)');
+      break;
+    }
+    case 'head': { const n=parseInt(args[args.indexOf('-n')+1])||10; const f=args.find(a=>!a.startsWith('-')); if(f){const c=termFiles[resolvePath(f)];if(c)c.split('\n').slice(0,n).forEach(l=>termPrint(l));else termPrint(`head: ${f}: Nicht gefunden`,'#f04055');}break; }
+    case 'tail': { const n=parseInt(args[args.indexOf('-n')+1])||10; const f=args.find(a=>!a.startsWith('-')); if(f){const c=termFiles[resolvePath(f)];if(c)c.split('\n').slice(-n).forEach(l=>termPrint(l));else termPrint(`tail: ${f}: Nicht gefunden`,'#f04055');}break; }
+    case 'wc': { const f=args.find(a=>!a.startsWith('-')); if(f){const c=termFiles[resolvePath(f)]||'';termPrint(` ${c.split('\n').length} ${c.split(/\s+/).filter(Boolean).length} ${c.length} ${f}`);}break; }
+    case 'date': termPrint(new Date().toString()); break;
+    case 'whoami': termPrint(OS.user); break;
+    case 'id': termPrint(`uid=1000(${OS.user}) gid=1000(${OS.user}) groups=1000(${OS.user}),4(adm),27(sudo)`); break;
+    case 'hostname': termPrint(OS.hostname); break;
+    case 'uname': {
+      if (args.includes('-a')) termPrint('PartexOS partex-desktop 10.9.1 #1 SMP x86_64 GNU/Linux');
+      else termPrint('PartexOS');
+      break;
+    }
+    case 'uptime': termPrint(` ${new Date().toTimeString().split(' ')[0]}  up  ${Math.floor(Math.random()*24)+1}:${String(Math.floor(Math.random()*60)).padStart(2,'0')},  1 user,  load average: 0.${Math.floor(Math.random()*5)}, 0.${Math.floor(Math.random()*3)}, 0.1`); break;
+    case 'ps': termPrint(`  PID TTY          TIME CMD\n 2048 pts/0    00:00:00 partsh\n 2049 pts/0    00:00:00 ps`); break;
+    case 'df': termPrint('Filesystem      Größe  Verf. Genutzt Use% Eingehängt\n/dev/sda3        247G   183G    52G  22% /\ntmpfs            8.0G   8.0G     0M   0% /tmp'); break;
+    case 'free': termPrint('              gesamt      benutzt       frei\nSpeicher:        16384        6144        8192\nSwap:             8192           0        8192'); break;
+    case 'history': termHistory.slice().reverse().forEach((c,i)=>termPrint(`  ${String(i+1).padStart(4)}  ${c}`)); break;
+    case 'alias': {
+      if (!full || !full.includes('=')) { Object.entries(termAliases).forEach(([k,v])=>termPrint(`alias ${k}='${v}'`)); break; }
+      const m = full.match(/^(\w+)='?([^']+)'?$/);
+      if (m) termAliases[m[1]] = m[2];
+      break;
+    }
+    case 'export': args.forEach(a=>{ const [k,...vs]=a.split('='); if(vs.length)termVars[k]=vs.join('='); }); break;
+    case 'env': Object.entries(termVars).forEach(([k,v])=>termPrint(`${k}=${v}`)); break;
+    case 'which': termPrint(args[0] ? `/usr/bin/${args[0]}` : 'which: fehlendes Argument'); break;
+    case 'man': case 'info': termPrint(args[0]?`Keine Manpage verfügbar für: ${args[0]}\nVersuche: ${args[0]} --help`:'Welche Manpage möchtest du?'); break;
+    case 'nano': termPrint(args[0]?`  [ ${args[0]} — Texteditor nicht in diesem Terminal verfügbar ]`:'GNU nano 7.2  (Neuer Puffer)'); break;
+    case 'vim': if(termPkgs.includes('vim'))termPrint('VIM - Vi IMproved 9.0\n(Nutze nano stattdessen)'); else termPrint('<span style="color:var(--red)">vim: Nicht gefunden — versuche: pkg install vim</span>'); break;
+    case 'python3': if(termPkgs.includes('python3'))termPrint('Python 3.11.5\n>>> '); else termPrint('<span style="color:var(--red)">python3: Nicht gefunden — versuche: pkg install python3</span>'); break;
+    case 'node': if(termPkgs.includes('node'))termPrint('Node.js v20.9.0\n> '); else termPrint('<span style="color:var(--red)">node: Nicht gefunden — versuche: pkg install node</span>'); break;
+    case 'git': termGit(args); break;
+    case 'ping': {
+      const host = args.find(a=>!a.startsWith('-'))||'localhost';
+      termPrint(`PING ${host}: 56 Datenbytes`);
+      for(let i=0;i<4;i++) termPrint(`64 Bytes von ${host}: seq=${i+1} ttl=64 Zeit=${(Math.random()*15+1).toFixed(2)} ms`);
+      termPrint('\n--- Ping-Statistik ---\n4 Pakete übertragen, 4 empfangen, 0% Verlust');
+      break;
+    }
+    case 'ifconfig': termPrint(`eth0: inet 192.168.1.42  Maske:255.255.255.0\n      ether 00:11:22:33:44:55\nlo:   inet 127.0.0.1`); break;
+    case 'neofetch': if(termPkgs.includes('neofetch'))termPrint(termNeofetch()); else termPrint('<span style="color:var(--red)">neofetch: Nicht gefunden — versuche: pkg install neofetch</span>'); break;
+    case 'cowsay': if(termPkgs.includes('cowsay'))termPrint(termCowsay(args.join(' ')||'Muh!')); else termPrint('<span style="color:var(--red)">cowsay: Nicht gefunden — versuche: pkg install cowsay</span>'); break;
+    case 'fortune': if(termPkgs.includes('fortune'))termPrint(termFortune()); else termPrint('<span style="color:var(--red)">fortune: Nicht gefunden — versuche: pkg install fortune</span>'); break;
+    case 'cal': termCal(); break;
+    case 'seq': { let s=1,en=1,st=1; if(args.length===1)en=parseInt(args[0]); else if(args.length===2){s=parseInt(args[0]);en=parseInt(args[1]);} else{s=parseInt(args[0]);st=parseInt(args[1]);en=parseInt(args[2]);} for(let i=s;i<=en;i+=st)termPrint(String(i)); break; }
+    case 'base64': termPrint(btoa(args.filter(a=>!a.startsWith('-')).join(' ')||'hello')); break;
+    case 'date': termPrint(new Date().toLocaleString('de-DE')); break;
+    case 'sort': { const f=args.find(a=>!a.startsWith('-')); if(f){const c=termFiles[resolvePath(f)]; if(c)c.split('\n').sort().forEach(l=>termPrint(l));} break; }
+    case 'sleep': termPrint(`(${args[0]||1}s warten…)`); break;
+    case 'true': case 'false': break;
+    case 'exit': case 'logout': termPrint('Abgemeldet.'); setTimeout(()=>closeWin('terminal'),500); break;
+    case 'reboot': case 'shutdown': doRestart(); break;
+    case 'sudo': termPrint(`[sudo] Passwort für ${OS.user}: \n(sudo: simuliert — alle Befehle laufen als root)`); break;
+    case '': break;
+    default:
+      if (raw.includes('=') && !raw.includes(' ')) {
+        const [k,...vs] = raw.split('='); termVars[k.trim()] = vs.join('=').trim(); break;
+      }
+      termPrint(`<span style="color:var(--red)">partsh: ${cmd}: Befehl nicht gefunden</span>`);
   }
 }
 
-// =============================================
-// UTILITY
-// =============================================
-function showNotif(title, body) {
-  const area = document.getElementById('notif-area');
-  const n = document.createElement('div');
-  n.style.cssText = 'background:rgba(40,40,40,0.95);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;min-width:280px;margin-bottom:8px;animation:slideIn 0.3s ease;pointer-events:all;';
-  n.innerHTML = `<div style="font-size:13px;font-weight:600;">${title}</div><div style="font-size:12px;color:var(--text2);">${body}</div>`;
-  n.addEventListener('click', () => n.remove());
-  area.appendChild(n);
-  setTimeout(() => { n.style.opacity = '0'; setTimeout(() => n.remove(), 400); }, 4000);
+function process_env(v) {
+  const m = { HOME:'/Zuhause', USER:OS.user, SHELL:'/bin/partsh', PATH:'/usr/bin:/bin' };
+  return m[v] || '';
 }
 
-function toggleWidgetPanel() {
-  const panel = document.getElementById('widget-panel');
-  panel.style.display = panel.style.display === 'none' || !panel.style.display ? 'block' : 'none';
+function termLs(cmd, args) {
+  const long = cmd==='ll' || args.includes('-l') || args.includes('-la');
+  const all  = cmd==='la' || args.includes('-a') || args.includes('-la');
+  const path = args.find(a=>!a.startsWith('-')) || termCwd;
+  const rp = resolvePath(path);
+  const node = FS[rp];
+  if (!node) { termPrint(`ls: ${path}: Kein solches Verzeichnis`,'#f04055'); return; }
+  const items = all ? ['.', '..', ...node.children] : node.children;
+  if (long) {
+    termPrint(`insgesamt ${items.length * 4}`);
+    items.forEach(f => {
+      const fp = rp + '/' + f;
+      const isDir = f==='.'||f==='..'||!!FS[fp];
+      const perms = isDir ? 'drwxr-xr-x' : '-rw-r--r--';
+      const size  = termFiles[fp] ? termFiles[fp].length : 4096;
+      termPrint(`${perms} 1 ${OS.user} ${OS.user} ${String(size).padStart(6)} Jun 15 <span style="color:${isDir?'var(--blue)':'var(--text)'}">${f}</span>`);
+    });
+  } else {
+    const colored = items.map(f => {
+      const fp = rp + '/' + f;
+      const isDir = f==='.'||f==='..'||!!FS[fp];
+      return `<span style="color:${isDir?'var(--blue)':'var(--text)'}">${f}</span>`;
+    });
+    termPrint(colored.join('  '));
+  }
 }
 
-function openSearch() {
-  const overlay = document.getElementById('search-overlay');
-  overlay.style.display = 'flex';
-  document.getElementById('search-input').focus();
-  doSearch('');
+function termCd(p) {
+  if (!p || p==='~') { termCwd = '/Zuhause'; updateTermPrompt(); return; }
+  const rp = resolvePath(p);
+  if (FS[rp]) { termCwd = rp; updateTermPrompt(); }
+  else termPrint(`cd: ${p}: Kein solches Verzeichnis`,'#f04055');
 }
 
-function closeSearch(e) {
-  if (e && e.target !== document.getElementById('search-overlay')) return;
-  document.getElementById('search-overlay').style.display = 'none';
+function termCat(args) {
+  if (!args.length) { termPrint('cat: Lese stdin nicht unterstützt'); return; }
+  args.forEach(f => {
+    const p = resolvePath(f);
+    if (termFiles[p] !== undefined) termPrint(termFiles[p] || '(leere Datei)');
+    else if (FS[p]) termPrint(`cat: ${f}: Ist ein Verzeichnis`,'#f04055');
+    else termPrint(`cat: ${f}: Nicht gefunden`,'#f04055');
+  });
 }
 
-function doSearch(q) {
-  const res = document.getElementById('search-results');
-  const apps = [
-    { name: 'Taschenrechner', icon: '🔢', id: 'calculator' },
-    { name: 'Kalender', icon: '📅', id: 'calendar' },
-    { name: 'Notizen', icon: '📝', id: 'notes' },
-    { name: 'Einstellungen', icon: '⚙️', id: 'settings' },
-    { name: 'Finder', icon: '🗂️', id: 'finder' },
+function termRm(args) {
+  const r = args.includes('-r') || args.includes('-rf') || args.includes('-f');
+  const files = args.filter(a=>!a.startsWith('-'));
+  files.forEach(f => {
+    const p = resolvePath(f);
+    if (FS[p] && !r) { termPrint(`rm: ${f}: Ist ein Verzeichnis (benutze -r)`,'#f04055'); return; }
+    const par = p.split('/').slice(0,-1).join('/') || '/';
+    const name = p.split('/').pop();
+    if (FS[par]) FS[par].children = FS[par].children.filter(x=>x!==name);
+    delete FS[p]; delete termFiles[p];
+  });
+}
+
+function termGit(args) {
+  const sub = args[0];
+  if (!sub || sub==='--help') { termPrint('git Nutzung: git <Befehl>\nBefehle: init, clone, add, commit, push, pull, status, log, branch, checkout, diff'); return; }
+  if (sub==='init') termPrint('Initialisiertes leeres Git-Repository in ' + termCwd + '/.git/');
+  else if (sub==='status') termPrint('Auf Branch main\nNichts zu übertragen, Arbeitsverzeichnis sauber');
+  else if (sub==='log') termPrint('commit a1b2c3d4 (HEAD -> main)\nAutor: ' + OS.user + ' <' + OS.user + '@partex.local>\nDatum: ' + new Date().toLocaleDateString('de-DE') + '\n\n    Initialer Commit');
+  else if (sub==='add') termPrint('');
+  else if (sub==='commit') termPrint(`[main a1b2c3d] ${args.filter(a=>a!=='-m'&&a!=='commit').join(' ')}\n 1 Datei geändert, 1 Einfügung(+)`);
+  else if (sub==='branch') termPrint('* main');
+  else termPrint(`git: '${sub}' ist kein git-Befehl.`,'#f04055');
+}
+
+function termPkg(args) {
+  const sub = args[0], name = args[1];
+  switch(sub) {
+    case 'install':
+      if (!name) { termPrint('pkg: Nutzung: pkg install <name>','#f04055'); return; }
+      if (termPkgs.includes(name)) { termPrint(`pkg: ${name} ist bereits installiert`); return; }
+      if (!termPkgDB[name]) { termPrint(`pkg: Paket '${name}' nicht gefunden`,'#f04055'); return; }
+      termPrint(`Lade ${name}…\n`);
+      setTimeout(()=>{
+        termPrint(`Entpacke ${name}…`);
+        setTimeout(()=>{
+          termPkgs.push(name);
+          termPrint(`<span style="color:var(--green)">✓ ${name} erfolgreich installiert.</span>`);
+        },400);
+      },300);
+      break;
+    case 'remove': case 'uninstall':
+      if (!name) { termPrint('pkg: Nutzung: pkg remove <name>'); return; }
+      if (!termPkgs.includes(name)) { termPrint(`pkg: ${name} ist nicht installiert`,'#f04055'); return; }
+      if (['bash','coreutils','partex-ui'].includes(name)) { termPrint(`pkg: ${name} ist ein Systempaket`,'#f04055'); return; }
+      termPkgs = termPkgs.filter(p=>p!==name);
+      termPrint(`<span style="color:var(--green)">✓ ${name} entfernt.</span>`);
+      break;
+    case 'list':
+      termPrint(`<span style="color:var(--yellow)">Installierte Pakete (${termPkgs.length}):</span>`);
+      termPkgs.forEach(p=>termPrint(`  ✓ <span style="color:var(--green)">${p}</span>${termPkgDB[p]?' — '+termPkgDB[p]:''}` ));
+      break;
+    case 'search':
+      const found = name ? Object.entries(termPkgDB).filter(([p])=>p.includes(name)) : Object.entries(termPkgDB);
+      found.forEach(([p,d])=>termPrint(`  <span style="color:var(--blue)">${p}</span> — ${d} ${termPkgs.includes(p)?'<span style="color:var(--green)">[installiert]</span>':''}`));
+      break;
+    case 'update': termPrint('Paketindex aktualisiert. Alle Pakete sind aktuell.'); break;
+    case 'help': termPrint(`<b>pkg</b> — PartexOS Paketmanager\n  pkg install &lt;name&gt;\n  pkg remove &lt;name&gt;\n  pkg list\n  pkg search [name]\n  pkg update\n\nVerfügbar: ${Object.keys(termPkgDB).join(', ')}`); break;
+    default: termPrint(`pkg: Unbekannter Befehl '${sub||'?'}'`,'#f04055');
+  }
+}
+
+function termHelp() {
+  return `<span style="color:var(--accent);font-weight:bold">PartexDesktop OS 10.9.1 — partsh 2.1</span>
+
+<span style="color:var(--yellow)">DATEISYSTEM</span>  ls ll la cd pwd cat mkdir rmdir rm touch cp mv find grep head tail wc sort
+<span style="color:var(--yellow)">SYSTEM</span>        uname uptime date cal whoami id hostname ps df free history
+<span style="color:var(--yellow)">NETZWERK</span>      ifconfig ping
+<span style="color:var(--yellow)">SHELL</span>         echo alias export env which man nano vim python3 node git seq base64
+<span style="color:var(--yellow)">PAKETE</span>        <span style="color:var(--blue)">pkg install/remove/list/search/update</span>
+<span style="color:var(--yellow)">FUN</span>           neofetch cowsay fortune cal
+<span style="color:var(--yellow)">SONSTIGES</span>     clear exit sudo sleep`;
+}
+
+function termNeofetch() {
+  return `<span style="color:var(--accent)">   ██████╗</span>      ${OS.user}@${OS.hostname}
+<span style="color:var(--accent)">   ██╔══██╗</span>     ──────────────────
+<span style="color:var(--blue)">   ██████╔╝</span>     OS: PartexDesktop OS ${OS.version}
+<span style="color:var(--blue)">   ██╔═══╝</span>      Kernel: partexOS ${OS.version}
+<span style="color:var(--green)">   ██║</span>           Shell: partsh 2.1
+<span style="color:var(--green)">   ╚═╝</span>           DE: PartexDesktop
+                 Sprache: ${OS.language}
+                 CPU: Intel Core i7-12700K
+                 GPU: NVIDIA RTX 3070
+                 Speicher: 6144MiB / 16384MiB`;
+}
+
+function termCowsay(msg) {
+  const l = msg.length + 2;
+  const line = '-'.repeat(l);
+  return ` ${line}\n< ${msg} >\n ${line}\n        \\   ^__^\n         \\  (oo)\\_______\n            (__)\\       )\\/\\\n                ||----w |\n                ||     ||`;
+}
+
+function termFortune() {
+  const fs = [
+    'Der beste Weg, die Zukunft vorherzusagen, ist, sie zu erfinden. — Alan Kay',
+    'Einfachheit ist die höchste Form der Raffinesse. — Leonardo da Vinci',
+    'Programme müssen für Menschen lesbar sein. — Harold Abelson',
+    'Es gibt 10 Arten von Menschen: jene, die Binär verstehen, und jene, die es nicht tun.',
+    'Es funktioniert auf meinem Rechner. — Jeder Entwickler',
+    'Jeder, der aufgehört hat zu lernen, ist alt geworden. — Henry Ford',
   ];
-  const matches = apps.filter(a => !q || a.name.toLowerCase().includes(q.toLowerCase()));
-  res.innerHTML = matches.map(a => `
-    <div onclick="openApp('${a.id}');closeSearch({target:null});" style="padding:10px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;">
-      <span style="font-size:24px;">${a.icon}</span>
-      <span>${a.name}</span>
+  return fs[Math.floor(Math.random() * fs.length)];
+}
+
+function termCal() {
+  const now = new Date();
+  const months = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  const days = ['So','Mo','Di','Mi','Do','Fr','Sa'];
+  const y = now.getFullYear(), m = now.getMonth();
+  const firstDay = new Date(y,m,1).getDay();
+  const daysInMonth = new Date(y,m+1,0).getDate();
+  termPrint(`   ${months[m]} ${y}`);
+  termPrint(days.join(' '));
+  let row = '';
+  for (let i=0;i<firstDay;i++) row += '   ';
+  for (let d=1;d<=daysInMonth;d++) {
+    const s = String(d).padStart(2);
+    row += (d===now.getDate()?`<span style="background:var(--accent);border-radius:3px;padding:0 1px">${s}</span> `:s+' ');
+    if ((firstDay+d)%7===0) { termPrint(row); row=''; }
+  }
+  if (row) termPrint(row);
+}
+
+// ══ CODE EDITOR ══
+const CODE_FILES = {
+  'main.js': `// PartexApp — Hauptdatei
+import { createApp } from './app.js';
+
+const app = createApp({
+  target: document.body,
+  debug: false,
+});
+
+app.init().then(() => {
+  console.log('App gestartet');
+}).catch(err => {
+  console.error('Startfehler:', err);
+});
+`,
+  'style.css': `/* PartexApp Styles */
+:root {
+  --color-primary: #6c4ff8;
+  --color-bg: #0f0f10;
+  --color-text: #efefef;
+  --radius: 8px;
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: system-ui, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+`,
+  'README.md': `# PartexApp
+
+Eine moderne Web-App für PartexDesktop OS.
+
+## Installation
+
+\`\`\`bash
+pkg install node
+node index.js
+\`\`\`
+
+## Funktionen
+
+- Schnelle Ladezeiten
+- Responsive Design
+- Dark Mode
+`,
+};
+let codeActiveFile = 'main.js';
+let codeOpenFiles = ['main.js', 'style.css'];
+let codeContents = { ...CODE_FILES };
+
+function openCode() {
+  const wb = createWin('code', 'Code Editor', 820, 540);
+  if (!wb) return;
+  renderCode(wb);
+}
+
+function renderCode(wb) {
+  wb = wb || document.getElementById('wb-code');
+  if (!wb) return;
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  const ext = codeActiveFile.split('.').pop();
+  const langColors = { 'js':'#f5c842','css':'#3a8ef5','md':'#aaa','ts':'#3a8ef5','py':'#2cc06b','html':'#f04055' };
+  wb.innerHTML = `<div class="code-wrap">
+    <div class="code-sb">
+      <div class="code-sb-top">📁 PartexApp</div>
+      <div class="code-tree">
+        ${Object.keys(CODE_FILES).map(f=>`<div class="code-tree-item${f===codeActiveFile?' active':''}" onclick="codeOpen('${f}')">
+          <span style="color:${langColors[f.split('.').pop()]||'#aaa'}">${f.split('.').pop().toUpperCase()}</span> ${f}
+        </div>`).join('')}
+        <div class="code-tree-item" onclick="showNotif('Code Editor','Neue Datei erstellt: untitled.js');codeOpen('untitled.js')" style="margin-top:8px;color:var(--text3);">+ Neue Datei</div>
+      </div>
+    </div>
+    <div class="code-main">
+      <div class="code-tabs">
+        ${codeOpenFiles.map(f=>`<div class="code-tab${f===codeActiveFile?' active':''}" onclick="codeOpen('${f}')">
+          <span style="color:${langColors[f.split('.').pop()]||'#aaa'}">●</span> ${f}
+          <span class="code-tab-close" onclick="event.stopPropagation();codeCloseTab('${f}')">×</span>
+        </div>`).join('')}
+      </div>
+      <textarea class="code-area" id="code-textarea"
+        oninput="codeContents['${codeActiveFile}']=this.value"
+        spellcheck="false">${codeContents[codeActiveFile] || ''}</textarea>
+      <div class="code-status">
+        <span class="code-status-item" style="color:${langColors[ext]||'#aaa'}">${ext.toUpperCase()}</span>
+        <span class="code-status-item">${codeActiveFile}</span>
+        <span style="flex:1;"></span>
+        <span class="code-status-item">UTF-8</span>
+        <span class="code-status-item">LF</span>
+        <span class="code-status-item">Zeile 1, Spalte 1</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function codeOpen(f) {
+  if (!codeOpenFiles.includes(f)) codeOpenFiles.push(f);
+  if (!codeContents[f]) codeContents[f] = CODE_FILES[f] || '';
+  codeActiveFile = f;
+  renderCode();
+}
+function codeCloseTab(f) {
+  codeOpenFiles = codeOpenFiles.filter(x=>x!==f);
+  if (codeActiveFile===f) codeActiveFile = codeOpenFiles[0] || 'main.js';
+  renderCode();
+}
+
+// ══ CALCULATOR ══
+let calcVal = '0', calcPrev = '', calcOp = '', calcFresh = false;
+
+function openCalculator() {
+  const wb = createWin('calculator', 'Rechner', 280, 430);
+  if (!wb) return;
+  renderCalc(wb);
+}
+
+function renderCalc(wb) {
+  wb = wb || document.getElementById('wb-calculator');
+  if (!wb) return;
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  const rows = [
+    ['AC','±','%','÷'],
+    ['7','8','9','×'],
+    ['4','5','6','−'],
+    ['1','2','3','+'],
+    ['0',null,'.','='],
+  ];
+  let keys = '';
+  rows.forEach(row => {
+    row.forEach((k,i) => {
+      if (k === null) return;
+      const wide = k==='0' ? ' style="grid-column:span 2"' : '';
+      const cls = ['÷','×','−','+','='].includes(k) ? 'ac' : ['AC','±','%'].includes(k) ? 'md' : 'dk';
+      keys += `<div class="ck ${cls}"${wide} onmousedown="calcPress('${k}')">${k}</div>`;
+    });
+  });
+  wb.innerHTML = `<div id="calc-wrap">
+    <div class="calc-disp">
+      <div class="calc-expr" id="calc-expr">${calcPrev}${calcOp}</div>
+      <div class="calc-num" id="calc-num">${calcVal}</div>
+    </div>
+    <div class="calc-grid" style="flex:1;display:grid;grid-template-columns:repeat(4,1fr);">${keys}</div>
+  </div>`;
+}
+
+function calcPress(k) {
+  if (k==='AC') { calcVal='0'; calcPrev=''; calcOp=''; calcFresh=false; }
+  else if (k==='±') { calcVal = String(-parseFloat(calcVal)); }
+  else if (k==='%') { calcVal = String(parseFloat(calcVal)/100); }
+  else if (['÷','×','−','+'].includes(k)) { calcPrev = calcVal; calcOp = k; calcFresh = true; }
+  else if (k==='=') {
+    if (!calcOp || !calcPrev) { calcFresh = false; return; }
+    const a = parseFloat(calcPrev), b = parseFloat(calcVal);
+    let r;
+    if (calcOp==='÷') r = b===0 ? 'Fehler' : a/b;
+    else if (calcOp==='×') r = a*b;
+    else if (calcOp==='−') r = a-b;
+    else r = a+b;
+    calcPrev=''; calcOp='';
+    calcVal = r==='Fehler' ? 'Fehler' : String(parseFloat(r.toFixed(10)));
+    calcFresh = false;
+  } else if (k==='.') {
+    if (calcFresh) { calcVal='0.'; calcFresh=false; return; }
+    if (!calcVal.includes('.')) calcVal += '.';
+  } else {
+    if (calcFresh || calcVal==='0') { calcVal=k; calcFresh=false; }
+    else { if (calcVal.replace('.','').replace('-','').length < 10) calcVal += k; }
+  }
+  const n = document.getElementById('calc-num'); const x = document.getElementById('calc-expr');
+  if (n) n.textContent = calcVal;
+  if (x) x.textContent = calcPrev + (calcOp||'');
+}
+
+// ══ MAPS ══
+function openMaps() {
+  const wb = createWin('maps', 'Karten', 820, 540);
+  if (!wb) return;
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="maps-wrap">
+    <div class="maps-search-bar">
+      <input id="maps-search" placeholder="Ort suchen…" onkeydown="if(event.key==='Enter')mapsSearch(this.value)"/>
+      <button class="btn btn-primary" onclick="mapsSearch(document.getElementById('maps-search').value)">Suchen</button>
+    </div>
+    <div style="display:flex;flex:1;overflow:hidden;">
+      <div class="maps-map">
+        <div class="maps-placeholder">
+          <div class="mp-icon">🗺️</div>
+          <p>Karten-Simulation<br><span style="font-size:11px;color:var(--text3);">Gib einen Ort ein, um<br>Suchergebnisse zu sehen</span></p>
+        </div>
+      </div>
+      <div class="maps-sidebar" id="maps-results">
+        <div style="padding:12px;font-size:11px;color:var(--text3);">Keine Suchergebnisse</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function mapsSearch(query) {
+  if (!query) return;
+  const places = [
+    { name:query, addr:`${query}, Deutschland`, dist:'0.5 km' },
+    { name:query + ' Zentrum', addr:`Hauptstraße, ${query}`, dist:'1.2 km' },
+    { name:query + ' Bahnhof', addr:`Bahnhofplatz, ${query}`, dist:'2.0 km' },
+  ];
+  const res = document.getElementById('maps-results');
+  if (!res) return;
+  res.innerHTML = `<div style="padding:8px 12px;font-size:11px;color:var(--text3);border-bottom:1px solid var(--border);">Ergebnisse für "${query}"</div>` +
+    places.map(p=>`<div class="maps-result">
+      <div class="maps-result-name">📍 ${p.name}</div>
+      <div class="maps-result-addr">${p.addr}</div>
+      <div style="font-size:10px;color:var(--text3);margin-top:2px;">${p.dist}</div>
     </div>`).join('');
 }
 
-function searchKeyDown(e) {
-  if (e.key === 'Escape') closeSearch({ target: null });
-  if (e.key === 'Enter') {
-    const first = document.querySelector('#search-results div');
-    if (first) first.click();
+// ══ SETTINGS ══
+let settingsSection = 'aussehen';
+
+function openSettings() {
+  const wb = createWin('settings', 'Einstellungen', 760, 540);
+  if (!wb) return;
+  renderSettings(wb);
+}
+
+const SNAV = [
+  { section:'aussehen', navs:[
+    { id:'aussehen', icon:'🎨', label:'Aussehen' },
+    { id:'anzeige', icon:'🖥️', label:'Anzeige' },
+    { id:'ton', icon:'🔊', label:'Ton' },
+  ]},
+  { section:'verbindungen', navs:[
+    { id:'netzwerk', icon:'📶', label:'Netzwerk' },
+    { id:'bluetooth', icon:'📡', label:'Bluetooth' },
+  ]},
+  { section:'system', navs:[
+    { id:'benachrichtigungen', icon:'🔔', label:'Benachrichtigungen' },
+    { id:'sprache', icon:'🌍', label:'Sprache & Region' },
+    { id:'allgemein', icon:'⚙️', label:'Allgemein' },
+    { id:'datenschutz', icon:'🔒', label:'Datenschutz' },
+    { id:'info', icon:'💻', label:'Über diesen Mac' },
+  ]},
+];
+
+function renderSettings(wb) {
+  wb = wb || document.getElementById('wb-settings');
+  if (!wb) return;
+  wb.style.padding = '0'; wb.style.overflow = 'hidden';
+  const sidebar = SNAV.map(group=>`
+    <div class="settings-sb-section">${group.section.charAt(0).toUpperCase()+group.section.slice(1)}</div>
+    ${group.navs.map(n=>`<div class="snav${n.id===settingsSection?' active':''}" onclick="settingsSection='${n.id}';renderSettings()">
+      <div class="snav-icon">${n.icon}</div>${n.label}
+    </div>`).join('')}`).join('');
+
+  wb.innerHTML = `<div class="settings-wrap">
+    <div class="settings-sb">${sidebar}</div>
+    <div class="settings-main">${renderSettingsContent()}</div>
+  </div>`;
+}
+
+function renderSettingsContent() {
+  switch (settingsSection) {
+    case 'aussehen': return `
+      <div class="s-section">
+        <div class="s-section-title">Erscheinungsbild</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Dunkler Modus</div><div class="s-sub">Dunkles Farbschema verwenden</div></div>
+            <button class="toggle${OS.darkMode?' on':''}" onclick="OS.darkMode=!OS.darkMode;this.classList.toggle('on',OS.darkMode);applyOSSettings()"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Transparenz</div><div class="s-sub">Unschärfeeffekte aktivieren</div></div>
+            <button class="toggle${OS.transparency?' on':''}" onclick="OS.transparency=!OS.transparency;this.classList.toggle('on',OS.transparency)"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Animationen</div><div class="s-sub">Bewegungseffekte</div></div>
+            <button class="toggle${OS.animations?' on':''}" onclick="OS.animations=!OS.animations;this.classList.toggle('on',OS.animations)"></button>
+          </div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-section-title">Akzentfarbe</div>
+        <div class="s-card"><div class="s-row">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            ${ACCENT_COLORS.map(c=>`<div class="color-dot${OS.accentColor===c?' active':''}" style="background:${c};" onclick="OS.accentColor='${c}';document.documentElement.style.setProperty('--accent','${c}');renderSettings();showNotif('Einstellungen','Akzentfarbe geändert.')"></div>`).join('')}
+          </div>
+        </div></div>
+      </div>
+      <div class="s-section">
+        <div class="s-section-title">Hintergrundbild</div>
+        <div class="s-card"><div class="s-row">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            ${WALLPAPERS.map((w,i)=>`<div class="wallpaper-thumb${OS.wallpaperIdx===i?' active':''}" style="background:${w.bg};" title="${w.label}" onclick="OS.wallpaperIdx=${i};document.getElementById('wallpaper').style.background='${w.bg}';renderSettings();showNotif('Einstellungen','Hintergrundbild: ${w.label}')"></div>`).join('')}
+          </div>
+        </div></div>
+      </div>`;
+
+    case 'anzeige': return `
+      <div class="s-section">
+        <div class="s-section-title">Anzeige</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Helligkeit</div></div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="range" class="s-range" min="10" max="100" value="${OS.brightness}"
+                oninput="OS.brightness=parseInt(this.value);document.getElementById('brightness-val').textContent=this.value+'%'"/>
+              <span class="s-val" id="brightness-val">${OS.brightness}%</span>
+            </div>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Auflösung</div></div>
+            <select class="s-select">
+              <option>1920 × 1080 (Standard)</option>
+              <option>2560 × 1440</option>
+              <option>3840 × 2160</option>
+            </select>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Bildwiederholrate</div></div>
+            <select class="s-select">
+              <option>60 Hz</option>
+              <option>120 Hz</option>
+              <option>144 Hz</option>
+            </select>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Schriftgröße</div><div class="s-sub">Systemweite Schriftgröße</div></div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <input type="range" class="s-range" min="10" max="18" value="${OS.fontSize}"
+                oninput="OS.fontSize=parseInt(this.value);document.getElementById('font-val').textContent=this.value+'px';document.body.style.fontSize=this.value+'px'"/>
+              <span class="s-val" id="font-val">${OS.fontSize}px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-section-title">Nachtmodus</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">True Tone</div><div class="s-sub">Farben ans Umgebungslicht anpassen</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Nachtmodus</div><div class="s-sub">Warmes Licht für abendlichen Betrieb</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>`;
+
+    case 'ton': return `
+      <div class="s-section">
+        <div class="s-section-title">Ausgabelautstärke</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Lautstärke</div></div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span style="font-size:13px;">🔈</span>
+              <input type="range" class="s-range" min="0" max="100" value="${OS.volume}"
+                oninput="OS.volume=parseInt(this.value);document.getElementById('vol-val').textContent=this.value+'%'"/>
+              <span class="s-val" id="vol-val">${OS.volume}%</span>
+              <span style="font-size:13px;">🔊</span>
+            </div>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Systemtöne</div><div class="s-sub">UI-Interaktionstöne</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Benachrichtigungston</div></div>
+            <select class="s-select">
+              <option>Boing</option>
+              <option>Glass</option>
+              <option>Ping</option>
+              <option>Aus</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-section-title">Ausgabegerät</div>
+        <div class="s-card">
+          <div class="s-row"><span class="s-label">Interne Lautsprecher</span><span style="color:var(--green);font-size:12px;">● Aktiv</span></div>
+          <div class="s-row"><span class="s-label">Kopfhörer</span><span style="color:var(--text3);font-size:12px;">Nicht verbunden</span></div>
+          <div class="s-row"><span class="s-label">Bluetooth Audio</span><span style="color:var(--text3);font-size:12px;">Nicht verfügbar</span></div>
+        </div>
+      </div>`;
+
+    case 'netzwerk': return `
+      <div class="s-section">
+        <div class="s-section-title">WLAN</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">WLAN</div></div>
+            <button class="toggle${OS.wifi?' on':''}" onclick="OS.wifi=!OS.wifi;this.classList.toggle('on',OS.wifi);renderSettings()"></button>
+          </div>
+          ${OS.wifi ? `
+          <div class="s-row"><span class="s-label">Verbundenes Netzwerk</span><span style="color:var(--green);font-size:12px;">● PartexNet-5G</span></div>
+          <div class="s-row"><span class="s-label">IP-Adresse</span><span style="font-size:12px;color:var(--text2);">192.168.1.42</span></div>
+          <div class="s-row"><span class="s-label">DNS</span><span style="font-size:12px;color:var(--text2);">1.1.1.1, 8.8.8.8</span></div>
+          <div class="s-row"><span class="s-label">Signalstärke</span><span style="font-size:12px;color:var(--text2);">Ausgezeichnet ████</span></div>
+          ` : '<div class="s-row" style="color:var(--text3);font-size:12px;">WLAN ist deaktiviert</div>'}
+        </div>
+      </div>`;
+
+    case 'bluetooth': return `
+      <div class="s-section">
+        <div class="s-section-title">Bluetooth</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Bluetooth</div></div>
+            <button class="toggle${OS.bluetooth?' on':''}" onclick="OS.bluetooth=!OS.bluetooth;this.classList.toggle('on',OS.bluetooth);renderSettings()"></button>
+          </div>
+        </div>
+      </div>
+      ${OS.bluetooth ? `<div class="s-section">
+        <div class="s-section-title">Geräte in der Nähe</div>
+        <div class="s-card">
+          <div class="s-row"><span class="s-label">PartexPods Pro</span><span style="color:var(--text3);font-size:12px;">Nicht gekoppelt</span></div>
+          <div class="s-row"><span class="s-label">Partex Tastatur</span><span style="color:var(--text3);font-size:12px;">Nicht gekoppelt</span></div>
+        </div>
+      </div>` : '<div style="padding:16px;color:var(--text3);font-size:12px;">Bluetooth aktivieren, um Geräte zu sehen.</div>'}`;
+
+    case 'benachrichtigungen': return `
+      <div class="s-section">
+        <div class="s-section-title">Benachrichtigungen</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Benachrichtigungen erlauben</div></div>
+            <button class="toggle${OS.notifications?' on':''}" onclick="OS.notifications=!OS.notifications;this.classList.toggle('on',OS.notifications)"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Nicht stören</div><div class="s-sub">Keine Benachrichtigungen anzeigen</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-section-title">Apps</div>
+        <div class="s-card">
+          ${['Finder','Terminal','Mail','Musik','Browser','Kalender','Code Editor'].map(a=>`<div class="s-row"><span class="s-label">${a}</span><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>`).join('')}
+        </div>
+      </div>`;
+
+    case 'sprache': return `
+      <div class="s-section">
+        <div class="s-section-title">Sprache & Region</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Sprache</div></div>
+            <select class="s-select" onchange="OS.language=this.value">
+              <option value="de-DE"${OS.language==='de-DE'?' selected':''}>Deutsch (Deutschland)</option>
+              <option value="en-US"${OS.language==='en-US'?' selected':''}>English (US)</option>
+              <option value="fr-FR"${OS.language==='fr-FR'?' selected':''}>Français (France)</option>
+            </select>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Region</div></div>
+            <select class="s-select"><option>Deutschland</option><option>Österreich</option><option>Schweiz</option></select>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Zeitzone</div></div>
+            <select class="s-select" onchange="OS.timezone=this.value">
+              <option value="Europe/Berlin"${OS.timezone==='Europe/Berlin'?' selected':''}>Europa/Berlin (UTC+2)</option>
+              <option value="Europe/London">Europa/London (UTC+1)</option>
+              <option value="America/New_York">Amerika/New_York (UTC-4)</option>
+            </select>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Datumsformat</div></div>
+            <select class="s-select"><option>TT.MM.JJJJ</option><option>JJJJ-MM-TT</option><option>MM/TT/JJJJ</option></select>
+          </div>
+        </div>
+      </div>`;
+
+    case 'allgemein': return `
+      <div class="s-section">
+        <div class="s-section-title">Allgemein</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Automatisch sichern</div><div class="s-sub">Dateien automatisch speichern</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Rechtschreibprüfung</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Ruhezustand nach</div></div>
+            <select class="s-select"><option>5 Minuten</option><option>10 Minuten</option><option>30 Minuten</option><option>1 Stunde</option><option>Nie</option></select>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Standard-Browser</div></div>
+            <select class="s-select"><option>Partex Browser</option><option>Firefox</option><option>Chromium</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-section-title">Software</div>
+        <div class="s-card">
+          <div class="s-row"><span class="s-label">Automatische Updates</span><button class="toggle on" onclick="this.classList.toggle('on')"></button></div>
+          <div class="s-row"><span class="s-label">Systemversion</span><span style="font-size:12px;color:var(--text2);">10.9.1 (aktuell)</span></div>
+        </div>
+      </div>`;
+
+    case 'datenschutz': return `
+      <div class="s-section">
+        <div class="s-section-title">Datenschutz</div>
+        <div class="s-card">
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Standortdienste</div><div class="s-sub">Apps auf Standort zugreifen lassen</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Kamera</div><div class="s-sub">App-Zugriff auf Kamera</div></div>
+            <button class="toggle on" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Mikrofon</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+          <div class="s-row">
+            <div class="s-row-label"><div class="s-label">Nutzungsanalyse</div><div class="s-sub">Anonyme Daten senden</div></div>
+            <button class="toggle" onclick="this.classList.toggle('on')"></button>
+          </div>
+        </div>
+      </div>`;
+
+    case 'info': return `
+      <div class="about-wrap">
+        <div class="about-logo">💻</div>
+        <div class="about-name">PartexDesktop</div>
+        <div class="about-ver">OS ${OS.version}</div>
+        <div class="about-info">
+          <div class="about-row"><span class="about-key">Version</span><span>${OS.version} (Build ${OS.build})</span></div>
+          <div class="about-row"><span class="about-key">Kernel</span><span>PartexKernel ${OS.version}</span></div>
+          <div class="about-row"><span class="about-key">Prozessor</span><span>Intel Core i7-12700K</span></div>
+          <div class="about-row"><span class="about-key">Grafik</span><span>NVIDIA RTX 3070 8 GB</span></div>
+          <div class="about-row"><span class="about-key">Arbeitsspeicher</span><span>16 GB DDR5</span></div>
+          <div class="about-row"><span class="about-key">Speicher</span><span>256 GB SSD</span></div>
+          <div class="about-row"><span class="about-key">Sprache</span><span>${OS.language}</span></div>
+          <div class="about-row"><span class="about-key">Benutzer</span><span>${OS.user}@${OS.hostname}</span></div>
+        </div>
+        <button class="btn btn-primary" onclick="showNotif('Softwareupdate','PartexDesktop OS 10.9.1 ist aktuell.')">Nach Updates suchen</button>
+        <div style="font-size:11px;color:var(--text3);margin-top:4px;">© 2026 Partex Inc. Alle Rechte vorbehalten.</div>
+      </div>`;
+
+    default: return '<div style="padding:20px;color:var(--text3);">Wähle eine Kategorie</div>';
   }
 }
 
-function changeWallpaper() {
-  wallpaperIdx = (wallpaperIdx + 1) % wallpapers.length;
-  settings.wallpaperIdx = wallpaperIdx;
-  document.getElementById('wallpaper').style.background = wallpapers[wallpaperIdx];
-  saveSettings();
-  showNotif('Hintergrund', 'Wallpaper geändert');
+function applyOSSettings() {
+  document.documentElement.style.setProperty('--accent', OS.accentColor);
 }
 
-function showContextMenu(e) {
+// ══ ABOUT ══
+function openAbout() {
+  const wb = createWin('about', 'Über PartexDesktop', 380, 340);
+  if (!wb) return;
+  wb.style.overflow = 'hidden';
+  wb.innerHTML = `<div class="about-wrap">
+    <div class="about-logo">💻</div>
+    <div class="about-name">PartexDesktop OS</div>
+    <div class="about-ver">Version ${OS.version} (Build ${OS.build})</div>
+    <div class="about-info">
+      <div class="about-row"><span class="about-key">Kernel</span><span>PartexKernel ${OS.version}</span></div>
+      <div class="about-row"><span class="about-key">Arbeitsspeicher</span><span>16 GB DDR5</span></div>
+      <div class="about-row"><span class="about-key">Prozessor</span><span>Intel Core i7-12700K</span></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" onclick="showNotif('Update','PartexDesktop OS ${OS.version} ist aktuell.')">Updates suchen</button>
+      <button class="btn btn-secondary" onclick="closeWin('about')">Schließen</button>
+    </div>
+    <div style="font-size:10px;color:var(--text3);">© 2026 Partex Inc.</div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════
+// WIDGETS
+// ══════════════════════════════════════════════════════
+const WIDGET_DEFS = [
+  { type:'uhr', icon:'🕐', name:'Uhr', desc:'Echtzeit-Anzeige' },
+  { type:'wetter', icon:'⛅', name:'Wetter', desc:'Aktuelle Bedingungen' },
+  { type:'system', icon:'📊', name:'System-Monitor', desc:'CPU & RAM' },
+  { type:'notiz', icon:'📌', name:'Schnellnotiz', desc:'Haftnotiz' },
+  { type:'akku', icon:'🔋', name:'Akku', desc:'Ladestatus' },
+  { type:'kalender', icon:'📅', name:'Kalender', desc:'Datum & Monat' },
+  { type:'netzwerk', icon:'📶', name:'Netzwerk', desc:'Verbindungsstatus' },
+  { type:'musik-mini', icon:'🎵', name:'Musik-Widget', desc:'Miniaturplayer' },
+];
+
+function buildWPanel() {
+  const p = document.getElementById('wpanel-items');
+  if (!p) return;
+  p.innerHTML = WIDGET_DEFS.map(w => `
+    <div class="wt" onclick="addWidget('${w.type}')">
+      <div class="wt-icon">${w.icon}</div>
+      <div><div class="wt-name">${w.name}</div><div class="wt-desc">${w.desc}</div></div>
+    </div>`).join('');
+}
+
+function addWidget(type) {
+  const id = ++wIdCounter;
+  const w = document.createElement('div');
+  w.className = 'widget';
+  w.id = 'wd-' + id;
+  const sx = 180 + Math.random() * 400;
+  const sy = 80 + Math.random() * 200;
+  w.style.cssText = `left:${sx}px;top:${sy}px;`;
+  const def = WIDGET_DEFS.find(d=>d.type===type);
+  let inner = '';
+
+  switch (type) {
+    case 'uhr':
+      w.style.width = '170px';
+      inner = `<div id="wc-${id}" style="font-size:30px;font-weight:200;text-align:center;letter-spacing:2px;"></div>
+               <div id="wd-date-${id}" style="font-size:11px;color:var(--text2);text-align:center;margin-top:3px;"></div>`;
+      break;
+    case 'wetter':
+      w.style.width = '190px';
+      inner = `<div style="text-align:center;padding:4px 0;">
+        <div style="font-size:36px;">⛅</div>
+        <div style="font-size:26px;font-weight:200;margin:4px 0;">16°C</div>
+        <div style="font-size:11px;color:var(--text2);">Bewölkt · Wildeshausen</div>
+        <div style="font-size:10px;color:var(--text3);margin-top:5px;">H: 19° T: 11° 💧 68%</div>
+      </div>`;
+      break;
+    case 'system':
+      w.style.width = '210px';
+      inner = `<div id="ws-${id}"></div>`;
+      break;
+    case 'notiz':
+      w.style.width = '190px'; w.style.minHeight = '140px';
+      inner = `<textarea placeholder="Schnellnotiz…" style="width:100%;min-height:90px;background:rgba(255,218,100,0.06);border:none;outline:none;color:var(--text);font-size:12px;resize:none;font-family:var(--font);line-height:1.6;border-radius:5px;padding:4px;user-select:text;"></textarea>`;
+      break;
+    case 'akku':
+      w.style.width = '170px';
+      inner = `<div style="display:flex;align-items:center;gap:10px;">
+        <div style="font-size:28px;">🔋</div>
+        <div><div style="font-size:20px;font-weight:300;">87%</div><div style="font-size:10px;color:var(--green);">Wird geladen</div></div>
+      </div>
+      <div style="margin-top:8px;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;"><div style="width:87%;height:100%;background:var(--green);border-radius:2px;"></div></div>`;
+      break;
+    case 'kalender': {
+      const now = new Date();
+      const days = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+      const months = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+      w.style.width = '160px';
+      inner = `<div style="text-align:center;">
+        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">${months[now.getMonth()]} ${now.getFullYear()}</div>
+        <div style="font-size:44px;font-weight:200;line-height:1;color:var(--text);">${now.getDate()}</div>
+        <div style="font-size:13px;color:var(--accent);margin-top:3px;">${days[now.getDay()]}</div>
+      </div>`;
+      break;
+    }
+    case 'netzwerk':
+      w.style.width = '180px';
+      inner = `<div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:12px;">📶 WLAN</span>
+          <span style="color:${OS.wifi?'var(--green)':'var(--red)'};font-size:11px;">${OS.wifi?'Verbunden':'Getrennt'}</span>
+        </div>
+        ${OS.wifi ? `<div style="font-size:10px;color:var(--text3);">PartexNet-5G · 192.168.1.42</div>` : ''}
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);">
+          <span>↓ 95 MB/s</span><span>↑ 22 MB/s</span>
+        </div>
+      </div>`;
+      break;
+    case 'musik-mini':
+      w.style.width = '200px';
+      const t = TRACKS[musicIdx];
+      inner = `<div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:40px;height:40px;border-radius:8px;background:linear-gradient(135deg,${t.color});display:flex;align-items:center;justify-content:center;font-size:20px;">${t.emoji}</div>
+        <div style="flex:1;overflow:hidden;">
+          <div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${t.title}</div>
+          <div style="font-size:10px;color:var(--text2);">${t.artist}</div>
+        </div>
+      </div>
+      <div style="margin-top:8px;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;">
+        <div style="width:${(musicPos/t.dur*100).toFixed(0)}%;height:100%;background:var(--accent);border-radius:2px;"></div>
+      </div>
+      <div style="display:flex;justify-content:center;gap:16px;margin-top:8px;">
+        <button class="mc" onclick="musicPrev()" style="font-size:16px;">⏮</button>
+        <button class="mc" onclick="toggleMusic();renderMusic()" style="font-size:20px;">${musicPlaying?'⏸':'▶'}</button>
+        <button class="mc" onclick="musicNext()" style="font-size:16px;">⏭</button>
+      </div>`;
+      break;
+  }
+
+  w.innerHTML = `<div class="w-head">
+    <div class="w-title">${def?.name || type}</div>
+    <button class="w-close" onclick="removeWidget(${id})">×</button>
+  </div>${inner}<div class="w-resize" onmousedown="wrsDown(event,${id})">⌟</div>`;
+
+  document.getElementById('widget-layer').appendChild(w);
+  w.querySelector('.w-head').addEventListener('mousedown', e => wdragDown(e, id));
+
+  // Live updates
+  if (type === 'uhr') {
+    const tick = () => {
+      const ce = document.getElementById('wc-'+id);
+      const de = document.getElementById('wd-date-'+id);
+      if (!ce) return;
+      const n = new Date();
+      ce.textContent = n.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      de.textContent = n.toLocaleDateString('de-DE',{weekday:'long',day:'numeric',month:'long'});
+    };
+    tick();
+    const iv = setInterval(tick, 1000);
+    w._iv = iv;
+  }
+  if (type === 'system') {
+    const tick = () => {
+      const el = document.getElementById('ws-'+id);
+      if (!el) return;
+      const cpu = Math.floor(Math.random()*25+5);
+      const ram = Math.floor(Math.random()*15+52);
+      const disk = 22;
+      el.innerHTML = `${bar('CPU', cpu, cpu>70?'var(--red)':cpu>40?'var(--orange)':'var(--green)')}
+        ${bar('RAM', ram, ram>80?'var(--red)':ram>65?'var(--orange)':'var(--blue)')}
+        ${bar('Disk', disk, 'var(--text3)')}`;
+    };
+    const bar = (lbl,pct,col) => `<div style="margin-bottom:6px;">
+      <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-bottom:2px;"><span>${lbl}</span><span>${pct}%</span></div>
+      <div style="height:3px;background:rgba(255,255,255,0.08);border-radius:2px;"><div style="width:${pct}%;height:100%;background:${col};border-radius:2px;transition:width .5s;"></div></div>
+    </div>`;
+    tick();
+    const iv = setInterval(tick, 2000);
+    w._iv = iv;
+  }
+}
+
+function removeWidget(id) {
+  const w = document.getElementById('wd-' + id);
+  if (w) { if (w._iv) clearInterval(w._iv); w.remove(); }
+}
+
+function wdragDown(e, id) {
   e.preventDefault();
-  const cm = document.getElementById('context-menu');
-  cm.style.left = Math.min(e.clientX, window.innerWidth - 200) + 'px';
-  cm.style.top = Math.min(e.clientY, window.innerHeight - 200) + 'px';
+  const w = document.getElementById('wd-' + id);
+  const r = w.getBoundingClientRect();
+  drag = { id, type:'widget', ox: e.clientX-r.left, oy: e.clientY-r.top };
+  on();
+}
+
+function wrsDown(e, id) {
+  e.preventDefault(); e.stopPropagation();
+  const w = document.getElementById('wd-' + id);
+  drag = { id, type:'wrs', sx: e.clientX, sy: e.clientY, sw: w.offsetWidth, sh: w.offsetHeight };
+  on();
+}
+
+function toggleWPanel() {
+  document.getElementById('wpanel').classList.toggle('open');
+}
+
+// ══════════════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════════════
+const SEARCH_APPS = [
+  { name:'Finder', desc:'Dateien & Ordner', icon:'🗂️', id:'finder' },
+  { name:'Browser', desc:'Webseiten besuchen', icon:'🌐', id:'browser' },
+  { name:'Mail', desc:'E-Mails lesen & schreiben', icon:'✉️', id:'mail' },
+  { name:'Kalender', desc:'Termine verwalten', icon:'📅', id:'calendar' },
+  { name:'Notizen', desc:'Notizen erstellen', icon:'📝', id:'notes' },
+  { name:'Musik', desc:'Musik abspielen', icon:'🎵', id:'music' },
+  { name:'Terminal', desc:'Kommandozeile', icon:'💻', id:'terminal' },
+  { name:'Code Editor', desc:'Code schreiben', icon:'🖊️', id:'code' },
+  { name:'Rechner', desc:'Berechnungen', icon:'🔢', id:'calculator' },
+  { name:'Karten', desc:'Orte finden', icon:'🗺️', id:'maps' },
+  { name:'Einstellungen', desc:'System konfigurieren', icon:'⚙️', id:'settings' },
+];
+
+function openSearch() {
+  closeAll();
+  document.getElementById('search-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('search-input').focus(), 40);
+  doSearch('');
+}
+function closeSearch(e) {
+  if (e && e.target !== document.getElementById('search-overlay')) return;
+  document.getElementById('search-overlay').classList.remove('open');
+}
+function doSearch(q) {
+  const res = document.getElementById('search-res');
+  const query = q.toLowerCase();
+  const matches = SEARCH_APPS.filter(a => !q || a.name.toLowerCase().includes(query) || a.desc.toLowerCase().includes(query));
+  if (!matches.length && q) {
+    res.innerHTML = `<div style="padding:14px 18px;color:var(--text2);font-size:12px;">Keine Ergebnisse für „${q}"</div>`;
+    return;
+  }
+  res.innerHTML = matches.map((a,i) => `<div class="s-result${i===0?' s-active':''}" onclick="launchSearch('${a.id}')">
+    <div class="s-icon">${a.icon}</div>
+    <div><div class="s-name">${a.name}</div><div class="s-desc">${a.desc}</div></div>
+  </div>`).join('');
+}
+function searchKey(e) {
+  if (e.key==='Escape') document.getElementById('search-overlay').classList.remove('open');
+  if (e.key==='Enter') { const f=document.querySelector('.s-result'); if(f) f.click(); }
+}
+function launchSearch(id) {
+  document.getElementById('search-overlay').classList.remove('open');
+  document.getElementById('search-input').value = '';
+  openApp(id);
+}
+
+// ══════════════════════════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════════════════════════
+function showNotif(title, body, appName) {
+  if (!OS.notifications) return;
+  const area = document.getElementById('notif-area');
+  const n = document.createElement('div');
+  n.className = 'notif';
+  n.innerHTML = `${appName?`<div class="notif-app">${appName}</div>`:''}<div class="notif-title">${title}</div><div class="notif-body">${body}</div>`;
+  n.onclick = () => n.remove();
+  area.appendChild(n);
+  setTimeout(() => { n.style.transition='opacity .4s'; n.style.opacity='0'; setTimeout(()=>n.remove(),400); }, 4000);
+}
+
+// ══════════════════════════════════════════════════════
+// SYSTEM
+// ══════════════════════════════════════════════════════
+function togglePMenu() { document.getElementById('partex-menu').classList.toggle('open'); }
+
+function closeAll(e) {
+  if (e && e.target.closest('#partex-menu')) return;
+  document.getElementById('partex-menu').classList.remove('open');
+  document.getElementById('ctx').classList.remove('open');
+}
+
+function showCtx(e) {
+  e.preventDefault();
+  closeAll();
+  const cm = document.getElementById('ctx');
+  cm.style.left = Math.min(e.clientX, window.innerWidth-190) + 'px';
+  cm.style.top = Math.min(e.clientY, window.innerHeight-180) + 'px';
   cm.classList.add('open');
 }
 
-function closeMenus() {
-  document.getElementById('context-menu').classList.remove('open');
-  const pm = document.getElementById('partex-menu');
-  if (pm) pm.style.display = 'none';
+function changeWallpaper() {
+  OS.wallpaperIdx = (OS.wallpaperIdx + 1) % WALLPAPERS.length;
+  document.getElementById('wallpaper').style.background = WALLPAPERS[OS.wallpaperIdx].bg;
+  showNotif('Hintergrundbild','Wechsel zu: ' + WALLPAPERS[OS.wallpaperIdx].label);
 }
 
-function togglePartexMenu() {
-  const pm = document.getElementById('partex-menu');
-  pm.style.display = pm.style.display === 'block' ? 'none' : 'block';
+function doLock() {
+  closeAll();
+  const lock = document.getElementById('lock');
+  lock.classList.add('on');
+  const li = document.getElementById('lock-input');
+  if (li) { li.value=''; setTimeout(()=>li.focus(),100); }
+}
+
+function unlockScreen() {
+  document.getElementById('lock').classList.remove('on');
+}
+
+document.getElementById('lock').addEventListener('click', e => {
+  if (e.target === document.getElementById('lock')) unlockScreen();
+});
+
+document.addEventListener('keydown', e => {
+  const lock = document.getElementById('lock');
+  if (lock.classList.contains('on') && e.key !== 'Enter') {
+    const li = document.getElementById('lock-input');
+    if (li && document.activeElement !== li) li.focus();
+  }
+  if (lock.classList.contains('on')) return;
+  if (e.metaKey || e.ctrlKey) {
+    switch(e.key) {
+      case ' ': e.preventDefault(); openSearch(); break;
+      case 'f': e.preventDefault(); openApp('finder'); break;
+      case 't': e.preventDefault(); openApp('terminal'); break;
+      case 'n': e.preventDefault(); openApp('notes'); break;
+      case ',': e.preventDefault(); openApp('settings'); break;
+    }
+  }
+  if (e.key==='Escape') {
+    document.getElementById('search-overlay').classList.remove('open');
+    closeAll();
+  }
+});
+
+function doSleep() {
+  closeAll();
+  const s = document.createElement('div');
+  s.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99998;display:flex;align-items:center;justify-content:center;cursor:pointer;';
+  s.innerHTML = '<div style="color:#1a1a1a;font-size:12px;">Zum Aufwecken klicken</div>';
+  document.body.appendChild(s);
+  s.addEventListener('click', ()=>s.remove());
 }
 
 function doRestart() {
-  if (!confirm('Neustarten?')) return;
-  location.reload();
+  closeAll();
+  if (!confirm('PartexDesktop OS 10.9.1 neu starten?')) return;
+  const r = document.createElement('div');
+  r.style.cssText = 'position:fixed;inset:0;background:#000;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;';
+  r.innerHTML = `<div style="color:#444;font-size:12px;margin-bottom:20px;">Wird neu gestartet…</div>
+    <div style="width:160px;height:2px;background:#111;border-radius:1px;overflow:hidden;">
+      <div id="rb" style="height:100%;background:#6c4ff8;width:0;"></div>
+    </div>`;
+  document.body.appendChild(r);
+  let p=0; const iv=setInterval(()=>{
+    p+=6; document.getElementById('rb').style.width=p+'%';
+    if(p>=100){clearInterval(iv);r.remove();location.reload();}
+  },100);
 }
 
-// Click outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('#context-menu')) document.getElementById('context-menu').classList.remove('open');
-  if (!e.target.closest('#partex-menu') && !e.target.closest('#menubar-logo')) {
-    document.getElementById('partex-menu').style.display = 'none';
-  }
-});
-
-// Keyboard shortcuts
-document.addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key === ' ') {
-    e.preventDefault();
-    openSearch();
-  }
-  if (e.key === 'Escape') {
-    closeSearch({ target: null });
-    closeMenus();
-  }
-});
-
-// =============================================
-// INIT
-// =============================================
-function initOS() {
-  applyAllSettings();
-  setupDeskIcons();
-  updateClock();
-  showNotif('PartexDesktop OS 10.9', 'System bereit. Alle Apps funktionieren! 🚀');
+function doShutdown() {
+  closeAll();
+  if (!confirm('PartexDesktop OS 10.9.1 ausschalten?')) return;
+  document.body.innerHTML = '<div style="background:#000;height:100vh;display:flex;align-items:center;justify-content:center;color:#222;font-size:12px;">System ausgeschaltet. Seite neu laden zum Starten.</div>';
 }
-
-initOS();
 </script>
 </body>
 </html>
