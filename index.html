@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -592,6 +592,7 @@ select.set-select{background:var(--bg3);border:1px solid var(--line2);color:var(
             <div class="set-nav-item" data-sec="network" onclick="setNav(this)">Network</div>
             <div class="set-nav-item" data-sec="storage" onclick="setNav(this)">Storage</div>
             <div class="set-nav-item" data-sec="battery" onclick="setNav(this)">Battery</div>
+            <div class="set-nav-item" data-sec="aria" onclick="setNav(this)">Aria</div>
             <div class="set-nav-item" data-sec="accessibility" onclick="setNav(this)">Accessibility</div>
             <div class="set-nav-sec">About</div>
             <div class="set-nav-item" data-sec="device" onclick="setNav(this)">Device information</div>
@@ -695,7 +696,7 @@ select.set-select{background:var(--bg3);border:1px solid var(--line2);color:var(
               <div class="set-h">Network</div>
               <div class="set-card">
                 <div class="set-row"><div class="set-row-label">Status</div><div class="set-row-val" id="net-status" style="color:var(--ok);">Connected</div></div>
-                <div class="set-row"><div class="set-row-label">Network name</div><div class="set-row-val">HomeNet_5G</div></div>
+                <div class="set-row"><div class="set-row-label">Network name</div><div class="set-row-val" id="net-name">Detecting…</div></div>
                 <div class="set-row"><div class="set-row-label">IP address</div><div class="set-row-val" id="net-ip">Detecting…</div></div>
                 <div class="set-row"><div class="set-row-label">Connection type</div><div class="set-row-val" id="net-type">Detecting…</div></div>
                 <div class="set-row">
