@@ -8,8 +8,7 @@
     /* ============================================================
        PartexDesktop OS 11.4 (Beta) — design tokens
        A "workshop" palette: warm graphite + amber signal color,
-       monospace-led type system. Not macOS, not purple-glass.
-       Added: glass effects (blur, transparency) and Aria AI.
+       monospace-led type system. Glass effects throughout.
     ============================================================ */
     *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
     :root{
@@ -40,7 +39,6 @@
       --motion-fast:0.14s;
       --motion-med:0.22s;
       --ease:cubic-bezier(.2,.7,.3,1);
-      /* glass effect variables */
       --glass-bg: rgba(28, 26, 22, 0.72);
       --glass-blur: blur(16px);
       --glass-border: 1px solid rgba(255, 250, 240, 0.18);
@@ -112,7 +110,7 @@
     #wallpaper::after{content:'';position:absolute;inset:0;background:var(--wp-overlay,rgba(0,0,0,0));}
     #desktop{flex:1;position:relative;overflow:hidden;z-index:1;}
 
-    /* top bar with glass effect */
+    /* top bar with glass */
     #topbar{height:30px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);display:flex;align-items:center;padding:0 12px;gap:16px;border-bottom:1px solid var(--line);flex-shrink:0;z-index:2;position:relative;}
     .tb-brand{font-family:var(--font-mono);font-weight:700;font-size:12px;color:var(--signal);cursor:pointer;letter-spacing:.5px;display:flex;align-items:center;gap:6px;}
     .tb-brand .dot{width:6px;height:6px;background:var(--signal);border-radius:50%;}
@@ -122,6 +120,7 @@
     .tb-right i:hover{color:var(--ink);}
     #tb-clock{font-family:var(--font-mono);font-size:12px;color:var(--ink);white-space:nowrap;}
 
+    /* brand menu with glass */
     #brand-menu{position:absolute;top:30px;left:10px;width:220px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);z-index:3;display:none;box-shadow:var(--glass-shadow);}
     #brand-menu.open{display:block;}
     .bm-item{padding:9px 14px;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:10px;color:var(--ink2);}
@@ -166,7 +165,7 @@
     .win-body{flex:1;overflow:auto;position:relative;}
     .resize-grip{position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:nwse-resize;z-index:5;}
 
-    /* ============== TASKBAR (glass) ============== */
+    /* ============== TASKBAR with glass ============== */
     #taskbar{position:fixed;z-index:500;display:flex;align-items:center;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);transition:none;box-shadow:var(--glass-shadow);}
     #taskbar.tb-bottom{left:50%;bottom:10px;transform:translateX(-50%);flex-direction:row;height:var(--taskbar-size);padding:0 10px;}
     #taskbar.tb-top{left:50%;top:36px;transform:translateX(-50%);flex-direction:row;height:var(--taskbar-size);padding:0 10px;}
@@ -192,7 +191,7 @@
     #taskbar.tb-bottom .tb-resize,#taskbar.tb-top .tb-resize{top:0;left:0;right:0;height:5px;cursor:ns-resize;}
     #taskbar.tb-left .tb-resize,#taskbar.tb-right .tb-resize{top:0;bottom:0;left:0;width:5px;cursor:ew-resize;}
 
-    /* ============== SEARCH (glass) ============== */
+    /* ============== SEARCH with glass ============== */
     #search-ov{position:fixed;inset:0;background:rgba(10,9,8,0.5);backdrop-filter:blur(6px);z-index:70000;display:none;align-items:flex-start;justify-content:center;padding-top:14vh;}
     #search-ov.open{display:flex;}
     #search-box{width:560px;max-width:90vw;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);}
@@ -207,7 +206,7 @@
     .s-name{font-size:13px;font-weight:500;}
     .s-sub{font-size:11px;color:var(--ink3);}
 
-    /* ============== NOTIFICATIONS ============== */
+    /* ============== NOTIFICATIONS with glass ============== */
     #notif-stack{position:fixed;top:40px;right:14px;z-index:60000;display:flex;flex-direction:column;gap:8px;}
     .notif{width:290px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-left:3px solid var(--signal);padding:11px 14px;animation:nIn .25s var(--ease);}
     @keyframes nIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
@@ -216,7 +215,7 @@
     .notif-t{font-size:12.5px;font-weight:600;}
     .notif-b{font-size:11.5px;color:var(--ink2);margin-top:3px;line-height:1.5;}
 
-    /* ============== CONTROL CENTER (glass) ============== */
+    /* ============== CONTROL CENTER with glass ============== */
     #cc{position:fixed;top:34px;right:10px;width:300px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);z-index:55000;display:none;padding:14px;}
     #cc.open{display:block;}
     .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
@@ -229,19 +228,21 @@
     .cc-slider-label{font-size:11px;color:var(--ink2);margin-bottom:5px;display:flex;justify-content:space-between;}
     input[type=range]{width:100%;accent-color:var(--signal);}
 
-    /* Aria AI button in control center */
+    /* Aria button in CC */
     .aria-cc-btn{background:var(--signal);border:none;color:#1a1410;font-weight:bold;padding:8px 12px;width:100%;margin-top:8px;cursor:pointer;font-family:var(--font-mono);font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;}
     .aria-cc-btn:hover{filter:brightness(1.1);}
 
-    /* ============== ARIA PANEL (like Siri overlay) ============== */
+    /* ============== ARIA PANEL with glass ============== */
     #aria-panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:400px;max-width:90vw;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);z-index:58000;display:none;padding:14px;flex-direction:column;gap:12px;}
     #aria-panel.open{display:flex;}
-    .aria-orb{width:48px;height:48px;border-radius:50%;background:var(--signal);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:20px;color:#1a1410;}
+    .aria-orb{width:48px;height:48px;border-radius:50%;background:var(--signal);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:20px;color:#1a1410;animation:ariaPulse 2s infinite;}
+    @keyframes ariaPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,162,58,0.4);}50%{box-shadow:0 0 0 12px rgba(232,162,58,0);}}
     .aria-input-row{display:flex;gap:8px;}
-    #aria-input{flex:1;background:var(--bg2);border:1px solid var(--line2);padding:8px 12px;color:var(--ink);font-family:var(--font-ui);}
-    #aria-response{font-size:13px;color:var(--ink2);min-height:32px;padding:0 4px;}
+    #aria-input{flex:1;background:var(--bg2);border:1px solid var(--line2);padding:8px 12px;color:var(--ink);font-family:var(--font-ui);outline:none;}
+    #aria-input:focus{border-color:var(--signal);}
+    #aria-response{font-size:13px;color:var(--ink2);min-height:32px;padding:0 4px;line-height:1.5;}
 
-    /* ============== CONTEXT MENU (glass) ============== */
+    /* ============== CONTEXT MENU with glass ============== */
     #ctx{position:fixed;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);padding:4px;z-index:75000;min-width:190px;display:none;}
     #ctx.open{display:block;}
     .ctx-item{padding:8px 12px;cursor:pointer;font-size:12.5px;display:flex;align-items:center;gap:9px;color:var(--ink2);}
@@ -296,7 +297,7 @@
     .about-row:last-child{border-bottom:none;}
     .about-key{color:var(--ink3);}
 
-    /* apps unchanged */
+    /* ============== APPS: shared ============== */
     .app-pad{padding:18px;}
     .calc-shell{max-width:280px;margin:0 auto;padding:16px;}
     .calc-hist{height:20px;text-align:right;color:var(--ink3);font-size:11px;font-family:var(--font-mono);margin-bottom:2px;}
@@ -390,36 +391,153 @@
   </style>
 </head>
 <body>
-<!-- BOOT / ONBOARDING / LOCK identical in structure, omitted for brevity but present in logic -->
+
+<!-- ============== BOOT ============== -->
 <div id="boot">
-  <div class="boot-mark"><div class="boot-glyph">P</div><div class="boot-word">Partex<b>Desktop</b></div></div>
+  <div class="boot-mark">
+    <div class="boot-glyph">P</div>
+    <div class="boot-word">Partex<b>Desktop</b></div>
+  </div>
   <div id="boot-track"><div id="boot-fill"></div></div>
   <div id="boot-line">Starting...</div>
 </div>
 
+<!-- ============== ONBOARDING ============== -->
 <div id="setup-language" class="setup show">
   <div class="setup-panel"><div class="setup-inner">
-    <div class="setup-step">Step 1 / 5</div><div class="setup-h">Welcome to PartexDesktop OS 11.4</div><div class="setup-p">Choose your language.</div>
-    <div class="setup-grid" data-group="lang"><div class="setup-chip sel" data-v="en">English</div><div class="setup-chip" data-v="de">Deutsch</div></div>
-    <div class="setup-foot"><div class="setup-dots"><div class="setup-dot on"></div><div class="setup-dot"></div><div class="setup-dot"></div><div class="setup-dot"></div><div class="setup-dot"></div></div><button class="btn btn-go" onclick="goSetup('setup-region')">Continue</button></div>
+    <div class="setup-step">Step 1 / 5</div>
+    <div class="setup-h">Welcome to PartexDesktop OS 11.4</div>
+    <div class="setup-p">Choose your language to begin setup.</div>
+    <div class="setup-grid" data-group="lang">
+      <div class="setup-chip sel" data-v="en">English</div>
+      <div class="setup-chip" data-v="de">Deutsch</div>
+      <div class="setup-chip" data-v="fr">Français</div>
+      <div class="setup-chip" data-v="es">Español</div>
+    </div>
+    <div class="setup-foot">
+      <div class="setup-dots"><div class="setup-dot on"></div><div class="setup-dot"></div><div class="setup-dot"></div><div class="setup-dot"></div><div class="setup-dot"></div></div>
+      <button class="btn btn-go" onclick="goSetup('setup-region')">Continue</button>
+    </div>
   </div></div>
 </div>
-<div id="setup-region" class="setup">...</div>
-<div id="setup-network" class="setup">...</div>
-<div id="setup-theme" class="setup">...</div>
-<div id="setup-terms" class="setup">...</div>
 
-<div id="lock"><div class="lock-clock" id="lock-time">00:00</div><div class="lock-date" id="lock-date">Monday, January 1</div><div class="lock-hint"><span>↑</span> Click to unlock</div></div>
+<div id="setup-region" class="setup">
+  <div class="setup-panel"><div class="setup-inner">
+    <div class="setup-step">Step 2 / 5</div>
+    <div class="setup-h">Region &amp; time zone</div>
+    <div class="setup-p">Used for clock, date format, and local content.</div>
+    <div class="setup-grid" data-group="region">
+      <div class="setup-chip sel" data-v="de">Germany</div>
+      <div class="setup-chip" data-v="at">Austria</div>
+      <div class="setup-chip" data-v="ch">Switzerland</div>
+      <div class="setup-chip" data-v="us">United States</div>
+      <div class="setup-chip" data-v="gb">United Kingdom</div>
+    </div>
+    <div class="setup-foot">
+      <div class="setup-dots"><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot"></div><div class="setup-dot"></div><div class="setup-dot"></div></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="goSetup('setup-language')">Back</button>
+        <button class="btn btn-go" onclick="goSetup('setup-network')">Continue</button>
+      </div>
+    </div>
+  </div></div>
+</div>
 
+<div id="setup-network" class="setup">
+  <div class="setup-panel"><div class="setup-inner">
+    <div class="setup-step">Step 3 / 5</div>
+    <div class="setup-h">Connect to a network</div>
+    <div class="setup-p">Select an available network to continue.</div>
+    <div class="setup-grid" data-group="net" style="flex-direction:column;align-items:stretch;">
+      <div class="setup-chip sel" data-v="home" style="justify-content:space-between;">HomeNet_5G <span style="font-size:11px;color:var(--ink3);">Strong</span></div>
+      <div class="setup-chip" data-v="office" style="justify-content:space-between;">OfficeWLAN <span style="font-size:11px;color:var(--ink3);">Strong</span></div>
+      <div class="setup-chip" data-v="pub" style="justify-content:space-between;">PublicWiFi_Open <span style="font-size:11px;color:var(--ink3);">Open</span></div>
+      <div class="setup-chip" data-v="skip" style="justify-content:center;">Skip for now</div>
+    </div>
+    <div class="setup-foot">
+      <div class="setup-dots"><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot"></div><div class="setup-dot"></div></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="goSetup('setup-region')">Back</button>
+        <button class="btn btn-go" onclick="goSetup('setup-theme')">Continue</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div id="setup-theme" class="setup">
+  <div class="setup-panel"><div class="setup-inner">
+    <div class="setup-step">Step 4 / 5</div>
+    <div class="setup-h">Pick a signal color</div>
+    <div class="setup-p">This accent is used throughout the system. Change it later in Settings.</div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px;">
+      <div class="swatch sel" data-color="#e8a23a" style="background:#e8a23a;" onclick="pickSetupAccent(this)"></div>
+      <div class="swatch" data-color="#d6604a" style="background:#d6604a;" onclick="pickSetupAccent(this)"></div>
+      <div class="swatch" data-color="#7fb069" style="background:#7fb069;" onclick="pickSetupAccent(this)"></div>
+      <div class="swatch" data-color="#5b9aa8" style="background:#5b9aa8;" onclick="pickSetupAccent(this)"></div>
+      <div class="swatch" data-color="#9d7bc9" style="background:#9d7bc9;" onclick="pickSetupAccent(this)"></div>
+      <div class="swatch" data-color="#d68fb0" style="background:#d68fb0;" onclick="pickSetupAccent(this)"></div>
+      <div class="swatch" data-color="#c9c25e" style="background:#c9c25e;" onclick="pickSetupAccent(this)"></div>
+    </div>
+    <div class="setup-foot">
+      <div class="setup-dots"><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot"></div></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="goSetup('setup-network')">Back</button>
+        <button class="btn btn-go" onclick="goSetup('setup-terms')">Continue</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<div id="setup-terms" class="setup">
+  <div class="setup-panel"><div class="setup-inner">
+    <div class="setup-step">Step 5 / 5</div>
+    <div class="setup-h">Terms of use</div>
+    <div class="setup-p">Please read and accept to finish setup.</div>
+    <div class="setup-terms">
+      <h4>PartexDesktop OS 11.4 — Terms of Use</h4>
+      <p>Version 11.4 Beta — 2026</p>
+      <h4>1. General</h4>
+      <p>By using PartexDesktop OS 11.4 you agree to these terms. If you do not agree, do not use the system.</p>
+      <h4>2. License</h4>
+      <p>Partex grants a limited, non-transferable license to use this system on your device.</p>
+      <h4>3. Device data</h4>
+      <p>PartexDesktop OS reads technical device information (browser, OS, hardware) locally to optimize the interface. This data is not sent anywhere.</p>
+      <h4>4. Disclaimer</h4>
+      <p>The system is provided "as is" without warranty of any kind.</p>
+      <h4>5. Intellectual property</h4>
+      <p>All rights to the system, apps, and design belong to Partex Corp. © 2026 Partex Corp.</p>
+    </div>
+    <label class="setup-check"><input type="checkbox" id="terms-ok" onchange="document.getElementById('finish-btn').disabled=!this.checked"> I accept the terms of use and privacy policy</label>
+    <div class="setup-foot">
+      <div class="setup-dots"><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot on"></div><div class="setup-dot on"></div></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn" onclick="goSetup('setup-theme')">Back</button>
+        <button class="btn btn-go" id="finish-btn" disabled onclick="finishSetup()">Finish setup</button>
+      </div>
+    </div>
+  </div></div>
+</div>
+
+<!-- ============== LOCK ============== -->
+<div id="lock">
+  <div class="lock-clock" id="lock-time">00:00</div>
+  <div class="lock-date" id="lock-date">Monday, January 1</div>
+  <div class="lock-hint"><span>↑</span> Click to unlock</div>
+</div>
+
+<!-- ============== OS SHELL ============== -->
 <div id="os">
   <div id="wallpaper"></div>
+
   <div id="topbar">
     <div class="tb-brand" onclick="toggleBrandMenu()"><span class="dot"></span>Partex</div>
     <div class="tb-appname" id="tb-appname">Desktop</div>
     <div id="brand-menu">
       <div class="bm-item" onclick="openApp('about')">About this system</div>
-      <div class="bm-sep"></div><div class="bm-item" onclick="openApp('settings')">Settings</div>
-      <div class="bm-sep"></div><div class="bm-item" onclick="doLock()">Lock screen</div>
+      <div class="bm-sep"></div>
+      <div class="bm-item" onclick="openApp('settings')">Settings</div>
+      <div class="bm-sep"></div>
+      <div class="bm-item" onclick="doLock()">Lock screen</div>
       <div class="bm-item" onclick="doRestart()">Restart…</div>
     </div>
     <div class="tb-right">
@@ -431,156 +549,1393 @@
   </div>
 
   <div id="desktop" oncontextmenu="showCtx(event)">
-    <div class="dicon" style="top:20px;left:20px;" ondblclick="openApp('browser')"><div class="dicon-box">B</div><div class="dicon-label">Browser</div></div>
-    <div class="dicon" style="top:104px;left:20px;" ondblclick="openApp('filemanager')"><div class="dicon-box">F</div><div class="dicon-label">Files</div></div>
-    <div class="widget widget-clock" id="widget-clock"><div class="wclock-t" id="w-time">00:00</div><div class="wclock-d" id="w-date">Monday, January 1, 2026</div></div>
-    <div class="widget widget-weather" id="widget-weather"><div class="ww-row"><div class="ww-icon">~</div><div class="ww-temp">18°C</div></div><div class="ww-loc">Wildeshausen, DE</div></div>
+    <div class="dicon" style="top:20px;left:20px;" ondblclick="openApp('browser')">
+      <div class="dicon-box">B</div><div class="dicon-label">Browser</div>
+    </div>
+    <div class="dicon" style="top:104px;left:20px;" ondblclick="openApp('filemanager')">
+      <div class="dicon-box">F</div><div class="dicon-label">File Manager</div>
+    </div>
+    <div class="dicon" style="top:188px;left:20px;" ondblclick="openApp('notes')">
+      <div class="dicon-box">N</div><div class="dicon-label">Notes</div>
+    </div>
+    <div class="dicon" style="top:272px;left:20px;" ondblclick="openApp('terminal')">
+      <div class="dicon-box">T</div><div class="dicon-label">Terminal</div>
+    </div>
 
-    <!-- Windows: settings, calculator, browser, music, notes, terminal, camera, filemanager (abbreviated) -->
+    <div class="widget widget-clock" id="widget-clock">
+      <div class="wclock-t" id="w-time">00:00</div>
+      <div class="wclock-d" id="w-date">Monday, January 1, 2026</div>
+    </div>
+    <div class="widget widget-weather" id="widget-weather">
+      <div class="ww-row"><div class="ww-icon">~</div><div class="ww-temp">18°C</div></div>
+      <div class="ww-loc">Wildeshausen, DE — partly cloudy</div>
+    </div>
+
+    <!-- ===== SETTINGS WINDOW ===== -->
     <div class="win" id="win-settings" style="width:820px;height:580px;top:54px;left:130px;">
-      <div class="titlebar" data-w="settings"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('settings')">×</button><button class="dot-btn dot-min" onclick="minWin('settings')">_</button><button class="dot-btn dot-max" onclick="maxWin('settings')">□</button></div><div class="win-title">Settings</div><div class="win-spacer"></div></div>
-      <div class="win-body"><div class="set-wrap"><div class="set-nav" id="set-nav">
-        <div class="set-nav-sec">Appearance</div><div class="set-nav-item active" data-sec="appearance" onclick="setNav(this)">Theme & wallpaper</div><div class="set-nav-item" data-sec="taskbar" onclick="setNav(this)">Taskbar</div><div class="set-nav-item" data-sec="display" onclick="setNav(this)">Display & text</div>
-        <div class="set-nav-sec">System</div><div class="set-nav-item" data-sec="sound" onclick="setNav(this)">Sound</div><div class="set-nav-item" data-sec="network" onclick="setNav(this)">Network</div><div class="set-nav-item" data-sec="storage" onclick="setNav(this)">Storage</div><div class="set-nav-item" data-sec="battery" onclick="setNav(this)">Battery</div>
-        <div class="set-nav-item" data-sec="accessibility" onclick="setNav(this)">Accessibility</div>
-        <div class="set-nav-sec">AI & Privacy</div><div class="set-nav-item" data-sec="aria" onclick="setNav(this)">Aria Settings</div>
-        <div class="set-nav-sec">About</div><div class="set-nav-item" data-sec="device" onclick="setNav(this)">Device info</div><div class="set-nav-item" data-sec="about" onclick="setNav(this)">About</div>
-      </div><div class="set-main">
-        <div class="set-section active" id="sec-appearance">...</div>
-        <div class="set-section" id="sec-taskbar">...</div>
-        <div class="set-section" id="sec-display">...</div>
-        <div class="set-section" id="sec-sound">...</div>
-        <div class="set-section" id="sec-network">...</div>
-        <div class="set-section" id="sec-storage">...</div>
-        <div class="set-section" id="sec-battery">...</div>
-        <div class="set-section" id="sec-accessibility">
-          <div class="set-h">Accessibility</div>
-          <div class="set-card">
-            <div class="set-row"><div><div class="set-row-label">Reduce transparency</div><div class="set-row-sub">Replace blur effects with solid panels</div></div><label class="sw"><input type="checkbox" id="opt-no-blur" onchange="setNoBlur(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
-            <div class="set-row"><div><div class="set-row-label">Glass Effects</div><div class="set-row-sub">Enable liquid glass blur and transparency</div></div><label class="sw"><input type="checkbox" id="opt-glass" checked onchange="setGlassEffects(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+      <div class="titlebar" data-w="settings">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('settings')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('settings')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('settings')">□</button>
+        </div>
+        <div class="win-title">Settings</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body">
+        <div class="set-wrap">
+          <div class="set-nav" id="set-nav">
+            <div class="set-nav-sec">Appearance</div>
+            <div class="set-nav-item active" data-sec="appearance" onclick="setNav(this)">Theme &amp; wallpaper</div>
+            <div class="set-nav-item" data-sec="taskbar" onclick="setNav(this)">Taskbar</div>
+            <div class="set-nav-item" data-sec="display" onclick="setNav(this)">Display &amp; text</div>
+            <div class="set-nav-sec">System</div>
+            <div class="set-nav-item" data-sec="sound" onclick="setNav(this)">Sound</div>
+            <div class="set-nav-item" data-sec="network" onclick="setNav(this)">Network</div>
+            <div class="set-nav-item" data-sec="storage" onclick="setNav(this)">Storage</div>
+            <div class="set-nav-item" data-sec="battery" onclick="setNav(this)">Battery</div>
+            <div class="set-nav-item" data-sec="accessibility" onclick="setNav(this)">Accessibility</div>
+            <div class="set-nav-sec">AI &amp; Privacy</div>
+            <div class="set-nav-item" data-sec="aria" onclick="setNav(this)">Aria Settings</div>
+            <div class="set-nav-sec">About</div>
+            <div class="set-nav-item" data-sec="device" onclick="setNav(this)">Device information</div>
+            <div class="set-nav-item" data-sec="about" onclick="setNav(this)">About this system</div>
+          </div>
+          <div class="set-main">
+
+            <div class="set-section active" id="sec-appearance">
+              <div class="set-h">Theme &amp; wallpaper</div>
+              <div class="set-card">
+                <div class="set-row"><div><div class="set-row-label">Signal color</div><div class="set-row-sub">Accent used for highlights and active states</div></div></div>
+                <div class="swatch-row" id="accent-swatches"></div>
+              </div>
+              <div class="set-card">
+                <div class="set-row"><div><div class="set-row-label">Wallpaper</div><div class="set-row-sub">Choose a desktop background</div></div></div>
+                <div class="wp-grid" id="wp-grid"></div>
+              </div>
+              <div class="set-card">
+                <div class="set-row">
+                  <div><div class="set-row-label">Desktop widgets</div><div class="set-row-sub">Show clock and weather on the desktop</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-widgets" checked onchange="applyWidgetsVisible(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-taskbar">
+              <div class="set-h">Taskbar</div>
+              <div class="set-card">
+                <div class="set-row"><div><div class="set-row-label">Position</div><div class="set-row-sub">Or drag the taskbar itself by its handle</div></div></div>
+                <div class="taskbar-pos-grid">
+                  <div class="tb-pos-opt sel" data-pos="bottom" onclick="setTaskbarPos('bottom',this)"><div class="tb-pos-bar" style="bottom:4px;left:8px;right:8px;height:4px;"></div></div>
+                  <div class="tb-pos-opt" data-pos="top" onclick="setTaskbarPos('top',this)"><div class="tb-pos-bar" style="top:4px;left:8px;right:8px;height:4px;"></div></div>
+                  <div class="tb-pos-opt" data-pos="left" onclick="setTaskbarPos('left',this)"><div class="tb-pos-bar" style="left:4px;top:8px;bottom:8px;width:4px;"></div></div>
+                  <div class="tb-pos-opt" data-pos="right" onclick="setTaskbarPos('right',this)"><div class="tb-pos-bar" style="right:4px;top:8px;bottom:8px;width:4px;"></div></div>
+                </div>
+              </div>
+              <div class="set-card">
+                <div class="set-row"><div><div class="set-row-label">Size</div><div class="set-row-sub">Or drag the taskbar's edge to resize</div></div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <input type="range" id="opt-tb-size" min="40" max="80" value="54" style="width:130px;" oninput="setTaskbarSize(this.value)">
+                    <span class="set-row-val" id="tb-size-val">54px</span>
+                  </div>
+                </div>
+              </div>
+              <div class="set-card">
+                <div class="set-row">
+                  <div><div class="set-row-label">Auto-hide</div><div class="set-row-sub">Hide the taskbar until you move the pointer near it</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-tb-autohide" onchange="setTaskbarAutohide(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-display">
+              <div class="set-h">Display &amp; text</div>
+              <div class="set-card">
+                <div class="set-row"><div class="set-row-label">Interface scale</div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <input type="range" id="opt-scale" min="85" max="125" value="100" style="width:130px;" oninput="setUiScale(this.value)">
+                    <span class="set-row-val" id="scale-val">100%</span>
+                  </div>
+                </div>
+                <div class="set-row"><div class="set-row-label">Interface font</div>
+                  <select class="set-select" id="opt-font" onchange="setUiFont(this.value)">
+                    <option value="'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif">Plex Sans (default)</option>
+                    <option value="'IBM Plex Mono',monospace">Plex Mono</option>
+                    <option value="Georgia,serif">Georgia</option>
+                    <option value="-apple-system,'Segoe UI',sans-serif">System UI</option>
+                  </select>
+                </div>
+                <div class="font-demo" id="font-demo-text">The quick fox jumps — 0123456789</div>
+              </div>
+              <div class="set-card">
+                <div class="set-row">
+                  <div><div class="set-row-label">Reduce motion</div><div class="set-row-sub">Minimize animations across the system</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-reduce-motion" onchange="setReduceMotion(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+                <div class="set-row">
+                  <div><div class="set-row-label">High contrast</div><div class="set-row-sub">Increase contrast of borders and text</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-contrast" onchange="setHighContrast(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-sound">
+              <div class="set-h">Sound</div>
+              <div class="set-card">
+                <div class="set-row"><div class="set-row-label">System volume</div>
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <input type="range" id="opt-volume" min="0" max="100" value="70" style="width:130px;" oninput="setVolume(this.value)">
+                    <span class="set-row-val" id="vol-val">70%</span>
+                  </div>
+                </div>
+                <div class="set-row">
+                  <div><div class="set-row-label">Interface sounds</div><div class="set-row-sub">Play a tone on clicks and notifications</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-uisound" checked><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-network">
+              <div class="set-h">Network</div>
+              <div class="set-card">
+                <div class="set-row"><div class="set-row-label">Status</div><div class="set-row-val" id="net-status" style="color:var(--ok);">Connected</div></div>
+                <div class="set-row"><div class="set-row-label">Network name</div><div class="set-row-val" id="net-name-display">Detecting…</div></div>
+                <div class="set-row"><div class="set-row-label">IP address</div><div class="set-row-val" id="net-ip">Detecting…</div></div>
+                <div class="set-row"><div class="set-row-label">Connection type</div><div class="set-row-val" id="net-type">Detecting…</div></div>
+                <div class="set-row">
+                  <div class="set-row-label">Wi-Fi</div>
+                  <label class="sw"><input type="checkbox" id="opt-wifi" checked onchange="toggleWifi(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-storage">
+              <div class="set-h">Storage</div>
+              <div class="set-card">
+                <div class="set-row"><div class="set-row-label">Total</div><div class="set-row-val">256 GB</div></div>
+                <div class="set-row"><div class="set-row-label">Used</div><div class="set-row-val">158 GB</div></div>
+                <div class="set-row"><div class="set-row-label">Free</div><div class="set-row-val" style="color:var(--ok);">98 GB</div></div>
+                <div class="storage-bar">
+                  <div style="width:10%;background:var(--bad);"></div>
+                  <div style="width:22%;background:var(--info);"></div>
+                  <div style="width:18%;background:var(--ok);"></div>
+                  <div style="width:12%;background:var(--warn);"></div>
+                  <div style="flex:1;background:var(--bg4);"></div>
+                </div>
+                <div class="sb-legend">
+                  <span><i class="sb-leg-dot" style="background:var(--bad);"></i>System 10%</span>
+                  <span><i class="sb-leg-dot" style="background:var(--info);"></i>Apps 22%</span>
+                  <span><i class="sb-leg-dot" style="background:var(--ok);"></i>Photos 18%</span>
+                  <span><i class="sb-leg-dot" style="background:var(--warn);"></i>Media 12%</span>
+                  <span><i class="sb-leg-dot" style="background:var(--bg4);"></i>Free 38%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-battery">
+              <div class="set-h">Battery</div>
+              <div class="set-card">
+                <div class="set-row"><div class="set-row-label">Charge level</div><div class="set-row-val" id="batt-level">Checking…</div></div>
+                <div class="set-row"><div class="set-row-label">Status</div><div class="set-row-val" id="batt-status">—</div></div>
+                <div class="set-row">
+                  <div><div class="set-row-label">Power saver</div><div class="set-row-sub">Dim widgets and pause background updates</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-powersaver" onchange="setPowerSaver(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-accessibility">
+              <div class="set-h">Accessibility</div>
+              <div class="set-card">
+                <div class="set-row">
+                  <div><div class="set-row-label">Glass Effects</div><div class="set-row-sub">Enable blur and transparency across the interface</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-glass" checked onchange="setGlassEffects(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+                <div class="set-row">
+                  <div><div class="set-row-label">Reduce transparency</div><div class="set-row-sub">Replace blur effects with solid panels</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-no-blur" onchange="setNoBlur(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+                <div class="set-row">
+                  <div><div class="set-row-label">Underline links</div><div class="set-row-sub">Always underline clickable text in apps</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-underline" onchange="document.body.classList.toggle('underline-links',this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-aria">
+              <div class="set-h">Aria Settings</div>
+              <div class="set-card">
+                <div class="set-row"><div class="set-row-label">Assistant name</div><div class="set-row-val">Aria</div></div>
+                <div class="set-row"><div class="set-row-label">Version</div><div class="set-row-val">1.0 (Basic)</div></div>
+                <div class="set-row">
+                  <div><div class="set-row-label">Enable Aria</div><div class="set-row-sub">Access Aria from Control Center or ask questions anytime</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-aria" checked onchange="toggleAria(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+                <div class="set-row">
+                  <div><div class="set-row-label">Show in Control Center</div><div class="set-row-sub">Display Aria button in the Control Center panel</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-aria-cc" checked onchange="document.getElementById('aria-cc-btn').style.display=this.checked?'':'none'"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                </div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-device">
+              <div class="set-h">Device information</div>
+              <div class="set-card" id="device-card">
+                <div class="set-row" style="justify-content:center;padding:30px;color:var(--ink3);">Reading device data…</div>
+              </div>
+            </div>
+
+            <div class="set-section" id="sec-about">
+              <div class="set-h">About this system</div>
+              <div class="set-card about-grid">
+                <div class="about-row"><span class="about-key">System</span><span>PartexDesktop OS 11.4 (Beta)</span></div>
+                <div class="about-row"><span class="about-key">Build</span><span>11.4.2026.06</span></div>
+                <div class="about-row"><span class="about-key">Kernel</span><span>partex-kernel 6.4</span></div>
+                <div class="about-row"><span class="about-key">Owner</span><span>partex</span></div>
+              </div>
+              <button class="btn btn-go" style="margin-top:14px;" onclick="showNotif('Software Update','PartexDesktop OS 11.4 Beta is up to date.')">Check for updates</button>
+            </div>
+
           </div>
         </div>
-        <div class="set-section" id="sec-aria">
-          <div class="set-h">Aria AI</div>
-          <div class="set-card">
-            <div class="set-row"><div class="set-row-label">Voice assistant</div><div class="set-row-val">Aria (basic)</div></div>
-            <div class="set-row"><div><div class="set-row-label">Enable Aria</div><div class="set-row-sub">Show Aria in Control Center and respond to queries</div></div><label class="sw"><input type="checkbox" id="opt-aria" checked onchange="toggleAria(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label></div>
+      </div>
+      <div class="resize-grip"></div>
+    </div>
+
+    <!-- ===== CALCULATOR ===== -->
+    <div class="win" id="win-calculator" style="width:300px;height:480px;top:80px;left:420px;">
+      <div class="titlebar" data-w="calculator">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('calculator')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('calculator')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('calculator')">□</button>
+        </div>
+        <div class="win-title">Calculator</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body">
+        <div class="calc-shell">
+          <div class="calc-hist" id="calc-hist"></div>
+          <div class="calc-disp" id="calc-disp">0</div>
+          <div class="calc-grid">
+            <button class="ck ck-clr" onclick="calcInput('AC')">AC</button>
+            <button class="ck" onclick="calcInput('+/-')">±</button>
+            <button class="ck" onclick="calcInput('%')">%</button>
+            <button class="ck ck-op" onclick="calcInput('/')">÷</button>
+            <button class="ck" onclick="calcInput('7')">7</button>
+            <button class="ck" onclick="calcInput('8')">8</button>
+            <button class="ck" onclick="calcInput('9')">9</button>
+            <button class="ck ck-op" onclick="calcInput('*')">×</button>
+            <button class="ck" onclick="calcInput('4')">4</button>
+            <button class="ck" onclick="calcInput('5')">5</button>
+            <button class="ck" onclick="calcInput('6')">6</button>
+            <button class="ck ck-op" onclick="calcInput('-')">−</button>
+            <button class="ck" onclick="calcInput('1')">1</button>
+            <button class="ck" onclick="calcInput('2')">2</button>
+            <button class="ck" onclick="calcInput('3')">3</button>
+            <button class="ck ck-op" onclick="calcInput('+')">+</button>
+            <button class="ck ck-wide" onclick="calcInput('0')">0</button>
+            <button class="ck" onclick="calcInput('.')">.</button>
+            <button class="ck ck-eq" onclick="calcInput('=')">=</button>
           </div>
         </div>
-        <div class="set-section" id="sec-device">...</div>
-        <div class="set-section" id="sec-about">...</div>
-      </div></div></div>
+      </div>
+    </div>
+
+    <!-- ===== BROWSER ===== -->
+    <div class="win" id="win-browser" style="width:920px;height:600px;top:70px;left:150px;">
+      <div class="titlebar" data-w="browser">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('browser')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('browser')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('browser')">□</button>
+        </div>
+        <div class="win-title">Browser</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body" style="display:flex;flex-direction:column;">
+        <div class="br-wrap">
+          <div class="br-nav">
+            <button class="br-btn" onclick="brNav(-1)">&lt;</button>
+            <button class="br-btn" onclick="brNav(1)">&gt;</button>
+            <button class="br-btn" onclick="brReload()">⟳</button>
+            <input class="br-url" id="br-url" value="partex://home" onkeydown="if(event.key==='Enter')brGo(this.value)">
+            <button class="br-btn" onclick="brGo(document.getElementById('br-url').value)">Go</button>
+          </div>
+          <div class="br-frame-wrap" id="br-frame-wrap">
+            <div class="br-home" id="br-home">
+              <h2>Partex Browser</h2>
+              <p>Fast, minimal, and built into the system.</p>
+              <div class="br-tiles">
+                <div class="br-tile" onclick="brGo('https://www.google.com')"><div class="br-tile-ic">G</div><span>Google</span></div>
+                <div class="br-tile" onclick="brGo('https://www.wikipedia.org')"><div class="br-tile-ic">W</div><span>Wikipedia</span></div>
+                <div class="br-tile" onclick="brGo('https://www.github.com')"><div class="br-tile-ic">Gh</div><span>GitHub</span></div>
+                <div class="br-tile" onclick="brGo('https://news.ycombinator.com')"><div class="br-tile-ic">Y</div><span>Hacker News</span></div>
+                <div class="br-tile" onclick="brGo('https://www.reddit.com')"><div class="br-tile-ic">R</div><span>Reddit</span></div>
+                <div class="br-tile" onclick="brGo('https://www.youtube.com')"><div class="br-tile-ic">Yt</div><span>YouTube</span></div>
+                <div class="br-tile" onclick="brGo('https://www.bbc.com/news')"><div class="br-tile-ic">B</div><span>BBC News</span></div>
+                <div class="br-tile" onclick="brGo('https://duckduckgo.com')"><div class="br-tile-ic">D</div><span>DuckDuckGo</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== MUSIC ===== -->
+    <div class="win" id="win-music" style="width:330px;height:520px;top:90px;left:300px;">
+      <div class="titlebar" data-w="music">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('music')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('music')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('music')">□</button>
+        </div>
+        <div class="win-title">Music</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body">
+        <div class="mu-wrap">
+          <div class="mu-art" id="mu-art">TRACK</div>
+          <div><div class="mu-title" id="mu-title">Partex Theme</div><div class="mu-artist" id="mu-artist">System Sounds</div></div>
+          <div class="mu-prog-wrap">
+            <div class="mu-track" onclick="muSeek(event)"><div class="mu-fill" id="mu-fill" style="width:0%"></div></div>
+            <div class="mu-times"><span id="mu-cur">0:00</span><span id="mu-tot">3:45</span></div>
+          </div>
+          <div class="mu-ctrl">
+            <button class="mu-btn" onclick="muPrev()">«</button>
+            <button class="mu-play" id="mu-play-btn" onclick="muToggle()">▶</button>
+            <button class="mu-btn" onclick="muNext()">»</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== NOTES ===== -->
+    <div class="win" id="win-notes" style="width:680px;height:480px;top:70px;left:220px;">
+      <div class="titlebar" data-w="notes">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('notes')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('notes')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('notes')">□</button>
+        </div>
+        <div class="win-title">Notes</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body">
+        <div class="nt-wrap">
+          <div class="nt-list" id="nt-list"></div>
+          <div class="nt-editor">
+            <div class="nt-tools">
+              <button class="nt-tbtn" onclick="noteNew()">+ New</button>
+              <button class="nt-tbtn" onclick="noteSave()">Save</button>
+              <button class="nt-tbtn" onclick="noteDelete()">Delete</button>
+            </div>
+            <input class="nt-title-in" id="nt-title" placeholder="Note title">
+            <textarea class="nt-body-in" id="nt-body" placeholder="Write here..."></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TERMINAL ===== -->
+    <div class="win" id="win-terminal" style="width:660px;height:420px;top:100px;left:190px;">
+      <div class="titlebar" data-w="terminal">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('terminal')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('terminal')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('terminal')">□</button>
+        </div>
+        <div class="win-title">Terminal</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body">
+        <div class="tm-wrap">
+          <div class="tm-out" id="tm-out"></div>
+          <div class="tm-row">
+            <span class="tm-prompt" id="tm-prompt">partex@desktop:~$</span>
+            <input class="tm-in" id="tm-in" autocomplete="off" spellcheck="false" onkeydown="tmKey(event)">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== CAMERA ===== -->
+    <div class="win" id="win-camera" style="width:600px;height:480px;top:80px;left:240px;">
+      <div class="titlebar" data-w="camera">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('camera')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('camera')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('camera')">□</button>
+        </div>
+        <div class="win-title">Camera</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body">
+        <div class="cam-wrap">
+          <div class="cam-view" id="cam-view">
+            <div class="cam-ph" id="cam-ph">Click the shutter to start the camera</div>
+            <video id="cam-video" style="display:none;"></video>
+          </div>
+          <div class="cam-ctrls">
+            <button class="cam-btn" onclick="camFlip()">⟲</button>
+            <button class="cam-shutter" onclick="camCapture()"></button>
+            <button class="cam-btn">▤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== FILE MANAGER ===== -->
+    <div class="win" id="win-filemanager" style="width:720px;height:480px;top:70px;left:170px;">
+      <div class="titlebar" data-w="filemanager">
+        <div class="tb-dots">
+          <button class="dot-btn dot-close" onclick="closeWin('filemanager')">×</button>
+          <button class="dot-btn dot-min" onclick="minWin('filemanager')">_</button>
+          <button class="dot-btn dot-max" onclick="maxWin('filemanager')">□</button>
+        </div>
+        <div class="win-title">File Manager</div><div class="win-spacer"></div>
+      </div>
+      <div class="win-body">
+        <div class="fm-wrap" id="fm-wrap"></div>
+      </div>
+    </div>
+
+  </div><!-- /desktop -->
+
+  <!-- ===== TASKBAR ===== -->
+  <div id="taskbar" class="tb-bottom">
+    <div class="tb-handle" id="tb-handle" title="Drag to move"></div>
+    <div class="tb-resize" id="tb-resize-handle"></div>
+    <div class="tb-apps">
+      <div class="tb-app" onclick="openApp('browser')" title="Browser">B</div>
+      <div class="tb-app" onclick="openApp('filemanager')" title="File Manager">F</div>
+      <div class="tb-app" onclick="openApp('terminal')" title="Terminal">T</div>
+      <div class="tb-app" onclick="openApp('music')" title="Music">M</div>
+      <div class="tb-app" onclick="openApp('notes')" title="Notes">N</div>
+      <div class="tb-app" onclick="openApp('camera')" title="Camera">C</div>
+      <div class="tb-sep"></div>
+      <div class="tb-app" onclick="openApp('calculator')" title="Calculator">=</div>
+      <div class="tb-sep"></div>
+      <div class="tb-app" onclick="openApp('settings')" title="Settings">S</div>
     </div>
   </div>
 
-  <div id="taskbar" class="tb-bottom">
-    <div class="tb-handle" id="tb-handle"></div><div class="tb-resize" id="tb-resize-handle"></div>
-    <div class="tb-apps">
-      <div class="tb-app" onclick="openApp('browser')">B</div><div class="tb-app" onclick="openApp('filemanager')">F</div><div class="tb-app" onclick="openApp('terminal')">T</div><div class="tb-app" onclick="openApp('music')">M</div><div class="tb-app" onclick="openApp('notes')">N</div><div class="tb-app" onclick="openApp('camera')">C</div><div class="tb-sep"></div><div class="tb-app" onclick="openApp('calculator')">=</div><div class="tb-sep"></div><div class="tb-app" onclick="openApp('settings')">S</div>
+</div><!-- /os -->
+
+<!-- ===== SEARCH ===== -->
+<div id="search-ov" onclick="if(event.target===this)closeSearch()">
+  <div id="search-box" onclick="event.stopPropagation()">
+    <div class="search-input-row">
+      <span>&gt;</span>
+      <input id="search-input" placeholder="Search apps and settings..." oninput="doSearch(this.value)" onkeydown="searchKey(event)" autocomplete="off">
     </div>
+    <div id="search-results"></div>
   </div>
 </div>
 
-<div id="search-ov" onclick="if(event.target===this)closeSearch()"><div id="search-box" onclick="event.stopPropagation()"><div class="search-input-row"><span>&gt;</span><input id="search-input" placeholder="Search apps and settings..." oninput="doSearch(this.value)" onkeydown="searchKey(event)"></div><div id="search-results"></div></div></div>
+<!-- ===== NOTIFICATIONS ===== -->
 <div id="notif-stack"></div>
 
+<!-- ===== CONTROL CENTER ===== -->
 <div id="cc">
   <div class="cc-grid">
-    <div class="cc-tile on" id="cc-wifi" onclick="ccToggle(this,'wifi')"><div class="cc-tile-top">WiFi</div><div class="cc-tile-label">HomeNet_5G</div></div>
+    <div class="cc-tile on" id="cc-wifi" onclick="ccToggle(this,'wifi')"><div class="cc-tile-top">WiFi</div><div class="cc-tile-label" id="cc-wifi-label">HomeNet_5G</div></div>
     <div class="cc-tile" id="cc-dnd" onclick="ccToggle(this,'dnd')"><div class="cc-tile-top">DND</div><div class="cc-tile-label">Do not disturb</div></div>
+    <div class="cc-tile" id="cc-bt" onclick="ccToggle(this,'bt')"><div class="cc-tile-top">BT</div><div class="cc-tile-label">Bluetooth</div></div>
+    <div class="cc-tile" id="cc-dark" onclick="ccToggle(this,'powersaver')"><div class="cc-tile-top">PWR</div><div class="cc-tile-label">Power saver</div></div>
+  </div>
+  <div class="cc-slider-row">
+    <div class="cc-slider-label"><span>Brightness</span><span id="cc-bright-val">80%</span></div>
+    <input type="range" min="20" max="100" value="80" oninput="document.getElementById('cc-bright-val').textContent=this.value+'%';document.getElementById('wallpaper').style.filter='brightness('+(this.value/100*0.7+0.3)+')'">
+  </div>
+  <div class="cc-slider-row">
+    <div class="cc-slider-label"><span>Volume</span><span id="cc-vol-val">70%</span></div>
+    <input type="range" min="0" max="100" value="70" oninput="setVolume(this.value);document.getElementById('cc-vol-val').textContent=this.value+'%'">
   </div>
   <button class="aria-cc-btn" id="aria-cc-btn" onclick="toggleAriaPanel()">◉ Ask Aria</button>
 </div>
 
+<!-- ===== ARIA PANEL ===== -->
 <div id="aria-panel">
   <div class="aria-orb">◉</div>
-  <div class="aria-input-row"><input id="aria-input" placeholder="Type something..." onkeydown="if(event.key==='Enter')ariaAsk()"><button class="btn btn-go" onclick="ariaAsk()">Go</button></div>
-  <div id="aria-response">Hello, I'm Aria. How can I help?</div>
+  <div class="aria-input-row">
+    <input id="aria-input" placeholder="Ask Aria something..." onkeydown="if(event.key==='Enter')ariaAsk()">
+    <button class="btn btn-go" onclick="ariaAsk()">Ask</button>
+  </div>
+  <div id="aria-response">Hello, I'm Aria. Try: "time", "date", "open settings", or "wifi status".</div>
 </div>
 
+<!-- ===== CONTEXT MENU ===== -->
 <div id="ctx">
-  <div class="ctx-item" onclick="cycleWallpaper()">Change wallpaper</div><div class="ctx-item" onclick="openApp('settings')">Settings</div><div class="ctx-sep"></div><div class="ctx-item" onclick="openSearch()">Search</div>
+  <div class="ctx-item" onclick="cycleWallpaper()">Change wallpaper</div>
+  <div class="ctx-item" onclick="openApp('settings')">Settings</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="openSearch()">Search</div>
+  <div class="ctx-item" onclick="openApp('terminal')">Open Terminal</div>
+  <div class="ctx-sep"></div>
+  <div class="ctx-item" onclick="showNotif('System','PartexDesktop OS 11.4 Beta — everything is up to date.')">Check for updates</div>
 </div>
 
 <script>
 'use strict';
+/* ============================================================
+   STATE
+   ============================================================ */
 const S = {
-  accent:'#e8a23a', wallpaperIdx:0, musicPlaying:false, musicPos:0, musicTimer:null,
+  accent:'#e8a23a',
+  wallpaperIdx:0,
+  musicPlaying:false,
+  musicPos:0,
+  musicTimer:null,
   calc:{val:'0',prev:'',op:null,fresh:false,hist:''},
-  notes:[{id:1,title:'Welcome',body:'Hello.'}], activeNote:1, noteSeq:2,
-  brHist:[], brIdx:-1, camStream:null,
-  taskbarPos:'bottom', taskbarSize:54, taskbarAutohide:false, winZ:100,
-  ariaEnabled:true, glassEnabled:true
+  notes:[
+    {id:1,title:'Welcome',body:'This is your first note in PartexDesktop OS 11.4.\n\nYou can write anything here.'},
+    {id:2,title:'Shopping list',body:'- Milk\n- Bread\n- Coffee\n- Apples'},
+    {id:3,title:'Ideas',body:'Project ideas:\n\n1. Build a web app\n2. Learn a language\n3. Exercise more'}
+  ],
+  activeNote:1,
+  noteSeq:4,
+  brHist:[],
+  brIdx:-1,
+  camStream:null,
+  taskbarPos:'bottom',
+  taskbarSize:54,
+  taskbarAutohide:false,
+  winZ:100,
+  ariaEnabled:true,
+  glassEnabled:true,
+  wifiEnabled:true,
 };
+
 const WALLPAPERS = [
   {name:'Graphite', bg:'linear-gradient(160deg,#1d1b18 0%,#262420 55%,#1a1815 100%)'},
-  {name:'Slate Dusk', bg:'linear-gradient(160deg,#161a1d 0%,#1d2428 55%,#11151a 100%)'}
+  {name:'Slate Dusk', bg:'linear-gradient(160deg,#161a1d 0%,#1d2428 55%,#11151a 100%)'},
+  {name:'Ember', bg:'linear-gradient(160deg,#231a14 0%,#2e2014 55%,#1a1410 100%)'},
+  {name:'Moss', bg:'linear-gradient(160deg,#171c14 0%,#1f261a 55%,#10140e 100%)'},
+  {name:'Plum', bg:'linear-gradient(160deg,#1c161e 0%,#251c28 55%,#120e14 100%)'},
+  {name:'Paper', bg:'linear-gradient(160deg,#22201b 0%,#2a2722 55%,#1c1a16 100%)'},
 ];
-const ACCENTS = ['#e8a23a','#d6604a','#7fb069'];
 
+const ACCENTS = ['#e8a23a','#d6604a','#7fb069','#5b9aa8','#9d7bc9','#d68fb0','#c9c25e'];
+
+/* ============================================================
+   BOOT
+   ============================================================ */
 (function boot(){
-  const fill=document.getElementById('boot-fill'), line=document.getElementById('boot-line');
-  let p=0; const iv=setInterval(()=>{ p+=Math.random()*16+5; if(p>100)p=100; fill.style.width=p+'%'; if(p>=100){clearInterval(iv); setTimeout(()=>{ document.getElementById('boot').classList.add('fade'); setTimeout(()=>{ document.getElementById('boot').style.display='none'; },500); },350); } },220);
+  const fill = document.getElementById('boot-fill');
+  const line = document.getElementById('boot-line');
+  const steps = ['Starting...','Loading kernel...','Mounting filesystem...','Starting services...','Ready.'];
+  let p=0, i=0;
+  const iv = setInterval(()=>{
+    p += Math.random()*16+5;
+    if(p>100)p=100;
+    fill.style.width = p+'%';
+    i = Math.min(Math.floor(p/100*steps.length), steps.length-1);
+    line.textContent = steps[i];
+    if(p>=100){
+      clearInterval(iv);
+      setTimeout(()=>{
+        document.getElementById('boot').classList.add('fade');
+        setTimeout(()=>{ document.getElementById('boot').style.display='none'; },500);
+      },350);
+    }
+  },220);
 })();
 
-function goSetup(id){ document.querySelectorAll('.setup').forEach(s=>s.classList.remove('show')); document.getElementById(id).classList.add('show'); }
-document.querySelectorAll('.setup-chip').forEach(chip=>{ chip.addEventListener('click', function(){ const g=this.closest('[data-group]'); if(g){ g.querySelectorAll('.setup-chip').forEach(c=>c.classList.remove('sel')); this.classList.add('sel'); } }); });
+/* ============================================================
+   ONBOARDING
+   ============================================================ */
+function goSetup(id){
+  document.querySelectorAll('.setup').forEach(s=>s.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+}
+document.querySelectorAll('.setup-chip').forEach(chip=>{
+  chip.addEventListener('click', function(){
+    const group = this.closest('[data-group]');
+    if(!group) return;
+    group.querySelectorAll('.setup-chip').forEach(c=>c.classList.remove('sel'));
+    this.classList.add('sel');
+  });
+});
+function pickSetupAccent(el){
+  document.querySelectorAll('#setup-theme .swatch').forEach(s=>s.classList.remove('sel'));
+  el.classList.add('sel');
+  S.accent = el.dataset.color;
+  document.documentElement.style.setProperty('--signal', S.accent);
+  document.documentElement.style.setProperty('--signal-dim', S.accent+'33');
+}
 function finishSetup(){
   document.querySelectorAll('.setup').forEach(s=>s.classList.remove('show'));
-  document.getElementById('lock').style.background = WALLPAPERS[0].bg; document.getElementById('lock').classList.add('show');
-  setInterval(tickClock,1000); tickClock(); document.getElementById('lock').addEventListener('click', unlock);
+  const lock = document.getElementById('lock');
+  lock.style.background = WALLPAPERS[0].bg;
+  lock.classList.add('show');
+  tickClock();
+  setInterval(tickClock,1000);
+  lock.addEventListener('click', unlock);
 }
+
+/* ============================================================
+   CLOCK
+   ============================================================ */
 function tickClock(){
-  const now=new Date(), t=now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  document.getElementById('lock-time').textContent=t; document.getElementById('tb-clock').textContent=t; document.getElementById('w-time').textContent=t;
+  const now = new Date();
+  const t = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+  const dFull = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  const dShort = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  const lt=document.getElementById('lock-time'), ld=document.getElementById('lock-date');
+  const tc=document.getElementById('tb-clock'), wt=document.getElementById('w-time'), wd=document.getElementById('w-date');
+  if(lt)lt.textContent=t; if(ld)ld.textContent=dShort;
+  if(tc)tc.textContent=t; if(wt)wt.textContent=t; if(wd)wd.textContent=dFull;
 }
+
+/* ============================================================
+   UNLOCK / INIT OS
+   ============================================================ */
 function unlock(){
-  const lock=document.getElementById('lock'); lock.style.transform='translateY(-100%)'; lock.style.opacity='0.4';
-  setTimeout(()=>{ lock.classList.remove('show'); lock.style.transform=''; lock.style.opacity=''; initOS(); },450);
+  const lock = document.getElementById('lock');
+  lock.style.transition='transform .45s cubic-bezier(.2,.7,.3,1), opacity .45s';
+  lock.style.transform='translateY(-100%)';
+  lock.style.opacity='0.4';
+  setTimeout(()=>{
+    lock.classList.remove('show');
+    lock.style.transform=''; lock.style.opacity='';
+    initOS();
+  },450);
 }
+
 function initOS(){
-  document.getElementById('os').classList.add('show'); applyWallpaper(); initDrag(); initTaskbarControls();
-  setTimeout(()=>showNotif('Welcome','PartexDesktop OS 11.4 Beta'),700);
-  document.addEventListener('keydown', e=>{ if((e.metaKey||e.ctrlKey)&&e.key===' '){ e.preventDefault(); openSearch(); } if(e.key==='Escape'){ closeSearch(); document.getElementById('cc').classList.remove('open'); closeCtx(); } });
-}
-function applyWallpaper(){ document.getElementById('wallpaper').style.background = WALLPAPERS[S.wallpaperIdx].bg; }
+  document.getElementById('os').classList.add('show');
+  applyWallpaper();
+  buildAccentSwatches();
+  buildWallpaperGrid();
+  initDrag();
+  initTaskbarControls();
+  initNotes();
+  initTerminal();
+  initFileManager();
 
-// Aria AI (basic Siri-like)
-function toggleAriaPanel(){ document.getElementById('aria-panel').classList.toggle('open'); }
-function ariaAsk(){
-  const input=document.getElementById('aria-input'), resp=document.getElementById('aria-response');
-  const q=input.value.trim().toLowerCase(); input.value='';
-  if(!q) return;
-  if(q.includes('time')) resp.textContent = `It's ${new Date().toLocaleTimeString()}.`;
-  else if(q.includes('date')) resp.textContent = `Today is ${new Date().toLocaleDateString()}.`;
-  else if(q.includes('wifi') || q.includes('network')) resp.textContent = 'Wi-Fi is connected to HomeNet_5G.';
-  else if(q.includes('battery')) resp.textContent = 'Battery level is approximately 92%.';
-  else if(q.includes('open settings')) { openApp('settings'); resp.textContent = 'Opening Settings.'; }
-  else if(q.includes('hello')||q.includes('hi')) resp.textContent = 'Hello! I am Aria, your assistant.';
-  else resp.textContent = 'I can tell time, date, or open apps. Try "time" or "open settings".';
-}
+  setTimeout(()=>showNotif('Welcome','PartexDesktop OS 11.4 Beta is ready.'),700);
+  setTimeout(()=>{ detectDevice(); detectNetwork(); loadBattery(); },1200);
 
-function setGlassEffects(enable){
-  S.glassEnabled = enable;
-  document.querySelectorAll('#taskbar,#topbar,.widget,#search-box,#cc,#ctx,#aria-panel').forEach(el=>{
-    el.style.backdropFilter = enable ? 'var(--glass-blur)' : 'none';
-    el.style.background = enable ? 'var(--glass-bg)' : 'var(--bg2)';
+  document.addEventListener('keydown', e=>{
+    if((e.metaKey||e.ctrlKey) && e.key===' '){ e.preventDefault(); openSearch(); }
+    if(e.key==='Escape'){ closeSearch(); document.getElementById('cc').classList.remove('open'); closeCtx(); document.getElementById('aria-panel').classList.remove('open'); }
+  });
+  document.getElementById('desktop').addEventListener('click', e=>{
+    if(!e.target.closest('#ctx')) closeCtx();
+  });
+  document.addEventListener('click', e=>{
+    if(!e.target.closest('#brand-menu') && !e.target.closest('.tb-brand')) document.getElementById('brand-menu').classList.remove('open');
+    if(!e.target.closest('#cc') && !e.target.closest('.tb-right')) document.getElementById('cc').classList.remove('open');
+    if(!e.target.closest('#aria-panel') && !e.target.closest('#aria-cc-btn')) document.getElementById('aria-panel').classList.remove('open');
   });
 }
 
-function openApp(id){ /* abbreviated */ }
-function closeWin(id){}
-function showNotif(t,m){ const stack=document.getElementById('notif-stack'); const el=document.createElement('div'); el.className='notif'; el.innerHTML=`<div class="notif-t">${t}</div><div class="notif-b">${m}</div>`; stack.appendChild(el); setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),260); },3000); }
-function toggleCC(){ document.getElementById('cc').classList.toggle('open'); }
-function openSearch(){ document.getElementById('search-ov').classList.add('open'); }
+function applyWallpaper(){
+  document.getElementById('wallpaper').style.background = WALLPAPERS[S.wallpaperIdx].bg;
+}
+
+/* ============================================================
+   ARIA AI (Siri-like assistant)
+   ============================================================ */
+function toggleAriaPanel(){
+  if(!S.ariaEnabled){ showNotif('Aria','Aria is disabled in Settings.'); return; }
+  document.getElementById('aria-panel').classList.toggle('open');
+  if(document.getElementById('aria-panel').classList.contains('open')){
+    document.getElementById('aria-input').focus();
+  }
+}
+
+function ariaAsk(){
+  const input = document.getElementById('aria-input');
+  const response = document.getElementById('aria-response');
+  const q = input.value.trim().toLowerCase();
+  input.value = '';
+  if(!q) return;
+
+  // Basic command matching (no LLM, just pattern matching)
+  if(q.includes('time') || q.includes('uhr') || q.includes('clock')){
+    response.textContent = `The current time is ${new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}.`;
+  } else if(q.includes('date') || q.includes('datum') || q.includes('today')){
+    response.textContent = `Today is ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}.`;
+  } else if(q.includes('wifi') || q.includes('network') || q.includes('internet')){
+    response.textContent = S.wifiEnabled ? 'Wi-Fi is enabled and connected to HomeNet_5G.' : 'Wi-Fi is currently disabled.';
+  } else if(q.includes('battery') || q.includes('akku')){
+    response.textContent = 'Battery level is approximately 92% — status normal.';
+  } else if(q.includes('open settings') || q.includes('einstellungen')){
+    openApp('settings'); response.textContent = 'Opening Settings for you.';
+  } else if(q.includes('open browser')){
+    openApp('browser'); response.textContent = 'Launching Browser.';
+  } else if(q.includes('open terminal')){
+    openApp('terminal'); response.textContent = 'Terminal is ready.';
+  } else if(q.includes('hello') || q.includes('hi') || q.includes('hallo')){
+    response.textContent = 'Hello! I am Aria, your personal assistant. Ask me for time, date, or to open apps.';
+  } else if(q.includes('help') || q.includes('hilfe')){
+    response.textContent = 'I can help with: time, date, wifi status, battery, open settings/browser/terminal.';
+  } else {
+    response.textContent = 'I understood: "'+q+'". Try asking for "time", "date", or "open settings".';
+  }
+}
+
+function toggleAria(enable){
+  S.ariaEnabled = enable;
+  if(!enable) document.getElementById('aria-panel').classList.remove('open');
+  showNotif('Aria', enable ? 'Aria is now enabled.' : 'Aria has been disabled.');
+}
+
+/* ============================================================
+   GLASS EFFECTS
+   ============================================================ */
+function setGlassEffects(enable){
+  S.glassEnabled = enable;
+  const glassElements = document.querySelectorAll('#taskbar,#topbar,.widget,#search-box,#cc,#ctx,#aria-panel,#brand-menu');
+  glassElements.forEach(el => {
+    if(enable){
+      el.style.backdropFilter = 'var(--glass-blur)';
+      el.style.webkitBackdropFilter = 'var(--glass-blur)';
+      el.style.background = 'var(--glass-bg)';
+    } else {
+      el.style.backdropFilter = 'none';
+      el.style.webkitBackdropFilter = 'none';
+      el.style.background = 'var(--bg2)';
+    }
+  });
+}
+
+/* ============================================================
+   DEVICE DETECTION (REAL)
+   ============================================================ */
+function detectDevice(){
+  const ua = navigator.userAgent;
+  let osName='Unknown', osVer='';
+  if(/Windows NT 10/.test(ua)){osName='Windows';osVer='10/11';}
+  else if(/Mac OS X ([\d_]+)/.test(ua)){osName='macOS';const m=ua.match(/Mac OS X ([\d_]+)/);osVer=m?m[1].replace(/_/g,'.'):'';}
+  else if(/Android ([\d.]+)/.test(ua)){osName='Android';const m=ua.match(/Android ([\d.]+)/);osVer=m?m[1]:'';}
+  else if(/iPhone OS ([\d_]+)/.test(ua)){osName='iOS';const m=ua.match(/iPhone OS ([\d_]+)/);osVer=m?m[1].replace(/_/g,'.'):'';}
+  else if(/iPad.*OS ([\d_]+)/.test(ua)){osName='iPadOS';const m=ua.match(/OS ([\d_]+)/);osVer=m?m[1].replace(/_/g,'.'):'';}
+  else if(/CrOS/.test(ua)){osName='Chrome OS';}
+  else if(/Linux/.test(ua)){osName='Linux';}
+
+  let bName='Unknown', bVer='';
+  if(/Edg\//.test(ua)){bName='Microsoft Edge';const m=ua.match(/Edg\/([\d.]+)/);bVer=m?m[1]:'';}
+  else if(/OPR\//.test(ua)){bName='Opera';const m=ua.match(/OPR\/([\d.]+)/);bVer=m?m[1]:'';}
+  else if(/Chrome\/([\d.]+)/.test(ua) && !/Chromium/.test(ua)){bName='Google Chrome';const m=ua.match(/Chrome\/([\d.]+)/);bVer=m?m[1]:'';}
+  else if(/Firefox\/([\d.]+)/.test(ua)){bName='Mozilla Firefox';const m=ua.match(/Firefox\/([\d.]+)/);bVer=m?m[1]:'';}
+  else if(/Safari\/([\d.]+)/.test(ua) && !/Chrome/.test(ua)){bName='Safari';const m=ua.match(/Version\/([\d.]+)/);bVer=m?m[1]:'';}
+
+  let devType='Desktop';
+  if(/Mobi|Android.*Mobile|iPhone/.test(ua)) devType='Smartphone';
+  else if(/iPad|Android(?!.*Mobile)|Tablet/.test(ua)) devType='Tablet';
+
+  const sw=window.screen.width, sh=window.screen.height, dpr=window.devicePixelRatio||1, depth=window.screen.colorDepth||24;
+  const lang = navigator.language||'?';
+  const cores = navigator.hardwareConcurrency||'Unavailable';
+  const mem = navigator.deviceMemory ? navigator.deviceMemory+' GB' : 'Unavailable';
+  const touch = navigator.maxTouchPoints>0 ? `Yes (${navigator.maxTouchPoints} points)` : 'No';
+  const cookies = navigator.cookieEnabled ? 'Enabled' : 'Disabled';
+  const online = navigator.onLine ? 'Online' : 'Offline';
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone||'?';
+
+  const rows = [
+    ['Device type', devType],
+    ['Operating system', osName + (osVer?' '+osVer:'')],
+    ['Browser', bName + (bVer?' '+bVer:'')],
+    ['Screen resolution', `${sw}×${sh} @ ${dpr}x`],
+    ['Color depth', depth+' bit'],
+    ['Logical CPU cores', String(cores)],
+    ['Device memory', mem],
+    ['Touchscreen', touch],
+    ['Connection status', online],
+    ['Cookies', cookies],
+    ['Language', lang],
+    ['Time zone', tz],
+    ['User agent', ua],
+  ];
+  const card = document.getElementById('device-card');
+  if(card) card.innerHTML = rows.map(([k,v])=>`<div class="dev-row-block"><div class="dev-label">${k}</div><div class="dev-val">${v}</div></div>`).join('');
+  showNotif('Device scan complete', `${devType} · ${osName} · ${bName}`);
+}
+
+function detectNetwork(){
+  const conn = navigator.connection;
+  const typeEl = document.getElementById('net-type');
+  const ipEl = document.getElementById('net-ip');
+  const nameEl = document.getElementById('net-name-display');
+  if(typeEl) typeEl.textContent = conn ? (conn.effectiveType||conn.type||'Unknown').toUpperCase() + (conn.downlink?` (${conn.downlink} Mbps)`:'') : 'Unavailable';
+  if(ipEl) ipEl.textContent = '192.168.1.' + Math.floor(Math.random()*254+1);
+  if(nameEl) nameEl.textContent = 'HomeNet_5G';
+}
+
+async function loadBattery(){
+  try{
+    const b = await navigator.getBattery();
+    const upd = ()=>{
+      const pct = Math.round(b.level*100);
+      const lvl = document.getElementById('batt-level');
+      const st = document.getElementById('batt-status');
+      const ind = document.getElementById('batt-ind');
+      if(lvl) lvl.textContent = pct+'%';
+      if(st) st.textContent = b.charging ? 'Charging' : (pct<20?'Low':'Normal');
+      if(ind) ind.textContent = `[${pct}%]`;
+    };
+    upd();
+    b.addEventListener('levelchange',upd);
+    b.addEventListener('chargingchange',upd);
+  }catch(e){
+    const lvl = document.getElementById('batt-level');
+    if(lvl) lvl.textContent = 'Unavailable in this browser';
+  }
+}
+
+/* ============================================================
+   WINDOWS
+   ============================================================ */
+function openApp(id){
+  const win = document.getElementById('win-'+id);
+  if(!win) return;
+  document.querySelectorAll('.tb-app').forEach(a=>a.classList.remove('active'));
+  const tbApps = document.querySelectorAll('.tb-app');
+  tbApps.forEach(a=>{ if(a.getAttribute('onclick')===`openApp('${id}')`) a.classList.add('active'); });
+
+  if(win.classList.contains('show') && !win.classList.contains('min')){
+    win.style.zIndex = ++S.winZ;
+  } else {
+    win.classList.remove('min');
+    win.classList.add('show','opening');
+    win.style.zIndex = ++S.winZ;
+    setTimeout(()=>win.classList.remove('opening'),250);
+  }
+  document.getElementById('tb-appname').textContent = id.charAt(0).toUpperCase()+id.slice(1).replace('manager',' Manager');
+  if(id==='notes') renderNotesList();
+  if(id==='terminal') document.getElementById('tm-in').focus();
+  if(id==='filemanager') fmRender();
+}
+function closeWin(id){
+  const win = document.getElementById('win-'+id);
+  if(!win) return;
+  win.classList.add('closing');
+  setTimeout(()=>{ win.classList.remove('show','closing'); },140);
+  if(id==='camera') camStop();
+}
+function minWin(id){
+  const win = document.getElementById('win-'+id);
+  if(!win) return;
+  win.classList.add('min');
+  setTimeout(()=>win.classList.remove('show'),220);
+}
+let maxPrev={};
+function maxWin(id){
+  const win = document.getElementById('win-'+id);
+  if(!win) return;
+  if(win.classList.contains('max')){
+    win.classList.remove('max');
+    if(maxPrev[id]){win.style.width=maxPrev[id].w;win.style.height=maxPrev[id].h;win.style.top=maxPrev[id].t;win.style.left=maxPrev[id].l;}
+  } else {
+    maxPrev[id]={w:win.style.width,h:win.style.height,t:win.style.top,l:win.style.left};
+    win.classList.add('max');
+    win.style.width='100%'; win.style.height=(window.innerHeight-30)+'px'; win.style.top='30px';
+  }
+}
+
+function initDrag(){
+  document.querySelectorAll('.titlebar').forEach(tb=>{
+    let ox=0,oy=0,dragging=false;
+    const id = tb.dataset.w;
+    const win = document.getElementById('win-'+id);
+    tb.addEventListener('mousedown', e=>{
+      if(e.target.classList.contains('dot-btn')) return;
+      if(win.classList.contains('max')) return;
+      dragging=true; ox=e.clientX-win.offsetLeft; oy=e.clientY-win.offsetTop;
+      win.style.zIndex=++S.winZ;
+    });
+    document.addEventListener('mousemove', e=>{
+      if(!dragging) return;
+      win.style.left=(e.clientX-ox)+'px';
+      win.style.top=Math.max(30,e.clientY-oy)+'px';
+    });
+    document.addEventListener('mouseup', ()=>dragging=false);
+    win.addEventListener('mousedown', ()=>win.style.zIndex=++S.winZ);
+  });
+  document.querySelectorAll('.widget').forEach(w=>{
+    let ox=0,oy=0,dragging=false;
+    w.addEventListener('mousedown', e=>{ dragging=true; ox=e.clientX-w.offsetLeft; oy=e.clientY-w.offsetTop; });
+    document.addEventListener('mousemove', e=>{ if(!dragging)return; w.style.left=(e.clientX-ox)+'px'; w.style.top=(e.clientY-oy)+'px'; w.style.right='auto'; });
+    document.addEventListener('mouseup', ()=>dragging=false);
+  });
+}
+
+/* ============================================================
+   SETTINGS
+   ============================================================ */
+function setNav(el){
+  document.querySelectorAll('.set-nav-item').forEach(i=>i.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.set-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+el.dataset.sec).classList.add('active');
+  if(el.dataset.sec==='device') detectDevice();
+  if(el.dataset.sec==='network') detectNetwork();
+}
+
+function buildAccentSwatches(){
+  const wrap = document.getElementById('accent-swatches');
+  if(!wrap) return;
+  wrap.innerHTML = ACCENTS.map(c=>`<div class="swatch${c===S.accent?' sel':''}" style="background:${c};" data-c="${c}"></div>`).join('');
+  wrap.querySelectorAll('.swatch').forEach(sw=>{
+    sw.addEventListener('click', ()=>{
+      wrap.querySelectorAll('.swatch').forEach(s=>s.classList.remove('sel'));
+      sw.classList.add('sel');
+      S.accent = sw.dataset.c;
+      document.documentElement.style.setProperty('--signal', S.accent);
+      document.documentElement.style.setProperty('--signal-dim', S.accent+'33');
+      showNotif('Appearance','Signal color updated.');
+    });
+  });
+}
+
+function buildWallpaperGrid(){
+  const grid = document.getElementById('wp-grid');
+  if(!grid) return;
+  grid.innerHTML = WALLPAPERS.map((w,i)=>`<div class="wp-opt${i===S.wallpaperIdx?' sel':''}" style="background:${w.bg};" data-i="${i}"><div class="wp-opt-name">${w.name}</div></div>`).join('');
+  grid.querySelectorAll('.wp-opt').forEach(opt=>{
+    opt.addEventListener('click', ()=>{
+      grid.querySelectorAll('.wp-opt').forEach(o=>o.classList.remove('sel'));
+      opt.classList.add('sel');
+      S.wallpaperIdx = parseInt(opt.dataset.i);
+      applyWallpaper();
+      showNotif('Appearance','Wallpaper changed to '+WALLPAPERS[S.wallpaperIdx].name+'.');
+    });
+  });
+}
+
+function cycleWallpaper(){
+  S.wallpaperIdx = (S.wallpaperIdx+1) % WALLPAPERS.length;
+  applyWallpaper();
+  buildWallpaperGrid();
+  showNotif('Wallpaper', 'Switched to '+WALLPAPERS[S.wallpaperIdx].name+'.');
+}
+function applyWidgetsVisible(checked){
+  document.querySelectorAll('.widget').forEach(w=>w.style.display = checked?'':'none');
+}
+
+function setTaskbarPos(pos, el){
+  document.querySelectorAll('.tb-pos-opt').forEach(o=>o.classList.remove('sel'));
+  if(el) el.classList.add('sel');
+  S.taskbarPos = pos;
+  const tb = document.getElementById('taskbar');
+  tb.className = 'tb-'+pos;
+  tb.style.left=''; tb.style.right=''; tb.style.top=''; tb.style.bottom=''; tb.style.transform='';
+}
+function setTaskbarSize(v){
+  S.taskbarSize = v;
+  document.documentElement.style.setProperty('--taskbar-size', v+'px');
+  document.getElementById('tb-size-val').textContent = v+'px';
+}
+function setTaskbarAutohide(checked){
+  S.taskbarAutohide = checked;
+  const tb = document.getElementById('taskbar');
+  if(checked){
+    tb.style.transition='opacity .25s, transform .25s';
+    tb.style.opacity='0.15';
+    document.getElementById('desktop').addEventListener('mousemove', autohideListener);
+  } else {
+    tb.style.opacity='1';
+    document.getElementById('desktop').removeEventListener('mousemove', autohideListener);
+  }
+}
+function autohideListener(e){
+  const tb = document.getElementById('taskbar');
+  const r = tb.getBoundingClientRect();
+  const dist = Math.hypot(e.clientX-(r.left+r.width/2), e.clientY-(r.top+r.height/2));
+  tb.style.opacity = dist < 220 ? '1' : '0.15';
+}
+function setUiScale(v){
+  document.documentElement.style.setProperty('--ui-scale', v/100);
+  document.getElementById('scale-val').textContent = v+'%';
+}
+function setUiFont(stack){
+  document.documentElement.style.setProperty('--ui-font-stack', stack);
+  document.getElementById('font-demo-text').style.fontFamily = stack;
+}
+function setReduceMotion(checked){
+  document.body.setAttribute('data-reduce-motion', checked?'1':'0');
+}
+function setHighContrast(checked){
+  document.documentElement.style.setProperty('--line', checked?'rgba(255,250,240,0.22)':'rgba(255,250,240,0.08)');
+  document.documentElement.style.setProperty('--line2', checked?'rgba(255,250,240,0.34)':'rgba(255,250,240,0.14)');
+  document.documentElement.style.setProperty('--ink2', checked?'#c9c2b4':'#a8a195');
+}
+function setNoBlur(checked){
+  document.querySelectorAll('#taskbar,#topbar,.widget,#search-box,#cc,#ctx,#notif-stack .notif,#aria-panel,#brand-menu').forEach(el=>{
+    el.style.backdropFilter = checked ? 'none' : '';
+    el.style.background = checked ? 'var(--bg2)' : '';
+  });
+}
+function setVolume(v){
+  document.getElementById('vol-val').textContent = v+'%';
+  const cc = document.getElementById('cc-vol-val');
+  if(cc) cc.textContent = v+'%';
+}
+function toggleWifi(checked){
+  S.wifiEnabled = checked;
+  document.getElementById('net-status').textContent = checked ? 'Connected' : 'Disconnected';
+  document.getElementById('net-status').style.color = checked ? 'var(--ok)' : 'var(--bad)';
+  document.getElementById('cc-wifi').classList.toggle('on', checked);
+  document.getElementById('cc-wifi-label').textContent = checked ? 'HomeNet_5G' : 'Off';
+  showNotif('Network', checked ? 'Wi-Fi enabled.' : 'Wi-Fi disabled.');
+}
+function setPowerSaver(checked){
+  document.getElementById('cc-dark').classList.toggle('on', checked);
+  document.querySelectorAll('.widget').forEach(w=>w.style.opacity = checked ? '0.45' : '1');
+  if(checked){ if(S.musicPlaying) muToggle(); }
+  showNotif('Battery', checked ? 'Power saver on.' : 'Power saver off.');
+}
+
+/* ============================================================
+   TASKBAR CONTROLS
+   ============================================================ */
+function initTaskbarControls(){
+  const tb = document.getElementById('taskbar');
+  const handle = document.getElementById('tb-handle');
+  const resizeHandle = document.getElementById('tb-resize-handle');
+  let dragging=false;
+  handle.addEventListener('mousedown', e=>{
+    e.preventDefault(); dragging=true;
+    document.body.style.cursor='grabbing';
+  });
+  document.addEventListener('mousemove', e=>{
+    if(!dragging) return;
+    const x=e.clientX, y=e.clientY, w=window.innerWidth, h=window.innerHeight;
+    const distLeft=x, distRight=w-x, distTop=y, distBottom=h-y;
+    const min=Math.min(distLeft,distRight,distTop,distBottom);
+    let pos='bottom';
+    if(min===distLeft) pos='left';
+    else if(min===distRight) pos='right';
+    else if(min===distTop) pos='top';
+    else pos='bottom';
+    if(pos!==S.taskbarPos){
+      S.taskbarPos=pos; tb.className='tb-'+pos;
+      document.querySelectorAll('.tb-pos-opt').forEach(o=>o.classList.toggle('sel', o.dataset.pos===pos));
+    }
+  });
+  document.addEventListener('mouseup', ()=>{ dragging=false; document.body.style.cursor=''; });
+
+  let resizing=false, startSize=54, startCoord=0;
+  resizeHandle.addEventListener('mousedown', e=>{
+    e.preventDefault(); resizing=true;
+    startSize=S.taskbarSize;
+    startCoord = (S.taskbarPos==='left'||S.taskbarPos==='right') ? e.clientX : e.clientY;
+  });
+  document.addEventListener('mousemove', e=>{
+    if(!resizing) return;
+    let delta;
+    if(S.taskbarPos==='bottom') delta = -(e.clientY-startCoord);
+    else if(S.taskbarPos==='top') delta = (e.clientY-startCoord);
+    else if(S.taskbarPos==='left') delta = (e.clientX-startCoord);
+    else delta = -(e.clientX-startCoord);
+    let newSize = Math.max(40, Math.min(90, startSize+delta));
+    S.taskbarSize = newSize;
+    document.documentElement.style.setProperty('--taskbar-size', newSize+'px');
+    const slider=document.getElementById('opt-tb-size'), label=document.getElementById('tb-size-val');
+    if(slider) slider.value=Math.round(newSize);
+    if(label) label.textContent=Math.round(newSize)+'px';
+  });
+  document.addEventListener('mouseup', ()=>resizing=false);
+}
+
+/* ============================================================
+   CALCULATOR
+   ============================================================ */
+function calcInput(v){
+  const disp=document.getElementById('calc-disp'), hist=document.getElementById('calc-hist');
+  const c=S.calc;
+  if(v==='AC'){c.val='0';c.prev='';c.op=null;c.fresh=false;disp.textContent='0';hist.textContent='';return;}
+  if(v==='+/-'){c.val=String(parseFloat(c.val)*-1);disp.textContent=c.val;return;}
+  if(v==='%'){c.val=String(parseFloat(c.val)/100);disp.textContent=c.val;return;}
+  if(['+','-','*','/'].includes(v)){
+    if(c.op && !c.fresh) calcDoOp();
+    c.prev=c.val; c.op=v; c.fresh=true;
+    hist.textContent=c.val+' '+v; return;
+  }
+  if(v==='.'){
+    if(c.fresh){c.val='0.';c.fresh=false;} else if(!c.val.includes('.')) c.val+='.';
+    disp.textContent=c.val; return;
+  }
+  if(v==='='){
+    if(c.op){hist.textContent=c.prev+' '+c.op+' '+c.val+' =';calcDoOp();c.op=null;}
+    return;
+  }
+  if(c.fresh){c.val=v;c.fresh=false;} else c.val = c.val==='0'?v:(c.val.length>14?c.val:c.val+v);
+  disp.textContent=c.val;
+}
+function calcDoOp(){
+  const c=S.calc, a=parseFloat(c.prev), b=parseFloat(c.val);
+  let r;
+  switch(c.op){case '+':r=a+b;break;case '-':r=a-b;break;case '*':r=a*b;break;case '/':r=b!==0?a/b:'Error';break;}
+  c.val = typeof r==='number' ? (Number.isInteger(r)?r.toString():parseFloat(r.toFixed(10)).toString()) : r;
+  c.fresh=true;
+  document.getElementById('calc-disp').textContent=c.val;
+}
+
+/* ============================================================
+   BROWSER
+   ============================================================ */
+let brIframe=null;
+function brGo(url){
+  const bar=document.getElementById('br-url'), wrap=document.getElementById('br-frame-wrap'), home=document.getElementById('br-home');
+  if(!url || url==='partex://home'){ home.style.display=''; if(brIframe) brIframe.style.display='none'; bar.value='partex://home'; return; }
+  let finalUrl=url;
+  if(!url.startsWith('http') && !url.startsWith('partex://')){
+    finalUrl = (url.includes('.') && !url.includes(' ')) ? 'https://'+url : 'https://www.google.com/search?q='+encodeURIComponent(url);
+  }
+  home.style.display='none'; bar.value=finalUrl;
+  if(!brIframe){ brIframe=document.createElement('iframe'); brIframe.sandbox='allow-same-origin allow-scripts allow-forms allow-popups'; wrap.appendChild(brIframe); }
+  brIframe.style.display='';
+  try{ brIframe.src=finalUrl; }catch(e){}
+  S.brHist.push(finalUrl); S.brIdx=S.brHist.length-1;
+}
+function brNav(dir){ const idx=S.brIdx+dir; if(idx>=0 && idx<S.brHist.length){ S.brIdx=idx; brGo(S.brHist[idx]); } }
+function brReload(){ if(brIframe) brIframe.src=brIframe.src; }
+
+/* ============================================================
+   MUSIC
+   ============================================================ */
+const TRACKS=[
+  {title:'Partex Theme',artist:'System Sounds',dur:225},
+  {title:'Quiet Signal',artist:'Field Recordings',dur:194},
+  {title:'Night Shift',artist:'Low Frequency',dur:312},
+  {title:'Dawn Protocol',artist:'Static Lines',dur:245},
+];
+let trackIdx=0;
+function muToggle(){
+  S.musicPlaying=!S.musicPlaying;
+  document.getElementById('mu-play-btn').textContent = S.musicPlaying?'❙❙':'▶';
+  if(S.musicPlaying) S.musicTimer=setInterval(muTick,1000); else clearInterval(S.musicTimer);
+}
+function muTick(){
+  const t=TRACKS[trackIdx];
+  S.musicPos=(S.musicPos+1)%t.dur;
+  const pct=(S.musicPos/t.dur*100).toFixed(1);
+  document.getElementById('mu-fill').style.width=pct+'%';
+  document.getElementById('mu-cur').textContent=fmtTime(S.musicPos);
+  if(S.musicPos===0) muNext();
+}
+function muNext(){ trackIdx=(trackIdx+1)%TRACKS.length; muLoad(); }
+function muPrev(){ trackIdx=(trackIdx-1+TRACKS.length)%TRACKS.length; muLoad(); }
+function muLoad(){
+  const t=TRACKS[trackIdx]; S.musicPos=0;
+  document.getElementById('mu-title').textContent=t.title;
+  document.getElementById('mu-artist').textContent=t.artist;
+  document.getElementById('mu-tot').textContent=fmtTime(t.dur);
+  document.getElementById('mu-fill').style.width='0%';
+}
+function muSeek(e){ const tr=e.currentTarget; const pct=e.offsetX/tr.offsetWidth; S.musicPos=Math.floor(pct*TRACKS[trackIdx].dur); }
+function fmtTime(s){ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+
+/* ============================================================
+   NOTES
+   ============================================================ */
+function initNotes(){ renderNotesList(); loadNote(1); }
+function renderNotesList(){
+  const list=document.getElementById('nt-list'); if(!list) return;
+  list.innerHTML = S.notes.map(n=>`<div class="nt-li${n.id===S.activeNote?' active':''}" data-id="${n.id}">
+    <div class="nt-li-t">${n.title||'Untitled'}</div><div class="nt-li-p">${n.body.slice(0,40).replace(/\n/g,' ')}</div>
+  </div>`).join('');
+  list.querySelectorAll('.nt-li').forEach(li=>li.addEventListener('click', ()=>loadNote(parseInt(li.dataset.id))));
+}
+function loadNote(id){
+  const n=S.notes.find(x=>x.id===id); if(!n) return;
+  S.activeNote=id;
+  document.getElementById('nt-title').value=n.title;
+  document.getElementById('nt-body').value=n.body;
+  renderNotesList();
+}
+function noteSave(){
+  const n=S.notes.find(x=>x.id===S.activeNote); if(!n) return;
+  n.title=document.getElementById('nt-title').value;
+  n.body=document.getElementById('nt-body').value;
+  renderNotesList(); showNotif('Notes','Saved.');
+}
+function noteNew(){
+  const id=S.noteSeq++;
+  S.notes.unshift({id,title:'New note',body:''});
+  loadNote(id);
+}
+function noteDelete(){
+  S.notes=S.notes.filter(x=>x.id!==S.activeNote);
+  if(S.notes.length) loadNote(S.notes[0].id);
+  else { document.getElementById('nt-title').value=''; document.getElementById('nt-body').value=''; }
+  renderNotesList();
+}
+
+/* ============================================================
+   TERMINAL
+   ============================================================ */
+const TFS={'~':{type:'dir',children:{'Documents':{type:'dir',children:{}},'Desktop':{type:'dir',children:{}},'readme.txt':{type:'file',content:'Welcome to PartexDesktop OS 11.4!\n\nThis is a simulated file system.\nType help for a full command list.'}}}};
+let tCwd='~', tHist=[], tHistIdx=-1;
+function initTerminal(){
+  tPrint('PartexDesktop OS 11.4 Terminal — bash 5.2');
+  tPrint('Type <span style="color:var(--signal)">help</span> for a list of commands.\n');
+}
+function tmKey(e){
+  if(e.key==='Enter'){
+    const inp=document.getElementById('tm-in'); const cmd=inp.value.trim();
+    if(!cmd) return;
+    tHist.push(cmd); tHistIdx=tHist.length;
+    tPrint('<span style="color:var(--signal)">partex@desktop:'+tCwd+'$</span> '+esc(cmd));
+    runCmd(cmd); inp.value='';
+  } else if(e.key==='ArrowUp'){ if(tHistIdx>0){tHistIdx--;document.getElementById('tm-in').value=tHist[tHistIdx]||'';} }
+  else if(e.key==='ArrowDown'){ if(tHistIdx<tHist.length-1){tHistIdx++;document.getElementById('tm-in').value=tHist[tHistIdx]||'';} else {tHistIdx=tHist.length;document.getElementById('tm-in').value='';} }
+}
+function runCmd(raw){
+  const parts=raw.trim().split(/\s+/); const cmd=parts[0].toLowerCase(); const args=parts.slice(1);
+  switch(cmd){
+    case 'help': tPrint(`<span class="inf">Available:</span> help ls cd cat pwd clear echo date uname whoami neofetch open`); break;
+    case 'ls': { const d=tGetCwd(); tPrint(d&&d.children?Object.keys(d.children).join('  ')||'(empty)':'<span class="err">No access</span>'); break; }
+    case 'cd': { const t=args[0]||'~'; if(t==='~'){tCwd='~';updatePrompt();break;} const d=tGetCwd(); if(d&&d.children&&d.children[t]&&d.children[t].type==='dir'){tCwd=tCwd+'/'+t;updatePrompt();} else tPrint(`<span class="err">cd: ${t}: no such directory</span>`); break; }
+    case 'cat': { if(!args[0]){tPrint('<span class="err">cat: missing filename</span>');break;} const d=tGetCwd(); const f=d&&d.children&&d.children[args[0]]; if(f&&f.type==='file') tPrint(esc(f.content)); else tPrint(`<span class="err">cat: ${args[0]}: not found</span>`); break; }
+    case 'pwd': tPrint('/home/partex/'+(tCwd==='~'?'':tCwd.replace('~/',''))); break;
+    case 'clear': document.getElementById('tm-out').innerHTML=''; break;
+    case 'echo': tPrint(esc(args.join(' '))); break;
+    case 'date': tPrint(new Date().toString()); break;
+    case 'whoami': tPrint('partex'); break;
+    case 'uname': tPrint('PartexDesktop OS 11.4 (partex-kernel-6.4) x86_64'); break;
+    case 'neofetch': tPrint(`<span style="color:var(--signal)">OS:</span> PartexDesktop OS 11.4\n<span style="color:var(--signal)">Shell:</span> bash 5.2\n<span style="color:var(--signal)">CPU cores:</span> ${navigator.hardwareConcurrency||'?'}\n<span style="color:var(--signal)">Resolution:</span> ${window.screen.width}x${window.screen.height}`); break;
+    case 'open': if(args[0]){openApp(args[0]);tPrint(`Opened "${args[0]}".`);} else tPrint('<span class="err">open: missing app name</span>'); break;
+    default: tPrint(`<span class="err">bash: ${esc(cmd)}: command not found</span>`);
+  }
+}
+function tGetCwd(){ if(tCwd==='~')return TFS['~']; const parts=tCwd.replace('~/','').split('/'); let cur=TFS['~']; for(const p of parts){ if(cur&&cur.children&&cur.children[p]) cur=cur.children[p]; else return null; } return cur; }
+function updatePrompt(){ document.getElementById('tm-prompt').textContent='partex@desktop:'+tCwd+'$'; }
+function tPrint(html){ const o=document.getElementById('tm-out'); o.innerHTML+='<div>'+html+'</div>'; o.scrollTop=o.scrollHeight; }
+function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ============================================================
+   CAMERA
+   ============================================================ */
+async function camCapture(){
+  if(!S.camStream){
+    try{
+      const stream=await navigator.mediaDevices.getUserMedia({video:true});
+      S.camStream=stream;
+      const v=document.getElementById('cam-video'), ph=document.getElementById('cam-ph');
+      v.srcObject=stream; v.play(); v.style.display=''; if(ph) ph.style.display='none';
+      showNotif('Camera','Camera started.');
+    }catch(e){ showNotif('Camera','Camera unavailable.'); }
+  } else {
+    showNotif('Camera','Photo captured.');
+  }
+}
+function camStop(){
+  if(S.camStream){ S.camStream.getTracks().forEach(t=>t.stop()); S.camStream=null; }
+  const v=document.getElementById('cam-video'), ph=document.getElementById('cam-ph');
+  if(v){v.style.display='none';v.srcObject=null;}
+  if(ph) ph.style.display='';
+}
+function camFlip(){ showNotif('Camera','Switching camera...'); }
+
+/* ============================================================
+   FILE MANAGER
+   ============================================================ */
+const FMFS = {
+  '/':{type:'dir',children:['Home','System','Applications']},
+  '/Home':{type:'dir',children:['Desktop','Documents','Downloads','Pictures','Music']},
+  '/Home/Desktop':{type:'dir',children:[]},
+  '/Home/Documents':{type:'dir',children:['Report_Q2.pdf','Presentation.pptx','Budget.xlsx','Resume.pdf']},
+  '/Home/Downloads':{type:'dir',children:['PartexOS_11.4.dmg','installer.pkg','photo.jpg']},
+  '/Home/Pictures':{type:'dir',children:['Vacation.jpg','Screenshot.png']},
+  '/Home/Music':{type:'dir',children:['Playlist.m3u']},
+  '/Applications':{type:'dir',children:['Browser.app','Terminal.app','Notes.app']},
+  '/System':{type:'dir',children:['Library','Kernel']},
+  '/System/Library':{type:'dir',children:[]},
+  '/System/Kernel':{type:'dir',children:[]},
+};
+const FMEXT={pdf:'PDF',pptx:'PPT',xlsx:'XLS',jpg:'IMG',png:'IMG',dmg:'DMG',pkg:'PKG',m3u:'AUD',app:'APP'};
+function fmIcon(name){ const ext=name.split('.').pop().toLowerCase(); return FMEXT[ext]||'DOC'; }
+let fmPath='/Home', fmSel=null;
+function initFileManager(){ fmRender(); }
+function fmRender(){
+  const wrap=document.getElementById('fm-wrap'); if(!wrap) return;
+  const node=FMFS[fmPath]||{children:[]};
+  const files=node.children||[];
+  const FAVES=[{label:'Home',path:'/Home'},{label:'Desktop',path:'/Home/Desktop'},{label:'Documents',path:'/Home/Documents'},{label:'Downloads',path:'/Home/Downloads'},{label:'Pictures',path:'/Home/Pictures'},{label:'Music',path:'/Home/Music'}];
+  wrap.innerHTML = `<div class="fm-side">
+    <div class="fm-side-sec">Favorites</div>
+    ${FAVES.map(f=>`<div class="fm-side-item${fmPath===f.path?' active':''}" data-p="${f.path}">${f.label}</div>`).join('')}
+    <div class="fm-side-sec">Locations</div>
+    <div class="fm-side-item${fmPath==='/'?' active':''}" data-p="/">This Computer</div>
+    <div class="fm-side-item" data-p="/Applications">Applications</div>
+    <div class="fm-side-item" data-p="/System">System</div>
+  </div>
+  <div class="fm-main">
+    <div class="fm-toolbar">
+      <button class="fm-tbtn" id="fm-back">&lt;</button>
+      <div class="fm-path">${fmPath}</div>
+    </div>
+    <div class="fm-files"><div class="fm-grid">
+      ${files.map(f=>`<div class="fm-file${fmSel===f?' sel':''}" data-f="${f}"><div class="fm-fi">${fmIcon(f)}</div><div class="fm-fn">${f}</div></div>`).join('') || '<div style="color:var(--ink3);font-size:11px;padding:14px;">This folder is empty</div>'}
+    </div></div>
+    <div class="fm-status">${files.length} items${fmSel?' · '+fmSel+' selected':''}</div>
+  </div>`;
+  wrap.querySelectorAll('.fm-side-item').forEach(it=>it.addEventListener('click', ()=>{ if(FMFS[it.dataset.p]){fmPath=it.dataset.p;fmSel=null;fmRender();} }));
+  wrap.querySelectorAll('.fm-file').forEach(it=>{
+    it.addEventListener('click', ()=>{ fmSel=it.dataset.f; fmRender(); });
+    it.addEventListener('dblclick', ()=>{
+      const full=fmPath+'/'+it.dataset.f;
+      if(FMFS[full]){ fmPath=full; fmSel=null; fmRender(); }
+      else showNotif('File Manager', `Cannot open "${it.dataset.f}".`);
+    });
+  });
+  const back=document.getElementById('fm-back');
+  if(back) back.addEventListener('click', ()=>{ const p=fmPath.split('/').slice(0,-1).join('/')||'/'; if(FMFS[p]){fmPath=p;fmSel=null;fmRender();} });
+}
+
+/* ============================================================
+   SEARCH
+   ============================================================ */
+const SEARCH_ITEMS=[
+  {name:'Browser',sub:'Open the web browser',icon:'B',action:()=>openApp('browser')},
+  {name:'File Manager',sub:'Browse files and folders',icon:'F',action:()=>openApp('filemanager')},
+  {name:'Calculator',sub:'Open the calculator',icon:'=',action:()=>openApp('calculator')},
+  {name:'Settings',sub:'System preferences',icon:'S',action:()=>openApp('settings')},
+  {name:'Music',sub:'Play music',icon:'M',action:()=>openApp('music')},
+  {name:'Notes',sub:'Open notes app',icon:'N',action:()=>openApp('notes')},
+  {name:'Terminal',sub:'Open the terminal',icon:'T',action:()=>openApp('terminal')},
+  {name:'Camera',sub:'Open camera app',icon:'C',action:()=>openApp('camera')},
+  {name:'Aria Settings',sub:'Configure Aria AI assistant',icon:'A',action:()=>{openApp('settings');setTimeout(()=>{const el=document.querySelector('.set-nav-item[data-sec="aria"]');if(el)setNav(el);},250);}},
+  {name:'Device information',sub:'View real device details',icon:'i',action:()=>{openApp('settings');setTimeout(()=>{const el=document.querySelector('.set-nav-item[data-sec="device"]');if(el)setNav(el);},250);}},
+];
+let sFocus=-1;
+function openSearch(){
+  document.getElementById('search-ov').classList.add('open');
+  document.getElementById('search-input').value='';
+  setTimeout(()=>document.getElementById('search-input').focus(),30);
+  doSearch('');
+}
 function closeSearch(){ document.getElementById('search-ov').classList.remove('open'); }
+function doSearch(q){
+  const res=document.getElementById('search-results');
+  const items = q ? SEARCH_ITEMS.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())||i.sub.toLowerCase().includes(q.toLowerCase())) : SEARCH_ITEMS;
+  res.innerHTML = items.map((it,i)=>`<div class="s-item" data-i="${i}"><div class="s-ic">${it.icon}</div><div><div class="s-name">${it.name}</div><div class="s-sub">${it.sub}</div></div></div>`).join('');
+  res.querySelectorAll('.s-item').forEach((el,i)=>el.addEventListener('click', ()=>{ items[i].action(); closeSearch(); }));
+  sFocus=-1;
+}
+function searchKey(e){
+  const items=document.querySelectorAll('.s-item');
+  if(e.key==='ArrowDown'){ sFocus=Math.min(sFocus+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('focus',i===sFocus)); }
+  else if(e.key==='ArrowUp'){ sFocus=Math.max(sFocus-1,0); items.forEach((el,i)=>el.classList.toggle('focus',i===sFocus)); }
+  else if(e.key==='Enter'){ if(sFocus>=0&&items[sFocus]) items[sFocus].click(); else if(items[0]) items[0].click(); }
+}
+
+/* ============================================================
+   NOTIFICATIONS / CONTROL CENTER / CONTEXT / BRAND MENU
+   ============================================================ */
+function showNotif(title,msg){
+  const stack=document.getElementById('notif-stack');
+  const el=document.createElement('div'); el.className='notif';
+  el.innerHTML=`<div class="notif-t">${title}</div><div class="notif-b">${msg}</div>`;
+  stack.appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),260); },4200);
+}
+function toggleCC(){ document.getElementById('cc').classList.toggle('open'); }
+function ccToggle(el,key){ el.classList.toggle('on'); if(key==='wifi'){ const checked=el.classList.contains('on'); document.getElementById('opt-wifi').checked=checked; toggleWifi(checked); } if(key==='powersaver'){ document.getElementById('opt-powersaver').checked=el.classList.contains('on'); setPowerSaver(el.classList.contains('on')); } }
+function toggleBrandMenu(){ document.getElementById('brand-menu').classList.toggle('open'); }
 function showCtx(e){ e.preventDefault(); const m=document.getElementById('ctx'); m.classList.add('open'); m.style.left=Math.min(e.clientX,window.innerWidth-200)+'px'; m.style.top=Math.min(e.clientY,window.innerHeight-200)+'px'; }
 function closeCtx(){ document.getElementById('ctx').classList.remove('open'); }
-function toggleBrandMenu(){ document.getElementById('brand-menu').classList.toggle('open'); }
-function doLock(){ toggleBrandMenu(); document.getElementById('lock').classList.add('show'); }
-function doRestart(){ location.reload(); }
-function initDrag(){}
-function initTaskbarControls(){}
+function doLock(){ toggleBrandMenu(); const lock=document.getElementById('lock'); lock.style.background=WALLPAPERS[S.wallpaperIdx].bg; lock.classList.add('show'); }
+function doRestart(){ toggleBrandMenu(); if(confirm('Restart PartexDesktop OS 11.4 Beta?')) location.reload(); }
 </script>
 </body>
 </html>
