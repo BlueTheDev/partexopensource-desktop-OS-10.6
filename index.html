@@ -3,391 +3,413 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>PartexDesktop OS 11.4 (Beta)</title>
+  <title>PartexDesktop OS 11.4.1 (Public Beta)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
-       PartexDesktop OS 11.4 (Beta) — design tokens
-       A "workshop" palette: warm graphite + amber signal color,
-       monospace-led type system. Glass effects throughout.
+       PartexDesktop OS 11.4.1 (Public Beta) — Advanced Design
+       Glass morphism + rounded corners + professional UI
     ============================================================ */
     *{margin:0;padding:0;box-sizing:border-box;user-select:none;}
     :root{
-      --bg0:#161513;
-      --bg1:#1d1b18;
-      --bg2:#262420;
-      --bg3:#302d28;
-      --bg4:#3a3631;
+      --bg0:#0f0e0c;
+      --bg1:#161513;
+      --bg2:#1d1b18;
+      --bg3:#262420;
+      --bg4:#302d28;
+      --glass-light:rgba(28,26,22,0.7);
+      --glass-dark:rgba(22,20,18,0.85);
       --line:rgba(255,250,240,0.08);
       --line2:rgba(255,250,240,0.14);
+      --line3:rgba(255,250,240,0.22);
       --ink:#f2ede2;
       --ink2:#a8a195;
       --ink3:#6b665d;
       --signal:#e8a23a;
       --signal-dim:#e8a23a33;
+      --signal-light:#e8a23a22;
       --ok:#7fb069;
       --warn:#e8a23a;
       --bad:#d6604a;
       --info:#5b9aa8;
-      --radius:3px;
-      --radius-lg:6px;
-      --font-display:'PX-Display',Georgia,serif;
-      --font-ui: var(--ui-font-stack, 'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif);
-      --font-mono:'IBM Plex Mono','SF Mono',Consolas,monospace;
-      --shadow: 0 18px 48px rgba(0,0,0,0.55), 0 2px 8px rgba(0,0,0,0.4);
-      --taskbar-size:54px;
+      --radius:8px;
+      --radius-lg:12px;
+      --radius-xl:16px;
+      --font-display:'IBM Plex Mono',monospace;
+      --font-ui:'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif;
+      --font-mono:'IBM Plex Mono','SF Mono',monospace;
+      --shadow:0 20px 60px rgba(0,0,0,0.6),0 2px 8px rgba(0,0,0,0.4);
+      --shadow-lg:0 40px 80px rgba(0,0,0,0.7);
+      --shadow-sm:0 10px 30px rgba(0,0,0,0.5);
+      --taskbar-size:56px;
       --ui-scale:1;
-      --motion-fast:0.14s;
-      --motion-med:0.22s;
-      --ease:cubic-bezier(.2,.7,.3,1);
-      --glass-bg: rgba(28, 26, 22, 0.72);
-      --glass-blur: blur(16px);
-      --glass-border: 1px solid rgba(255, 250, 240, 0.18);
-      --glass-shadow: 0 20px 35px rgba(0,0,0,0.5);
+      --motion-fast:0.15s;
+      --motion-med:0.25s;
+      --ease:cubic-bezier(0.16,1,0.3,1);
+      --glass-blur:blur(20px);
     }
-    @font-face{font-family:'IBM Plex Mono';src:local('Consolas');}
-    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);color:var(--ink);font-family:var(--font-ui);font-size:calc(13px * var(--ui-scale));}
-
-    [data-reduce-motion="1"] *{transition-duration:0.001s !important;animation-duration:0.001s !important;}
-
-    ::-webkit-scrollbar{width:6px;height:6px;}
+    
+    @supports (backdrop-filter: blur(1px)){
+      :root{--glass-blur:blur(20px);}
+    }
+    
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes slideDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
+    
+    html,body{width:100%;height:100%;overflow:hidden;background:var(--bg0);color:var(--ink);font-family:var(--font-ui);font-size:calc(14px*var(--ui-scale));line-height:1.5;}
+    
+    [data-reduce-motion="1"] *{animation-duration:0.001s !important;transition-duration:0.001s !important;}
+    
+    ::-webkit-scrollbar{width:8px;height:8px;}
     ::-webkit-scrollbar-track{background:transparent;}
-    ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:3px;}
+    ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:4px;}
     ::-webkit-scrollbar-thumb:hover{background:var(--ink3);}
-
+    
     /* ============== BOOT ============== */
-    #boot{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;}
-    .boot-mark{display:flex;align-items:center;gap:14px;margin-bottom:36px;}
-    .boot-glyph{width:42px;height:42px;border:2px solid var(--signal);border-radius:2px;display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:18px;color:var(--signal);transform:rotate(0deg);animation:bootSpin 1.6s var(--ease) infinite;}
-    @keyframes bootSpin{0%,70%{transform:rotate(0deg);}75%{transform:rotate(90deg);}100%{transform:rotate(90deg);}}
-    .boot-word{font-family:var(--font-mono);font-size:20px;letter-spacing:1px;font-weight:600;}
+    #boot{position:fixed;inset:0;background:var(--bg0);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;backdrop-filter:var(--glass-blur);}
+    .boot-mark{display:flex;align-items:center;gap:16px;margin-bottom:40px;}
+    .boot-logo{width:48px;height:48px;border:2px solid var(--signal);border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-weight:700;font-size:20px;color:var(--signal);background:var(--signal-light);animation:bootPulse 1.4s ease-in-out infinite;}
+    @keyframes bootPulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 var(--signal-dim)}50%{transform:scale(1.05);box-shadow:0 0 0 8px var(--signal-dim)}}
+    .boot-word{font-family:var(--font-mono);font-size:22px;letter-spacing:1px;font-weight:600;color:var(--ink);}
     .boot-word b{color:var(--signal);}
-    #boot-track{width:240px;height:2px;background:var(--bg3);position:relative;overflow:hidden;}
-    #boot-fill{position:absolute;inset:0;width:0%;background:var(--signal);transition:width .3s var(--ease);}
-    #boot-line{margin-top:14px;font-family:var(--font-mono);font-size:11px;color:var(--ink3);letter-spacing:.5px;}
+    #boot-track{width:260px;height:3px;background:var(--bg3);border-radius:2px;position:relative;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.5);}
+    #boot-fill{position:absolute;inset:0;width:0%;background:linear-gradient(90deg,var(--signal),var(--warn));border-radius:2px;transition:width .25s var(--ease);}
+    #boot-line{margin-top:16px;font-family:var(--font-mono);font-size:12px;color:var(--ink3);letter-spacing:0.5px;}
     #boot.fade{opacity:0;transition:opacity .5s;pointer-events:none;}
 
     /* ============== ONBOARDING ============== */
-    .setup{position:fixed;inset:0;background:var(--bg0);display:none;align-items:center;justify-content:center;z-index:90000;padding:24px;}
-    .setup.show{display:flex;}
-    .setup-panel{width:580px;max-width:92vw;background:var(--bg1);border:1px solid var(--line2);position:relative;}
-    .setup-panel::before{content:'';position:absolute;top:0;left:0;width:36px;height:3px;background:var(--signal);}
-    .setup-inner{padding:40px 44px;}
-    .setup-step{font-family:var(--font-mono);font-size:11px;color:var(--signal);letter-spacing:1.5px;margin-bottom:16px;text-transform:uppercase;}
-    .setup-h{font-family:var(--font-mono);font-size:24px;font-weight:600;margin-bottom:8px;letter-spacing:-.3px;}
-    .setup-p{color:var(--ink2);font-size:13px;margin-bottom:26px;line-height:1.6;}
-    .setup-grid{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px;}
-    .setup-chip{padding:10px 16px;border:1px solid var(--line2);background:var(--bg2);cursor:pointer;font-size:13px;transition:all var(--motion-fast);display:flex;align-items:center;gap:8px;}
-    .setup-chip:hover{border-color:var(--ink3);background:var(--bg3);}
-    .setup-chip.sel{border-color:var(--signal);background:var(--signal-dim);color:var(--signal);}
+    .setup{position:fixed;inset:0;background:rgba(15,14,12,0.8);backdrop-filter:var(--glass-blur);display:none;align-items:center;justify-content:center;z-index:90000;padding:24px;}
+    .setup.show{display:flex;animation:slideUp var(--motion-med) var(--ease);}
+    .setup-panel{width:600px;max-width:92vw;background:var(--glass-light);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);position:relative;box-shadow:var(--shadow);}
+    .setup-panel::before{content:'';position:absolute;top:0;left:0;width:40px;height:4px;background:linear-gradient(90deg,var(--signal),var(--warn));border-radius:var(--radius-lg) 0 0 0;}
+    .setup-inner{padding:44px 48px;}
+    .setup-step{font-family:var(--font-mono);font-size:12px;color:var(--signal);letter-spacing:1.5px;margin-bottom:16px;text-transform:uppercase;font-weight:600;}
+    .setup-h{font-family:var(--font-mono);font-size:26px;font-weight:600;margin-bottom:10px;letter-spacing:-0.3px;}
+    .setup-p{color:var(--ink2);font-size:14px;margin-bottom:28px;line-height:1.6;}
+    .setup-grid{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:32px;}
+    .setup-chip{padding:12px 18px;border:1px solid var(--line2);background:var(--bg2);cursor:pointer;font-size:14px;transition:all var(--motion-fast);display:flex;align-items:center;gap:10px;border-radius:var(--radius-lg);color:var(--ink2);}
+    .setup-chip:hover{border-color:var(--ink3);background:var(--bg3);color:var(--ink);}
+    .setup-chip.sel{border-color:var(--signal);background:var(--signal-light);color:var(--signal);font-weight:500;}
     .setup-foot{display:flex;justify-content:space-between;align-items:center;}
-    .setup-dots{display:flex;gap:6px;}
-    .setup-dot{width:18px;height:2px;background:var(--line2);}
-    .setup-dot.on{background:var(--signal);}
-    .btn{font-family:var(--font-ui);padding:9px 20px;border:1px solid var(--line2);background:var(--bg2);color:var(--ink);cursor:pointer;font-size:13px;transition:all var(--motion-fast);}
+    .setup-dots{display:flex;gap:8px;}
+    .setup-dot{width:20px;height:3px;background:var(--line2);border-radius:2px;transition:all var(--motion-fast);}
+    .setup-dot.on{background:var(--signal);width:28px;}
+    .btn{font-family:var(--font-ui);padding:11px 24px;border:1px solid var(--line2);background:var(--bg2);color:var(--ink);cursor:pointer;font-size:14px;font-weight:500;transition:all var(--motion-fast);border-radius:var(--radius-lg);}
     .btn:hover{background:var(--bg3);border-color:var(--ink3);}
-    .btn-go{background:var(--signal);border-color:var(--signal);color:#1a1410;font-weight:600;}
-    .btn-go:hover{filter:brightness(1.08);}
+    .btn-go{background:var(--signal);border-color:var(--signal);color:#0f0e0c;font-weight:600;}
+    .btn-go:hover{background:#f0a93e;border-color:#f0a93e;}
     .btn:disabled{opacity:.35;cursor:not-allowed;}
-    .setup-terms{height:180px;overflow-y:auto;border:1px solid var(--line);background:var(--bg2);padding:14px 16px;font-size:12px;color:var(--ink2);line-height:1.7;margin-bottom:16px;}
-    .setup-terms h4{color:var(--ink);font-size:12px;margin:10px 0 3px;font-family:var(--font-mono);}
-    .setup-check{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink2);cursor:pointer;margin-bottom:24px;}
-    .setup-check input{accent-color:var(--signal);width:15px;height:15px;}
+    .setup-terms{height:200px;overflow-y:auto;border:1px solid var(--line);background:var(--bg2);padding:16px;font-size:13px;color:var(--ink2);line-height:1.8;margin-bottom:18px;border-radius:var(--radius-lg);}
+    .setup-terms h4{color:var(--ink);font-size:13px;margin:12px 0 4px;font-family:var(--font-mono);font-weight:600;}
+    .setup-check{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink2);cursor:pointer;margin-bottom:26px;}
+    .setup-check input{accent-color:var(--signal);width:16px;height:16px;cursor:pointer;}
 
-    /* ============== LOCK ============== */
+    /* ============== LOCK SCREEN ============== */
     #lock{position:fixed;inset:0;z-index:80000;display:none;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background-size:cover;background-position:center;}
     #lock.show{display:flex;}
-    #lock::after{content:'';position:absolute;inset:0;background:rgba(15,13,11,0.45);}
-    .lock-clock{position:relative;z-index:1;font-family:var(--font-mono);font-size:64px;font-weight:300;letter-spacing:-2px;text-shadow:0 4px 20px rgba(0,0,0,.6);}
-    .lock-date{position:relative;z-index:1;font-size:14px;color:rgba(255,255,255,.78);margin-top:4px;margin-bottom:50px;}
-    .lock-hint{position:relative;z-index:1;font-size:11px;color:rgba(255,255,255,.55);font-family:var(--font-mono);letter-spacing:.5px;display:flex;align-items:center;gap:8px;}
-    .lock-hint span{display:inline-block;animation:lockUp 1.8s ease infinite;}
-    @keyframes lockUp{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+    #lock::after{content:'';position:absolute;inset:0;background:rgba(15,13,11,0.5);}
+    .lock-clock{position:relative;z-index:1;font-family:var(--font-mono);font-size:72px;font-weight:300;letter-spacing:-2px;text-shadow:0 4px 30px rgba(0,0,0,.7);color:#fff;}
+    .lock-date{position:relative;z-index:1;font-size:15px;color:rgba(255,255,255,.85);margin-top:6px;margin-bottom:60px;letter-spacing:0.3px;}
+    .lock-hint{position:relative;z-index:1;font-size:12px;color:rgba(255,255,255,.65);font-family:var(--font-mono);letter-spacing:.5px;display:flex;align-items:center;gap:10px;animation:slideUp 2s ease-in-out infinite;}
 
     /* ============== DESKTOP ============== */
     #os{position:fixed;inset:0;display:none;flex-direction:column;}
     #os.show{display:flex;}
-    #wallpaper{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;transition:background-image .5s;}
+    #wallpaper{position:fixed;inset:0;z-index:0;background-size:cover;background-position:center;transition:background-image .6s var(--ease);}
     #wallpaper::after{content:'';position:absolute;inset:0;background:var(--wp-overlay,rgba(0,0,0,0));}
     #desktop{flex:1;position:relative;overflow:hidden;z-index:1;}
 
     /* top bar with glass */
-    #topbar{height:30px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);display:flex;align-items:center;padding:0 12px;gap:16px;border-bottom:1px solid var(--line);flex-shrink:0;z-index:2;position:relative;}
-    .tb-brand{font-family:var(--font-mono);font-weight:700;font-size:12px;color:var(--signal);cursor:pointer;letter-spacing:.5px;display:flex;align-items:center;gap:6px;}
-    .tb-brand .dot{width:6px;height:6px;background:var(--signal);border-radius:50%;}
-    .tb-appname{font-size:12px;color:var(--ink2);}
-    .tb-right{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:12px;color:var(--ink2);}
-    .tb-right i{font-family:var(--font-mono);cursor:pointer;padding:2px 4px;font-size:12px;}
-    .tb-right i:hover{color:var(--ink);}
-    #tb-clock{font-family:var(--font-mono);font-size:12px;color:var(--ink);white-space:nowrap;}
+    #topbar{height:32px;background:var(--glass-light);backdrop-filter:var(--glass-blur);display:flex;align-items:center;padding:0 16px;gap:18px;border-bottom:1px solid var(--line);flex-shrink:0;z-index:200;position:relative;}
+    .tb-brand{font-family:var(--font-mono);font-weight:700;font-size:13px;color:var(--signal);cursor:pointer;letter-spacing:.5px;display:flex;align-items:center;gap:8px;padding:4px 8px;border-radius:var(--radius);}
+    .tb-brand:hover{background:var(--signal-light);}
+    .tb-brand .dot{width:7px;height:7px;background:var(--signal);border-radius:50%;}
+    .tb-appname{font-size:13px;color:var(--ink2);}
+    .tb-right{margin-left:auto;display:flex;align-items:center;gap:16px;font-size:13px;color:var(--ink2);}
+    .tb-right i{font-family:var(--font-mono);cursor:pointer;padding:4px 8px;font-size:13px;border-radius:var(--radius);transition:all var(--motion-fast);}
+    .tb-right i:hover{color:var(--ink);background:rgba(255,255,255,0.05);}
+    #tb-clock{font-family:var(--font-mono);font-size:13px;color:var(--ink);white-space:nowrap;}
 
-    /* brand menu with glass */
-    #brand-menu{position:absolute;top:30px;left:10px;width:220px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);z-index:3;display:none;box-shadow:var(--glass-shadow);}
-    #brand-menu.open{display:block;}
-    .bm-item{padding:9px 14px;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:10px;color:var(--ink2);}
-    .bm-item:hover{background:var(--bg3);color:var(--ink);}
-    .bm-sep{height:1px;background:var(--line);margin:4px 0;}
+    /* brand menu */
+    #brand-menu{position:absolute;top:32px;left:10px;width:240px;background:var(--glass-dark);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);z-index:300;display:none;box-shadow:var(--shadow-lg);}
+    #brand-menu.open{display:block;animation:slideDown var(--motion-med) var(--ease);}
+    .bm-item{padding:11px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:12px;color:var(--ink2);transition:all var(--motion-fast);}
+    .bm-item:hover{background:rgba(255,250,240,0.05);color:var(--ink);}
+    .bm-sep{height:1px;background:var(--line);margin:6px 0;}
 
     /* desktop icons */
-    .dicon{position:absolute;width:78px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;padding:8px 4px;transition:background var(--motion-fast);}
+    .dicon{position:absolute;width:88px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;padding:10px 6px;transition:all var(--motion-fast);border-radius:var(--radius-lg);}
     .dicon:hover{background:rgba(255,255,255,0.04);}
-    .dicon-box{width:46px;height:46px;display:flex;align-items:center;justify-content:center;background:var(--bg2);border:1px solid var(--line2);font-family:var(--font-mono);font-size:17px;font-weight:600;color:var(--ink);}
-    .dicon-label{font-size:10.5px;text-align:center;color:#fff;text-shadow:0 1px 4px rgba(0,0,0,.8);line-height:1.25;}
+    .dicon-box{width:54px;height:54px;display:flex;align-items:center;justify-content:center;background:var(--signal-light);border:1px solid var(--signal-light);font-family:var(--font-mono);font-size:20px;font-weight:600;color:var(--signal);border-radius:var(--radius-lg);box-shadow:0 8px 24px rgba(232,162,58,0.15);}
+    .dicon-label{font-size:11px;text-align:center;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.8);line-height:1.3;}
 
-    /* widgets with glass */
-    .widget{position:absolute;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);padding:14px;cursor:move;box-shadow:var(--glass-shadow);}
-    .widget-clock{top:18px;right:18px;width:190px;text-align:right;}
-    .wclock-t{font-family:var(--font-mono);font-size:30px;font-weight:300;letter-spacing:-1px;}
-    .wclock-d{font-size:11px;color:var(--ink2);margin-top:3px;}
-    .widget-weather{top:130px;right:18px;width:190px;}
-    .ww-row{display:flex;align-items:center;gap:10px;}
-    .ww-temp{font-family:var(--font-mono);font-size:22px;font-weight:300;}
-    .ww-icon{font-size:22px;}
-    .ww-loc{font-size:11px;color:var(--ink2);margin-top:4px;}
+    /* widgets */
+    .widget{position:absolute;background:var(--glass-light);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);padding:16px;cursor:move;border-radius:var(--radius-lg);box-shadow:var(--shadow);transition:all var(--motion-fast);}
+    .widget:hover{background:var(--glass-dark);border-color:var(--line3);}
+    .widget-clock{top:20px;right:20px;width:210px;text-align:right;}
+    .wclock-t{font-family:var(--font-mono);font-size:34px;font-weight:300;letter-spacing:-1px;}
+    .wclock-d{font-size:12px;color:var(--ink2);margin-top:4px;}
+    .widget-weather{top:160px;right:20px;width:210px;}
+    .ww-row{display:flex;align-items:center;gap:12px;}
+    .ww-temp{font-family:var(--font-mono);font-size:24px;font-weight:300;}
+    .ww-icon{font-size:24px;}
+    .ww-loc{font-size:12px;color:var(--ink2);margin-top:6px;}
 
     /* ============== WINDOWS ============== */
-    .win{position:absolute;display:none;flex-direction:column;background:var(--bg1);border:1px solid var(--line2);box-shadow:var(--shadow);min-width:340px;min-height:260px;overflow:hidden;}
+    .win{position:absolute;display:none;flex-direction:column;background:var(--glass-light);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);box-shadow:var(--shadow);min-width:380px;min-height:300px;overflow:hidden;}
     .win.show{display:flex;}
-    .win.min{opacity:0;transform:scale(.6) translateY(60px);pointer-events:none;transition:all var(--motion-med) var(--ease);}
+    .win.min{opacity:0;transform:scale(.85) translateY(40px);pointer-events:none;transition:all var(--motion-med) var(--ease);}
     .win.max{top:0 !important;left:0 !important;border-radius:0;}
-    .win.opening{animation:winOpen var(--motion-med) var(--ease);}
-    @keyframes winOpen{from{opacity:0;transform:scale(.94) translateY(8px);}to{opacity:1;transform:scale(1) translateY(0);}}
-    .win.closing{animation:winClose var(--motion-fast) var(--ease) forwards;}
-    @keyframes winClose{to{opacity:0;transform:scale(.92);}}
-    .titlebar{height:38px;background:var(--bg2);display:flex;align-items:center;padding:0 12px;gap:10px;cursor:move;border-bottom:1px solid var(--line);flex-shrink:0;}
-    .tb-dots{display:flex;gap:7px;}
-    .dot-btn{width:11px;height:11px;border:1px solid var(--line2);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:all .12s;}
+    .win.opening{animation:slideUp var(--motion-med) var(--ease);}
+    .win.closing{animation:slideDown var(--motion-fast) var(--ease) forwards;}
+    .titlebar{height:42px;background:var(--bg1);display:flex;align-items:center;padding:0 14px;gap:12px;cursor:move;border-bottom:1px solid var(--line);flex-shrink:0;}
+    .tb-dots{display:flex;gap:9px;}
+    .dot-btn{width:12px;height:12px;border:1px solid var(--line2);background:transparent;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:transparent;transition:all .12s;border-radius:50%;}
     .dot-btn:hover{color:var(--bg0);}
     .dot-close:hover{background:var(--bad);border-color:var(--bad);}
     .dot-min:hover{background:var(--warn);border-color:var(--warn);}
     .dot-max:hover{background:var(--ok);border-color:var(--ok);}
-    .win-title{flex:1;text-align:center;font-size:11.5px;font-family:var(--font-mono);color:var(--ink2);letter-spacing:.3px;}
-    .win-spacer{width:46px;}
+    .win-title{flex:1;text-align:center;font-size:13px;font-family:var(--font-mono);color:var(--ink2);letter-spacing:.3px;font-weight:500;}
+    .win-spacer{width:50px;}
     .win-body{flex:1;overflow:auto;position:relative;}
-    .resize-grip{position:absolute;bottom:0;right:0;width:16px;height:16px;cursor:nwse-resize;z-index:5;}
+    .resize-grip{position:absolute;bottom:0;right:0;width:18px;height:18px;cursor:nwse-resize;z-index:5;}
 
-    /* ============== TASKBAR with glass ============== */
-    #taskbar{position:fixed;z-index:500;display:flex;align-items:center;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);transition:none;box-shadow:var(--glass-shadow);}
-    #taskbar.tb-bottom{left:50%;bottom:10px;transform:translateX(-50%);flex-direction:row;height:var(--taskbar-size);padding:0 10px;}
-    #taskbar.tb-top{left:50%;top:36px;transform:translateX(-50%);flex-direction:row;height:var(--taskbar-size);padding:0 10px;}
-    #taskbar.tb-left{left:10px;top:50%;transform:translateY(-50%);flex-direction:column;width:var(--taskbar-size);padding:10px 0;}
-    #taskbar.tb-right{right:10px;top:50%;transform:translateY(-50%);flex-direction:column;width:var(--taskbar-size);padding:10px 0;}
-    .tb-handle{position:absolute;background:var(--line2);cursor:grab;}
-    #taskbar.tb-bottom .tb-handle,#taskbar.tb-top .tb-handle{left:50%;top:4px;width:28px;height:3px;transform:translateX(-50%);}
-    #taskbar.tb-left .tb-handle,#taskbar.tb-right .tb-handle{top:50%;left:4px;width:3px;height:28px;transform:translateY(-50%);}
-    .tb-apps{display:flex;align-items:center;gap:5px;}
+    /* ============== TASKBAR ============== */
+    #taskbar{position:fixed;z-index:500;display:flex;align-items:center;background:var(--glass-light);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);transition:none;box-shadow:var(--shadow);}
+    #taskbar.tb-bottom{left:50%;bottom:12px;transform:translateX(-50%);flex-direction:row;height:var(--taskbar-size);padding:0 12px;border-radius:var(--radius-xl);}
+    #taskbar.tb-top{left:50%;top:40px;transform:translateX(-50%);flex-direction:row;height:var(--taskbar-size);padding:0 12px;border-radius:var(--radius-xl);}
+    #taskbar.tb-left{left:12px;top:50%;transform:translateY(-50%);flex-direction:column;width:var(--taskbar-size);padding:12px 0;border-radius:var(--radius-xl);}
+    #taskbar.tb-right{right:12px;top:50%;transform:translateY(-50%);flex-direction:column;width:var(--taskbar-size);padding:12px 0;border-radius:var(--radius-xl);}
+    .tb-handle{position:absolute;background:var(--line2);cursor:grab;border-radius:4px;}
+    #taskbar.tb-bottom .tb-handle,#taskbar.tb-top .tb-handle{left:50%;top:6px;width:32px;height:4px;transform:translateX(-50%);}
+    #taskbar.tb-left .tb-handle,#taskbar.tb-right .tb-handle{top:50%;left:6px;width:4px;height:32px;transform:translateY(-50%);}
+    .tb-apps{display:flex;align-items:center;gap:8px;}
     #taskbar.tb-left .tb-apps,#taskbar.tb-right .tb-apps{flex-direction:column;}
-    .tb-app{width:calc(var(--taskbar-size) - 16px);height:calc(var(--taskbar-size) - 16px);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--font-mono);font-size:15px;font-weight:600;color:var(--ink2);background:var(--bg3);border:1px solid transparent;position:relative;transition:all var(--motion-fast) var(--ease);flex-shrink:0;}
-    .tb-app:hover{color:var(--ink);border-color:var(--line2);transform:translateY(-3px);}
-    #taskbar.tb-left .tb-app:hover,#taskbar.tb-right .tb-app:hover{transform:translateX(3px);}
-    .tb-app.active{color:var(--signal);border-color:var(--signal);}
-    .tb-app.active::after{content:'';position:absolute;width:4px;height:4px;background:var(--signal);}
-    #taskbar.tb-bottom .tb-app.active::after{bottom:-7px;left:50%;transform:translateX(-50%);}
-    #taskbar.tb-top .tb-app.active::after{top:-7px;left:50%;transform:translateX(-50%);}
-    #taskbar.tb-left .tb-app.active::after{left:-7px;top:50%;transform:translateY(-50%);}
-    #taskbar.tb-right .tb-app.active::after{right:-7px;top:50%;transform:translateY(-50%);}
-    .tb-sep{width:1px;height:60%;background:var(--line2);margin:0 4px;}
-    #taskbar.tb-left .tb-sep,#taskbar.tb-right .tb-sep{width:60%;height:1px;margin:4px 0;}
+    .tb-app{width:calc(var(--taskbar-size)-16px);height:calc(var(--taskbar-size)-16px);display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--font-mono);font-size:16px;font-weight:600;color:var(--ink2);background:var(--bg3);border:1px solid transparent;position:relative;transition:all var(--motion-fast) var(--ease);flex-shrink:0;border-radius:var(--radius-lg);box-shadow:0 4px 12px rgba(0,0,0,0.3);}
+    .tb-app:hover{color:var(--signal);border-color:var(--signal-light);transform:translateY(-4px);box-shadow:0 8px 20px rgba(232,162,58,0.15);}
+    #taskbar.tb-left .tb-app:hover,#taskbar.tb-right .tb-app:hover{transform:translateX(4px);}
+    .tb-app.active{color:var(--signal);border-color:var(--signal);background:var(--signal-light);}
+    .tb-app.active::after{content:'';position:absolute;width:5px;height:5px;background:var(--signal);border-radius:50%;}
+    #taskbar.tb-bottom .tb-app.active::after{bottom:-8px;left:50%;transform:translateX(-50%);}
+    #taskbar.tb-top .tb-app.active::after{top:-8px;left:50%;transform:translateX(-50%);}
+    #taskbar.tb-left .tb-app.active::after{left:-8px;top:50%;transform:translateY(-50%);}
+    #taskbar.tb-right .tb-app.active::after{right:-8px;top:50%;transform:translateY(-50%);}
+    .tb-sep{width:1px;height:70%;background:var(--line2);margin:0 6px;}
+    #taskbar.tb-left .tb-sep,#taskbar.tb-right .tb-sep{width:70%;height:1px;margin:6px 0;}
     .tb-resize{position:absolute;cursor:ns-resize;}
-    #taskbar.tb-bottom .tb-resize,#taskbar.tb-top .tb-resize{top:0;left:0;right:0;height:5px;cursor:ns-resize;}
-    #taskbar.tb-left .tb-resize,#taskbar.tb-right .tb-resize{top:0;bottom:0;left:0;width:5px;cursor:ew-resize;}
+    #taskbar.tb-bottom .tb-resize,#taskbar.tb-top .tb-resize{top:0;left:0;right:0;height:6px;cursor:ns-resize;}
+    #taskbar.tb-left .tb-resize,#taskbar.tb-right .tb-resize{top:0;bottom:0;left:0;width:6px;cursor:ew-resize;}
 
-    /* ============== SEARCH with glass ============== */
-    #search-ov{position:fixed;inset:0;background:rgba(10,9,8,0.5);backdrop-filter:blur(6px);z-index:70000;display:none;align-items:flex-start;justify-content:center;padding-top:14vh;}
-    #search-ov.open{display:flex;}
-    #search-box{width:560px;max-width:90vw;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);}
-    #search-box::before{content:'';display:block;height:3px;background:var(--signal);}
-    .search-input-row{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);}
-    .search-input-row span{font-family:var(--font-mono);color:var(--signal);font-size:14px;}
+    /* ============== SEARCH ============== */
+    #search-ov{position:fixed;inset:0;background:rgba(15,14,12,0.6);backdrop-filter:var(--glass-blur);z-index:70000;display:none;align-items:flex-start;justify-content:center;padding-top:12vh;}
+    #search-ov.open{display:flex;animation:slideDown var(--motion-med) var(--ease);}
+    #search-box{width:580px;max-width:90vw;background:var(--glass-dark);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);}
+    #search-box::before{content:'';display:block;height:4px;background:linear-gradient(90deg,var(--signal),var(--warn));border-radius:var(--radius-lg) var(--radius-lg) 0 0;}
+    .search-input-row{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--line);}
+    .search-input-row span{font-family:var(--font-mono);color:var(--signal);font-size:15px;font-weight:600;}
     #search-input{flex:1;background:transparent;border:none;outline:none;color:var(--ink);font-size:15px;font-family:var(--font-ui);}
-    #search-results{max-height:340px;overflow-y:auto;}
-    .s-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;}
-    .s-item:hover,.s-item.focus{background:var(--bg2);}
-    .s-ic{width:32px;height:32px;background:var(--bg3);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;font-weight:600;flex-shrink:0;}
-    .s-name{font-size:13px;font-weight:500;}
-    .s-sub{font-size:11px;color:var(--ink3);}
+    #search-results{max-height:360px;overflow-y:auto;}
+    .s-item{display:flex;align-items:center;gap:14px;padding:12px 16px;cursor:pointer;transition:all var(--motion-fast);}
+    .s-item:hover,.s-item.focus{background:rgba(255,250,240,0.05);}
+    .s-ic{width:36px;height:36px;background:var(--signal-light);border:1px solid var(--signal-light);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;font-weight:600;flex-shrink:0;color:var(--signal);border-radius:var(--radius);box-shadow:0 4px 12px rgba(232,162,58,0.15);}
+    .s-name{font-size:14px;font-weight:500;}
+    .s-sub{font-size:12px;color:var(--ink3);}
 
-    /* ============== NOTIFICATIONS with glass ============== */
-    #notif-stack{position:fixed;top:40px;right:14px;z-index:60000;display:flex;flex-direction:column;gap:8px;}
-    .notif{width:290px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);border-left:3px solid var(--signal);padding:11px 14px;animation:nIn .25s var(--ease);}
-    @keyframes nIn{from{opacity:0;transform:translateX(40px);}to{opacity:1;transform:translateX(0);}}
-    .notif.out{animation:nOut .25s var(--ease) forwards;}
-    @keyframes nOut{to{opacity:0;transform:translateX(40px);}}
-    .notif-t{font-size:12.5px;font-weight:600;}
-    .notif-b{font-size:11.5px;color:var(--ink2);margin-top:3px;line-height:1.5;}
+    /* ============== NOTIFICATIONS ============== */
+    #notif-stack{position:fixed;top:48px;right:16px;z-index:60000;display:flex;flex-direction:column;gap:10px;}
+    .notif{width:320px;background:var(--glass-dark);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);border-left:4px solid var(--signal);padding:14px 16px;animation:slideUp var(--motion-med) var(--ease);box-shadow:var(--shadow-sm);}
+    .notif.out{animation:slideDown var(--motion-med) var(--ease) forwards;}
+    .notif-t{font-size:13px;font-weight:600;color:var(--ink);}
+    .notif-b{font-size:12px;color:var(--ink2);margin-top:4px;line-height:1.5;}
 
-    /* ============== CONTROL CENTER with glass ============== */
-    #cc{position:fixed;top:34px;right:10px;width:300px;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);z-index:55000;display:none;padding:14px;}
-    #cc.open{display:block;}
-    .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
-    .cc-tile{background:var(--bg2);border:1px solid var(--line2);padding:11px;cursor:pointer;transition:all var(--motion-fast);}
-    .cc-tile:hover{background:var(--bg3);}
-    .cc-tile.on{border-color:var(--signal);background:var(--signal-dim);}
-    .cc-tile-top{font-family:var(--font-mono);font-size:13px;margin-bottom:4px;}
+    /* ============== CONTROL CENTER ============== */
+    #cc{position:fixed;top:40px;right:12px;width:340px;background:var(--glass-dark);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);z-index:55000;display:none;padding:16px;}
+    #cc.open{display:block;animation:slideDown var(--motion-med) var(--ease);}
+    .cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+    .cc-tile{background:var(--bg2);border:1px solid var(--line2);padding:13px;cursor:pointer;transition:all var(--motion-fast);border-radius:var(--radius-lg);position:relative;}
+    .cc-tile:hover{background:var(--bg3);border-color:var(--line3);}
+    .cc-tile.on{border-color:var(--signal);background:var(--signal-light);}
+    .cc-tile-top{font-family:var(--font-mono);font-size:13px;margin-bottom:4px;font-weight:600;}
     .cc-tile-label{font-size:11px;color:var(--ink2);}
-    .cc-slider-row{margin-bottom:10px;}
-    .cc-slider-label{font-size:11px;color:var(--ink2);margin-bottom:5px;display:flex;justify-content:space-between;}
+    .cc-tile-edit{position:absolute;top:4px;right:4px;width:20px;height:20px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity var(--motion-fast);}
+    .cc-tile:hover .cc-tile-edit{opacity:0.6;}
+    .cc-tile-edit:hover{opacity:1;}
+    .cc-slider-row{margin-bottom:12px;}
+    .cc-slider-label{font-size:12px;color:var(--ink2);margin-bottom:6px;display:flex;justify-content:space-between;}
     input[type=range]{width:100%;accent-color:var(--signal);}
+    .cc-footer{border-top:1px solid var(--line);padding-top:12px;margin-top:12px;}
+    .cc-footer-btn{width:100%;padding:8px;background:var(--signal);border:none;color:#0f0e0c;font-weight:600;font-size:12px;border-radius:var(--radius-lg);cursor:pointer;transition:all var(--motion-fast);}
+    .cc-footer-btn:hover{background:#f0a93e;}
 
-    /* Aria button in CC */
-    .aria-cc-btn{background:var(--signal);border:none;color:#1a1410;font-weight:bold;padding:8px 12px;width:100%;margin-top:8px;cursor:pointer;font-family:var(--font-mono);font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;}
-    .aria-cc-btn:hover{filter:brightness(1.1);}
-
-    /* ============== ARIA PANEL with glass ============== */
-    #aria-panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:400px;max-width:90vw;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);z-index:58000;display:none;padding:14px;flex-direction:column;gap:12px;}
-    #aria-panel.open{display:flex;}
-    .aria-orb{width:48px;height:48px;border-radius:50%;background:var(--signal);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:20px;color:#1a1410;animation:ariaPulse 2s infinite;}
-    @keyframes ariaPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,162,58,0.4);}50%{box-shadow:0 0 0 12px rgba(232,162,58,0);}}
+    /* ============== ARIA PANEL ============== */
+    #aria-panel{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);width:420px;max-width:90vw;background:var(--glass-dark);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);z-index:58000;display:none;padding:16px;flex-direction:column;gap:14px;}
+    #aria-panel.open{display:flex;animation:slideUp var(--motion-med) var(--ease);}
+    .aria-orb{width:54px;height:54px;border-radius:50%;background:var(--signal);display:flex;align-items:center;justify-content:center;margin:0 auto;font-size:24px;color:#0f0e0c;animation:ariaPulse 2s infinite;}
+    @keyframes ariaPulse{0%,100%{box-shadow:0 0 0 0 rgba(232,162,58,0.4)}50%{box-shadow:0 0 0 14px rgba(232,162,58,0)}}
     .aria-input-row{display:flex;gap:8px;}
-    #aria-input{flex:1;background:var(--bg2);border:1px solid var(--line2);padding:8px 12px;color:var(--ink);font-family:var(--font-ui);outline:none;}
-    #aria-input:focus{border-color:var(--signal);}
-    #aria-response{font-size:13px;color:var(--ink2);min-height:32px;padding:0 4px;line-height:1.5;}
+    #aria-input{flex:1;background:var(--bg2);border:1px solid var(--line2);padding:10px 14px;color:var(--ink);font-family:var(--font-ui);outline:none;border-radius:var(--radius-lg);transition:all var(--motion-fast);}
+    #aria-input:focus{border-color:var(--signal);box-shadow:0 0 0 3px var(--signal-light);}
+    #aria-response{font-size:13px;color:var(--ink2);min-height:40px;padding:0 4px;line-height:1.6;}
+    .aria-power{position:absolute;top:16px;right:16px;width:24px;height:24px;cursor:pointer;opacity:0.6;transition:opacity var(--motion-fast);}
+    .aria-power:hover{opacity:1;}
 
-    /* ============== CONTEXT MENU with glass ============== */
-    #ctx{position:fixed;background:var(--glass-bg);backdrop-filter:var(--glass-blur);-webkit-backdrop-filter:var(--glass-blur);border:var(--glass-border);box-shadow:var(--glass-shadow);padding:4px;z-index:75000;min-width:190px;display:none;}
-    #ctx.open{display:block;}
-    .ctx-item{padding:8px 12px;cursor:pointer;font-size:12.5px;display:flex;align-items:center;gap:9px;color:var(--ink2);}
-    .ctx-item:hover{background:var(--bg3);color:var(--ink);}
-    .ctx-sep{height:1px;background:var(--line);margin:3px 0;}
+    /* ============== CONTEXT MENU ============== */
+    #ctx{position:fixed;background:var(--glass-dark);backdrop-filter:var(--glass-blur);border:1px solid var(--line2);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);padding:6px;z-index:75000;min-width:220px;display:none;}
+    #ctx.open{display:block;animation:slideDown var(--motion-med) var(--ease);}
+    .ctx-item{padding:10px 14px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:10px;color:var(--ink2);border-radius:var(--radius);transition:all var(--motion-fast);}
+    .ctx-item:hover{background:rgba(255,250,240,0.08);color:var(--ink);}
+    .ctx-sep{height:1px;background:var(--line);margin:4px 0;}
 
-    /* ============== SETTINGS APP ============== */
+    /* ============== SETTINGS ============== */
     .set-wrap{display:flex;height:100%;}
-    .set-nav{width:200px;background:var(--bg0);border-right:1px solid var(--line);padding:10px 0;overflow-y:auto;flex-shrink:0;}
-    .set-nav-sec{font-family:var(--font-mono);font-size:9.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;padding:12px 16px 5px;}
-    .set-nav-item{padding:8px 16px;cursor:pointer;font-size:12.5px;color:var(--ink2);border-left:2px solid transparent;display:flex;align-items:center;gap:9px;}
+    .set-nav{width:220px;background:var(--bg0);border-right:1px solid var(--line);padding:12px 0;overflow-y:auto;flex-shrink:0;}
+    .set-nav-sec{font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;padding:14px 18px 6px;font-weight:600;}
+    .set-nav-item{padding:10px 18px;cursor:pointer;font-size:13px;color:var(--ink2);border-left:3px solid transparent;display:flex;align-items:center;gap:10px;transition:all var(--motion-fast);}
     .set-nav-item:hover{background:var(--bg2);}
     .set-nav-item.active{background:var(--bg2);border-left-color:var(--signal);color:var(--ink);}
-    .set-main{flex:1;overflow-y:auto;padding:24px 28px;}
+    .set-main{flex:1;overflow-y:auto;padding:28px 32px;}
     .set-section{display:none;}
-    .set-section.active{display:block;animation:fadeSlide .2s var(--ease);}
-    @keyframes fadeSlide{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
-    .set-h{font-family:var(--font-mono);font-size:17px;font-weight:600;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--line);}
-    .set-card{background:var(--bg2);border:1px solid var(--line);margin-bottom:16px;}
-    .set-row{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line);gap:14px;}
+    .set-section.active{display:block;animation:slideUp var(--motion-med) var(--ease);}
+    .set-h{font-family:var(--font-mono);font-size:19px;font-weight:600;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--line);}
+    .set-card{background:var(--bg2);border:1px solid var(--line);margin-bottom:18px;border-radius:var(--radius-lg);overflow:hidden;}
+    .set-row{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line);gap:16px;}
     .set-row:last-child{border-bottom:none;}
-    .set-row-label{font-size:12.5px;font-weight:500;}
-    .set-row-sub{font-size:11px;color:var(--ink3);margin-top:2px;}
-    .set-row-val{font-size:12px;color:var(--ink2);font-family:var(--font-mono);}
-    .sw{position:relative;width:38px;height:20px;flex-shrink:0;cursor:pointer;}
+    .set-row-label{font-size:13px;font-weight:500;}
+    .set-row-sub{font-size:12px;color:var(--ink3);margin-top:2px;}
+    .set-row-val{font-size:13px;color:var(--ink2);font-family:var(--font-mono);}
+    .sw{position:relative;width:42px;height:24px;flex-shrink:0;cursor:pointer;}
     .sw input{display:none;}
-    .sw-track{position:absolute;inset:0;background:var(--bg4);border:1px solid var(--line2);transition:background .2s;}
-    .sw input:checked + .sw-track{background:var(--signal);border-color:var(--signal);}
-    .sw-thumb{position:absolute;top:2px;left:2px;width:14px;height:14px;background:var(--ink);transition:transform .2s;}
-    .sw input:checked ~ .sw-thumb{transform:translateX(16px);background:#1a1410;}
-    select.set-select{background:var(--bg3);border:1px solid var(--line2);color:var(--ink);padding:5px 8px;font-size:12px;font-family:var(--font-ui);outline:none;cursor:pointer;}
-    .swatch-row{display:flex;gap:9px;flex-wrap:wrap;padding:14px 16px;}
-    .swatch{width:26px;height:26px;cursor:pointer;border:2px solid transparent;transition:transform .12s;}
-    .swatch:hover{transform:scale(1.12);}
+    .sw-track{position:absolute;inset:0;background:var(--bg4);border:1px solid var(--line2);transition:all .25s;border-radius:12px;}
+    .sw input:checked+.sw-track{background:var(--signal);border-color:var(--signal);}
+    .sw-thumb{position:absolute;top:3px;left:3px;width:16px;height:16px;background:var(--ink);transition:transform .25s;border-radius:50%;}
+    .sw input:checked~.sw-thumb{transform:translateX(18px);background:#0f0e0c;}
+    select.set-select{background:var(--bg3);border:1px solid var(--line2);color:var(--ink);padding:8px 12px;font-size:13px;font-family:var(--font-ui);outline:none;cursor:pointer;border-radius:var(--radius-lg);}
+    .swatch-row{display:flex;gap:11px;flex-wrap:wrap;padding:16px;}
+    .swatch{width:32px;height:32px;cursor:pointer;border:2px solid transparent;transition:transform .12s;border-radius:var(--radius-lg);}
+    .swatch:hover{transform:scale(1.15);}
     .swatch.sel{border-color:var(--ink);}
-    .wp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px 16px;}
-    .wp-opt{aspect-ratio:16/10;cursor:pointer;border:2px solid transparent;background-size:cover;background-position:center;position:relative;}
-    .wp-opt:hover{transform:scale(1.03);}
+    .wp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:16px;}
+    .wp-opt{aspect-ratio:16/10;cursor:pointer;border:2px solid transparent;background-size:cover;background-position:center;position:relative;border-radius:var(--radius-lg);overflow:hidden;transition:all var(--motion-fast);}
+    .wp-opt:hover{transform:scale(1.04);}
     .wp-opt.sel{border-color:var(--signal);}
-    .wp-opt-name{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.6);font-size:9.5px;padding:3px 5px;color:#fff;}
-    .storage-bar{display:flex;height:12px;margin:10px 16px 6px;}
-    .sb-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10.5px;color:var(--ink2);padding:0 16px 14px;}
-    .sb-leg-dot{width:7px;height:7px;display:inline-block;margin-right:4px;}
-    .taskbar-pos-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:14px 16px;}
-    .tb-pos-opt{aspect-ratio:1;border:1px solid var(--line2);background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;transition:all var(--motion-fast);}
-    .tb-pos-opt:hover{border-color:var(--ink3);}
-    .tb-pos-opt.sel{border-color:var(--signal);background:var(--signal-dim);}
-    .tb-pos-bar{position:absolute;background:var(--ink2);}
-    .font-demo{padding:14px 16px;font-size:13px;color:var(--ink2);}
-    .about-grid{padding:0;}
-    .about-row{display:flex;justify-content:space-between;padding:9px 16px;font-size:12px;border-bottom:1px solid var(--line);}
-    .about-row:last-child{border-bottom:none;}
-    .about-key{color:var(--ink3);}
+    .wp-opt-name{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.7);font-size:11px;padding:4px 6px;color:#fff;font-weight:500;}
 
-    /* ============== APPS: shared ============== */
-    .app-pad{padding:18px;}
-    .calc-shell{max-width:280px;margin:0 auto;padding:16px;}
-    .calc-hist{height:20px;text-align:right;color:var(--ink3);font-size:11px;font-family:var(--font-mono);margin-bottom:2px;}
-    .calc-disp{font-family:var(--font-mono);font-size:38px;font-weight:300;text-align:right;padding:6px 2px;margin-bottom:14px;}
-    .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
-    .ck{height:58px;border:1px solid var(--line2);font-size:16px;font-family:var(--font-mono);cursor:pointer;background:var(--bg2);color:var(--ink);transition:all .1s;}
+    /* ============== APP STORE ============== */
+    .as-wrap{display:flex;flex-direction:column;height:100%;padding:20px;}
+    .as-header{margin-bottom:20px;}
+    .as-header h2{font-family:var(--font-mono);font-size:20px;margin-bottom:6px;color:var(--signal);}
+    .as-search{width:100%;padding:10px 14px;background:var(--bg2);border:1px solid var(--line);border-radius:var(--radius-lg);color:var(--ink);font-family:var(--font-ui);font-size:13px;}
+    .as-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-top:16px;}
+    .as-app{background:var(--bg2);border:1px solid var(--line);padding:14px;text-align:center;border-radius:var(--radius-lg);cursor:pointer;transition:all var(--motion-fast);display:flex;flex-direction:column;align-items:center;}
+    .as-app:hover{border-color:var(--signal);background:var(--signal-light);}
+    .as-icon{width:48px;height:48px;background:var(--signal-light);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;margin:0 auto 8px;font-size:22px;color:var(--signal);}
+    .as-name{font-size:12px;font-weight:600;margin-bottom:4px;}
+    .as-desc{font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.4;}
+    .as-btn{width:100%;padding:6px;background:var(--signal);border:none;color:#0f0e0c;font-weight:600;font-size:11px;border-radius:var(--radius-lg);cursor:pointer;transition:all var(--motion-fast);}
+    .as-btn:hover{background:#f0a93e;}
+    .as-btn.installed{background:var(--ok);color:#0f0e0c;}
+
+    /* ============== SHARED APP STYLES ============== */
+    .app-pad{padding:20px;}
+    .calc-shell{max-width:280px;margin:0 auto;padding:18px;}
+    .calc-hist{height:20px;text-align:right;color:var(--ink3);font-size:12px;font-family:var(--font-mono);margin-bottom:4px;}
+    .calc-disp{font-family:var(--font-mono);font-size:42px;font-weight:300;text-align:right;padding:8px;margin-bottom:16px;}
+    .calc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+    .ck{height:64px;border:1px solid var(--line2);font-size:17px;font-family:var(--font-mono);cursor:pointer;background:var(--bg2);color:var(--ink);transition:all .1s;border-radius:var(--radius-lg);}
     .ck:hover{background:var(--bg3);}
     .ck:active{transform:scale(.95);}
-    .ck-op{color:var(--signal);}
-    .ck-eq{background:var(--signal);color:#1a1410;font-weight:600;border-color:var(--signal);}
-    .ck-clr{color:var(--bad);}
+    .ck-op{color:var(--signal)}
+    .ck-eq{background:var(--signal);color:#0f0e0c;font-weight:600;border-color:var(--signal);}
+    .ck-clr{color:var(--bad)}
     .ck-wide{grid-column:span 2;}
+
+    /* ============== TERMINAL ============== */
+    .tm-wrap{padding:14px;height:100%;display:flex;flex-direction:column;font-family:var(--font-mono);font-size:13px;background:var(--bg0);}
+    .tm-out{flex:1;overflow-y:auto;color:var(--ok);line-height:1.7;margin-bottom:8px;}
+    .tm-out .err{color:var(--bad)}
+    .tm-out .inf{color:var(--info)}
+    .tm-row{display:flex;gap:8px;align-items:center;padding-top:8px;margin-top:8px;border-top:1px solid var(--line);}
+    .tm-prompt{color:var(--signal);white-space:nowrap;font-weight:600;}
+    .tm-in{flex:1;background:transparent;border:none;outline:none;color:var(--ok);font-family:inherit;font-size:inherit;}
+
+    /* ============== FILE MANAGER ============== */
     .fm-wrap{display:flex;height:100%;}
-    .fm-side{width:170px;background:var(--bg0);border-right:1px solid var(--line);padding:10px 0;overflow-y:auto;flex-shrink:0;}
-    .fm-side-sec{font-family:var(--font-mono);font-size:9.5px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;padding:10px 14px 4px;}
-    .fm-side-item{padding:7px 14px;font-size:12px;color:var(--ink2);cursor:pointer;display:flex;align-items:center;gap:8px;}
+    .fm-side{width:180px;background:var(--bg0);border-right:1px solid var(--line);padding:12px 0;overflow-y:auto;flex-shrink:0;}
+    .fm-side-sec{font-family:var(--font-mono);font-size:10px;color:var(--ink3);text-transform:uppercase;letter-spacing:1px;padding:12px 16px 6px;font-weight:600;}
+    .fm-side-item{padding:8px 16px;font-size:13px;color:var(--ink2);cursor:pointer;display:flex;align-items:center;gap:8px;border-radius:var(--radius-lg);margin:0 6px;transition:all var(--motion-fast);}
     .fm-side-item:hover,.fm-side-item.active{background:var(--bg2);color:var(--ink);}
     .fm-main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
-    .fm-toolbar{display:flex;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid var(--line);flex-shrink:0;}
-    .fm-tbtn{border:1px solid var(--line2);background:var(--bg2);color:var(--ink2);width:26px;height:26px;cursor:pointer;font-size:12px;}
-    .fm-tbtn:hover{background:var(--bg3);}
-    .fm-path{flex:1;font-size:11.5px;color:var(--ink2);font-family:var(--font-mono);}
-    .fm-files{flex:1;overflow-y:auto;padding:10px;}
-    .fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:6px;}
-    .fm-file{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 4px;cursor:pointer;text-align:center;}
-    .fm-file:hover,.fm-file.sel{background:var(--bg2);}
-    .fm-fi{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border:1px solid var(--line2);font-family:var(--font-mono);font-size:11px;font-weight:600;}
-    .fm-fn{font-size:10px;color:var(--ink2);word-break:break-word;line-height:1.3;}
-    .fm-status{padding:7px 14px;border-top:1px solid var(--line);font-size:11px;color:var(--ink3);flex-shrink:0;}
+    .fm-toolbar{display:flex;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--line);flex-shrink:0;}
+    .fm-tbtn{border:1px solid var(--line2);background:var(--bg2);color:var(--ink2);width:28px;height:28px;cursor:pointer;font-size:12px;border-radius:var(--radius-lg);}
+    .fm-tbtn:hover{background:var(--bg3)}
+    .fm-path{flex:1;font-size:12px;color:var(--ink2);font-family:var(--font-mono);}
+    .fm-files{flex:1;overflow-y:auto;padding:12px;}
+    .fm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:8px;}
+    .fm-file{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;cursor:pointer;text-align:center;border-radius:var(--radius-lg);transition:all var(--motion-fast);}
+    .fm-file:hover,.fm-file.sel{background:var(--bg2)}
+    .fm-fi{width:38px;height:38px;display:flex;align-items:center;justify-content:center;background:var(--bg3);border:1px solid var(--line2);font-family:var(--font-mono);font-size:12px;font-weight:600;border-radius:var(--radius);}
+    .fm-fn{font-size:11px;color:var(--ink2);word-break:break-word;line-height:1.4;}
+
+    /* ============== NOTES ============== */
+    .nt-wrap{display:flex;height:100%;}
+    .nt-list{width:200px;background:var(--bg0);border-right:1px solid var(--line);overflow-y:auto;flex-shrink:0;}
+    .nt-li{padding:12px 16px;cursor:pointer;border-left:3px solid transparent;border-bottom:1px solid var(--line);transition:all var(--motion-fast);}
+    .nt-li:hover,.nt-li.active{background:var(--bg2);border-left-color:var(--signal);}
+    .nt-li-t{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .nt-li-p{font-size:11px;color:var(--ink3);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .nt-editor{flex:1;display:flex;flex-direction:column;}
+    .nt-tools{display:flex;gap:8px;padding:11px 14px;border-bottom:1px solid var(--line);}
+    .nt-tbtn{font-size:12px;border:1px solid var(--line2);background:var(--bg2);color:var(--ink2);padding:6px 12px;cursor:pointer;border-radius:var(--radius-lg);}
+    .nt-tbtn:hover{background:var(--bg3)}
+    .nt-title-in{background:transparent;border:none;outline:none;color:var(--ink);font-size:17px;font-weight:600;width:100%;padding:14px 16px 10px;font-family:var(--font-ui);}
+    .nt-body-in{flex:1;background:transparent;border:none;outline:none;color:var(--ink2);font-size:13px;padding:0 16px 16px;font-family:var(--font-ui);resize:none;line-height:1.8;}
+
+    /* ============== BROWSER ============== */
     .br-wrap{display:flex;flex-direction:column;height:100%;}
-    .br-nav{display:flex;align-items:center;gap:6px;padding:8px 10px;background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0;}
-    .br-btn{width:26px;height:26px;border:1px solid var(--line2);background:var(--bg3);color:var(--ink2);cursor:pointer;font-size:12px;}
-    .br-btn:hover{color:var(--ink);}
-    .br-url{flex:1;background:var(--bg3);border:1px solid var(--line2);padding:6px 12px;color:var(--ink);font-size:12.5px;font-family:var(--font-mono);outline:none;}
-    .br-url:focus{border-color:var(--signal);}
+    .br-nav{display:flex;align-items:center;gap:8px;padding:10px;background:var(--bg2);border-bottom:1px solid var(--line);flex-shrink:0;}
+    .br-btn{width:28px;height:28px;border:1px solid var(--line2);background:var(--bg3);color:var(--ink2);cursor:pointer;font-size:12px;border-radius:var(--radius-lg);}
+    .br-btn:hover{color:var(--ink)}
+    .br-url{flex:1;background:var(--bg3);border:1px solid var(--line2);padding:8px 12px;color:var(--ink);font-size:13px;font-family:var(--font-mono);outline:none;border-radius:var(--radius-lg);}
+    .br-url:focus{border-color:var(--signal)}
     .br-frame-wrap{flex:1;background:#fff;position:relative;}
     .br-frame-wrap iframe{width:100%;height:100%;border:none;}
-    .br-home{padding:36px;height:100%;overflow-y:auto;background:var(--bg1);}
-    .br-home h2{font-family:var(--font-mono);font-size:22px;margin-bottom:4px;color:var(--signal);}
-    .br-home p{color:var(--ink2);margin-bottom:24px;font-size:12.5px;}
-    .br-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-    .br-tile{background:var(--bg2);border:1px solid var(--line2);padding:16px 10px;text-align:center;cursor:pointer;}
-    .br-tile:hover{border-color:var(--ink3);background:var(--bg3);}
-    .br-tile-ic{font-family:var(--font-mono);font-size:18px;font-weight:700;margin-bottom:6px;}
-    .br-tile span{font-size:11px;color:var(--ink2);}
-    .mu-wrap{padding:24px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;height:100%;justify-content:center;}
-    .mu-art{width:160px;height:160px;background:var(--bg2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:13px;color:var(--ink3);position:relative;}
+    .br-home{padding:40px;height:100%;overflow-y:auto;background:var(--bg1);}
+    .br-home h2{font-family:var(--font-mono);font-size:24px;margin-bottom:4px;color:var(--signal);}
+    .br-home p{color:var(--ink2);margin-bottom:28px;font-size:13px;}
+    .br-tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+    .br-tile{background:var(--bg2);border:1px solid var(--line2);padding:18px 12px;text-align:center;cursor:pointer;border-radius:var(--radius-lg);transition:all var(--motion-fast);}
+    .br-tile:hover{border-color:var(--ink3);background:var(--bg3)}
+    .br-tile-ic{font-family:var(--font-mono);font-size:20px;font-weight:700;margin-bottom:8px;}
+    .br-tile span{font-size:12px;color:var(--ink2)}
+
+    /* ============== MUSIC ============== */
+    .mu-wrap{padding:28px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;height:100%;justify-content:center;}
+    .mu-art{width:180px;height:180px;background:var(--bg2);border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;font-family:var(--font-mono);font-size:14px;color:var(--ink3);position:relative;border-radius:var(--radius-lg);}
     .mu-art::before{content:'';position:absolute;inset:8px;border:1px solid var(--line);}
-    .mu-title{font-size:15px;font-weight:600;}
-    .mu-artist{font-size:12px;color:var(--ink2);}
+    .mu-title{font-size:16px;font-weight:600;}
+    .mu-artist{font-size:13px;color:var(--ink2)}
     .mu-prog-wrap{width:100%;}
-    .mu-track{height:3px;background:var(--bg3);cursor:pointer;}
-    .mu-fill{height:100%;background:var(--signal);transition:width .5s linear;}
-    .mu-times{display:flex;justify-content:space-between;font-size:10.5px;color:var(--ink3);margin-top:4px;font-family:var(--font-mono);}
-    .mu-ctrl{display:flex;align-items:center;gap:22px;}
-    .mu-btn{background:none;border:none;color:var(--ink2);cursor:pointer;font-size:16px;font-family:var(--font-mono);padding:6px;}
-    .mu-btn:hover{color:var(--ink);}
-    .mu-play{width:54px;height:54px;border:1px solid var(--signal);background:var(--signal-dim);color:var(--signal);font-size:16px;cursor:pointer;}
-    .mu-play:hover{background:var(--signal);color:#1a1410;}
-    .nt-wrap{display:flex;height:100%;}
-    .nt-list{width:190px;background:var(--bg0);border-right:1px solid var(--line);overflow-y:auto;flex-shrink:0;}
-    .nt-li{padding:11px 14px;cursor:pointer;border-left:2px solid transparent;border-bottom:1px solid var(--line);}
-    .nt-li:hover,.nt-li.active{background:var(--bg2);border-left-color:var(--signal);}
-    .nt-li-t{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .nt-li-p{font-size:10.5px;color:var(--ink3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-    .nt-editor{flex:1;display:flex;flex-direction:column;}
-    .nt-tools{display:flex;gap:6px;padding:9px 14px;border-bottom:1px solid var(--line);}
-    .nt-tbtn{font-size:11px;border:1px solid var(--line2);background:var(--bg2);color:var(--ink2);padding:5px 10px;cursor:pointer;}
-    .nt-tbtn:hover{background:var(--bg3);}
-    .nt-title-in{background:transparent;border:none;outline:none;color:var(--ink);font-size:16px;font-weight:600;width:100%;padding:14px 16px 8px;font-family:var(--font-ui);}
-    .nt-body-in{flex:1;background:transparent;border:none;outline:none;color:var(--ink2);font-size:12.5px;padding:0 16px 16px;font-family:var(--font-ui);resize:none;line-height:1.7;}
-    .tm-wrap{padding:12px;height:100%;display:flex;flex-direction:column;font-family:var(--font-mono);font-size:12px;background:var(--bg0);}
-    .tm-out{flex:1;overflow-y:auto;color:var(--ok);line-height:1.6;}
-    .tm-out .err{color:var(--bad);}
-    .tm-out .inf{color:var(--info);}
-    .tm-row{display:flex;gap:6px;align-items:center;border-top:1px solid var(--line);padding-top:6px;margin-top:6px;}
-    .tm-prompt{color:var(--signal);white-space:nowrap;}
-    .tm-in{flex:1;background:transparent;border:none;outline:none;color:var(--ok);font-family:inherit;font-size:inherit;}
-    .cam-wrap{display:flex;flex-direction:column;height:100%;align-items:center;justify-content:center;gap:14px;padding:18px;}
-    .cam-view{flex:1;width:100%;background:#000;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
+    .mu-track{height:4px;background:var(--bg3);cursor:pointer;border-radius:2px;}
+    .mu-fill{height:100%;background:var(--signal);transition:width .5s linear;border-radius:2px;}
+    .mu-times{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-top:6px;font-family:var(--font-mono);}
+    .mu-ctrl{display:flex;align-items:center;gap:24px;}
+    .mu-btn{background:none;border:none;color:var(--ink2);cursor:pointer;font-size:18px;font-family:var(--font-mono);padding:8px;border-radius:var(--radius-lg);transition:all var(--motion-fast);}
+    .mu-btn:hover{color:var(--ink);background:rgba(255,250,240,0.05)}
+    .mu-play{width:60px;height:60px;border:2px solid var(--signal);background:var(--signal-light);color:var(--signal);font-size:18px;cursor:pointer;border-radius:50%;transition:all var(--motion-fast);display:flex;align-items:center;justify-content:center;}
+    .mu-play:hover{background:var(--signal);color:#0f0e0c;}
+
+    /* ============== CAMERA ============== */
+    .cam-wrap{display:flex;flex-direction:column;height:100%;align-items:center;justify-content:center;gap:16px;padding:18px;}
+    .cam-view{flex:1;width:100%;background:#000;border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:var(--radius-lg);}
     .cam-view video{width:100%;height:100%;object-fit:cover;}
-    .cam-ph{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink3);font-size:11px;font-family:var(--font-mono);}
-    .cam-ctrls{display:flex;align-items:center;gap:24px;}
-    .cam-btn{width:38px;height:38px;border:1px solid var(--line2);background:var(--bg2);color:var(--ink2);cursor:pointer;font-size:13px;}
-    .cam-shutter{width:56px;height:56px;border:3px solid var(--signal);background:transparent;cursor:pointer;border-radius:50%;}
-    .cam-shutter:hover{background:var(--signal-dim);}
-    .dev-row-block{padding:12px 16px;border-bottom:1px solid var(--line);}
-    .dev-row-block:last-child{border-bottom:none;}
-    .dev-label{font-size:10.5px;color:var(--ink3);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.5px;}
-    .dev-val{font-size:12.5px;margin-top:3px;word-break:break-all;}
+    .cam-ph{display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--ink3);font-size:12px;font-family:var(--font-mono);}
+    .cam-ctrls{display:flex;align-items:center;gap:28px;}
+    .cam-btn{width:42px;height:42px;border:1px solid var(--line2);background:var(--bg2);color:var(--ink2);cursor:pointer;font-size:14px;border-radius:var(--radius-lg);}
+    .cam-shutter{width:62px;height:62px;border:4px solid var(--signal);background:transparent;cursor:pointer;border-radius:50%;transition:all var(--motion-fast);}
+    .cam-shutter:hover{background:var(--signal-light)}
   </style>
 </head>
 <body>
@@ -395,7 +417,7 @@
 <!-- ============== BOOT ============== -->
 <div id="boot">
   <div class="boot-mark">
-    <div class="boot-glyph">P</div>
+    <div class="boot-logo">◉</div>
     <div class="boot-word">Partex<b>Desktop</b></div>
   </div>
   <div id="boot-track"><div id="boot-fill"></div></div>
@@ -406,7 +428,7 @@
 <div id="setup-language" class="setup show">
   <div class="setup-panel"><div class="setup-inner">
     <div class="setup-step">Step 1 / 5</div>
-    <div class="setup-h">Welcome to PartexDesktop OS 11.4</div>
+    <div class="setup-h">Welcome to PartexDesktop OS</div>
     <div class="setup-p">Choose your language to begin setup.</div>
     <div class="setup-grid" data-group="lang">
       <div class="setup-chip sel" data-v="en">English</div>
@@ -449,9 +471,9 @@
     <div class="setup-h">Connect to a network</div>
     <div class="setup-p">Select an available network to continue.</div>
     <div class="setup-grid" data-group="net" style="flex-direction:column;align-items:stretch;">
-      <div class="setup-chip sel" data-v="home" style="justify-content:space-between;">HomeNet_5G <span style="font-size:11px;color:var(--ink3);">Strong</span></div>
-      <div class="setup-chip" data-v="office" style="justify-content:space-between;">OfficeWLAN <span style="font-size:11px;color:var(--ink3);">Strong</span></div>
-      <div class="setup-chip" data-v="pub" style="justify-content:space-between;">PublicWiFi_Open <span style="font-size:11px;color:var(--ink3);">Open</span></div>
+      <div class="setup-chip sel" data-v="home" style="justify-content:space-between;">HomeNet_5G <span style="font-size:12px;color:var(--ink3);">Strong</span></div>
+      <div class="setup-chip" data-v="office" style="justify-content:space-between;">OfficeWLAN <span style="font-size:12px;color:var(--ink3);">Strong</span></div>
+      <div class="setup-chip" data-v="pub" style="justify-content:space-between;">PublicWiFi_Open <span style="font-size:12px;color:var(--ink3);">Open</span></div>
       <div class="setup-chip" data-v="skip" style="justify-content:center;">Skip for now</div>
     </div>
     <div class="setup-foot">
@@ -469,7 +491,7 @@
     <div class="setup-step">Step 4 / 5</div>
     <div class="setup-h">Pick a signal color</div>
     <div class="setup-p">This accent is used throughout the system. Change it later in Settings.</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px;">
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:32px;">
       <div class="swatch sel" data-color="#e8a23a" style="background:#e8a23a;" onclick="pickSetupAccent(this)"></div>
       <div class="swatch" data-color="#d6604a" style="background:#d6604a;" onclick="pickSetupAccent(this)"></div>
       <div class="swatch" data-color="#7fb069" style="background:#7fb069;" onclick="pickSetupAccent(this)"></div>
@@ -494,14 +516,14 @@
     <div class="setup-h">Terms of use</div>
     <div class="setup-p">Please read and accept to finish setup.</div>
     <div class="setup-terms">
-      <h4>PartexDesktop OS 11.4 — Terms of Use</h4>
-      <p>Version 11.4 Beta — 2026</p>
+      <h4>PartexDesktop OS 11.4.1 — Terms of Use</h4>
+      <p>Public Beta — 2026</p>
       <h4>1. General</h4>
-      <p>By using PartexDesktop OS 11.4 you agree to these terms. If you do not agree, do not use the system.</p>
+      <p>By using PartexDesktop OS 11.4.1 you agree to these terms. If you do not agree, do not use the system.</p>
       <h4>2. License</h4>
       <p>Partex grants a limited, non-transferable license to use this system on your device.</p>
       <h4>3. Device data</h4>
-      <p>PartexDesktop OS reads technical device information (browser, OS, hardware) locally to optimize the interface. This data is not sent anywhere.</p>
+      <p>PartexDesktop OS reads technical device information locally to optimize the interface. This data is not sent anywhere.</p>
       <h4>4. Disclaimer</h4>
       <p>The system is provided "as is" without warranty of any kind.</p>
       <h4>5. Intellectual property</h4>
@@ -518,11 +540,11 @@
   </div></div>
 </div>
 
-<!-- ============== LOCK ============== -->
+<!-- ============== LOCK SCREEN ============== -->
 <div id="lock">
   <div class="lock-clock" id="lock-time">00:00</div>
   <div class="lock-date" id="lock-date">Monday, January 1</div>
-  <div class="lock-hint"><span>↑</span> Click to unlock</div>
+  <div class="lock-hint">↑ Click to unlock</div>
 </div>
 
 <!-- ============== OS SHELL ============== -->
@@ -533,33 +555,30 @@
     <div class="tb-brand" onclick="toggleBrandMenu()"><span class="dot"></span>Partex</div>
     <div class="tb-appname" id="tb-appname">Desktop</div>
     <div id="brand-menu">
-      <div class="bm-item" onclick="openApp('about')">About this system</div>
+      <div class="bm-item" onclick="openApp('about')">◉ About this system</div>
       <div class="bm-sep"></div>
-      <div class="bm-item" onclick="openApp('settings')">Settings</div>
+      <div class="bm-item" onclick="openApp('settings')">⚙ Settings</div>
       <div class="bm-sep"></div>
-      <div class="bm-item" onclick="doLock()">Lock screen</div>
-      <div class="bm-item" onclick="doRestart()">Restart…</div>
+      <div class="bm-item" onclick="doLock()">🔒 Lock screen</div>
+      <div class="bm-item" onclick="doRestart()">↻ Restart…</div>
     </div>
     <div class="tb-right">
-      <i onclick="openSearch()" title="Search">[Search]</i>
+      <i onclick="openSearch()" title="Search">[Cmd+Space]</i>
       <i onclick="toggleCC()" title="Control Center">[≡]</i>
-      <i id="batt-ind" title="Battery">[100%]</i>
+      <i id="batt-ind" title="Battery">[92%]</i>
       <span id="tb-clock">00:00</span>
     </div>
   </div>
 
   <div id="desktop" oncontextmenu="showCtx(event)">
     <div class="dicon" style="top:20px;left:20px;" ondblclick="openApp('browser')">
-      <div class="dicon-box">B</div><div class="dicon-label">Browser</div>
+      <div class="dicon-box">🌐</div><div class="dicon-label">Browser</div>
     </div>
-    <div class="dicon" style="top:104px;left:20px;" ondblclick="openApp('filemanager')">
-      <div class="dicon-box">F</div><div class="dicon-label">File Manager</div>
+    <div class="dicon" style="top:116px;left:20px;" ondblclick="openApp('filemanager')">
+      <div class="dicon-box">📁</div><div class="dicon-label">Files</div>
     </div>
-    <div class="dicon" style="top:188px;left:20px;" ondblclick="openApp('notes')">
-      <div class="dicon-box">N</div><div class="dicon-label">Notes</div>
-    </div>
-    <div class="dicon" style="top:272px;left:20px;" ondblclick="openApp('terminal')">
-      <div class="dicon-box">T</div><div class="dicon-label">Terminal</div>
+    <div class="dicon" style="top:212px;left:20px;" ondblclick="openApp('appstore')">
+      <div class="dicon-box">🎁</div><div class="dicon-label">App Store</div>
     </div>
 
     <div class="widget widget-clock" id="widget-clock">
@@ -567,12 +586,12 @@
       <div class="wclock-d" id="w-date">Monday, January 1, 2026</div>
     </div>
     <div class="widget widget-weather" id="widget-weather">
-      <div class="ww-row"><div class="ww-icon">~</div><div class="ww-temp">18°C</div></div>
+      <div class="ww-row"><div class="ww-icon">☁</div><div class="ww-temp">18°C</div></div>
       <div class="ww-loc">Wildeshausen, DE — partly cloudy</div>
     </div>
 
     <!-- ===== SETTINGS WINDOW ===== -->
-    <div class="win" id="win-settings" style="width:820px;height:580px;top:54px;left:130px;">
+    <div class="win" id="win-settings" style="width:880px;height:620px;top:50px;left:100px;">
       <div class="titlebar" data-w="settings">
         <div class="tb-dots">
           <button class="dot-btn dot-close" onclick="closeWin('settings')">×</button>
@@ -587,123 +606,51 @@
             <div class="set-nav-sec">Appearance</div>
             <div class="set-nav-item active" data-sec="appearance" onclick="setNav(this)">Theme &amp; wallpaper</div>
             <div class="set-nav-item" data-sec="taskbar" onclick="setNav(this)">Taskbar</div>
-            <div class="set-nav-item" data-sec="display" onclick="setNav(this)">Display &amp; text</div>
+            <div class="set-nav-item" data-sec="display" onclick="setNav(this)">Display</div>
             <div class="set-nav-sec">System</div>
-            <div class="set-nav-item" data-sec="sound" onclick="setNav(this)">Sound</div>
-            <div class="set-nav-item" data-sec="network" onclick="setNav(this)">Network</div>
             <div class="set-nav-item" data-sec="storage" onclick="setNav(this)">Storage</div>
             <div class="set-nav-item" data-sec="battery" onclick="setNav(this)">Battery</div>
             <div class="set-nav-item" data-sec="accessibility" onclick="setNav(this)">Accessibility</div>
             <div class="set-nav-sec">AI &amp; Privacy</div>
             <div class="set-nav-item" data-sec="aria" onclick="setNav(this)">Aria Settings</div>
             <div class="set-nav-sec">About</div>
-            <div class="set-nav-item" data-sec="device" onclick="setNav(this)">Device information</div>
-            <div class="set-nav-item" data-sec="about" onclick="setNav(this)">About this system</div>
+            <div class="set-nav-item" data-sec="device" onclick="setNav(this)">Device info</div>
+            <div class="set-nav-item" data-sec="about" onclick="setNav(this)">About</div>
           </div>
           <div class="set-main">
 
             <div class="set-section active" id="sec-appearance">
               <div class="set-h">Theme &amp; wallpaper</div>
               <div class="set-card">
-                <div class="set-row"><div><div class="set-row-label">Signal color</div><div class="set-row-sub">Accent used for highlights and active states</div></div></div>
+                <div class="set-row"><div><div class="set-row-label">Signal color</div><div class="set-row-sub">Accent used throughout the interface</div></div></div>
                 <div class="swatch-row" id="accent-swatches"></div>
               </div>
               <div class="set-card">
                 <div class="set-row"><div><div class="set-row-label">Wallpaper</div><div class="set-row-sub">Choose a desktop background</div></div></div>
                 <div class="wp-grid" id="wp-grid"></div>
               </div>
-              <div class="set-card">
-                <div class="set-row">
-                  <div><div class="set-row-label">Desktop widgets</div><div class="set-row-sub">Show clock and weather on the desktop</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-widgets" checked onchange="applyWidgetsVisible(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
-              </div>
             </div>
 
             <div class="set-section" id="sec-taskbar">
               <div class="set-h">Taskbar</div>
               <div class="set-card">
-                <div class="set-row"><div><div class="set-row-label">Position</div><div class="set-row-sub">Or drag the taskbar itself by its handle</div></div></div>
-                <div class="taskbar-pos-grid">
-                  <div class="tb-pos-opt sel" data-pos="bottom" onclick="setTaskbarPos('bottom',this)"><div class="tb-pos-bar" style="bottom:4px;left:8px;right:8px;height:4px;"></div></div>
-                  <div class="tb-pos-opt" data-pos="top" onclick="setTaskbarPos('top',this)"><div class="tb-pos-bar" style="top:4px;left:8px;right:8px;height:4px;"></div></div>
-                  <div class="tb-pos-opt" data-pos="left" onclick="setTaskbarPos('left',this)"><div class="tb-pos-bar" style="left:4px;top:8px;bottom:8px;width:4px;"></div></div>
-                  <div class="tb-pos-opt" data-pos="right" onclick="setTaskbarPos('right',this)"><div class="tb-pos-bar" style="right:4px;top:8px;bottom:8px;width:4px;"></div></div>
-                </div>
-              </div>
-              <div class="set-card">
-                <div class="set-row"><div><div class="set-row-label">Size</div><div class="set-row-sub">Or drag the taskbar's edge to resize</div></div>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <input type="range" id="opt-tb-size" min="40" max="80" value="54" style="width:130px;" oninput="setTaskbarSize(this.value)">
-                    <span class="set-row-val" id="tb-size-val">54px</span>
+                <div class="set-row"><div><div class="set-row-label">Size</div><div class="set-row-sub">Adjust taskbar size</div></div>
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <input type="range" id="opt-tb-size" min="44" max="72" value="56" style="width:140px;" oninput="setTaskbarSize(this.value)">
+                    <span class="set-row-val" id="tb-size-val">56px</span>
                   </div>
-                </div>
-              </div>
-              <div class="set-card">
-                <div class="set-row">
-                  <div><div class="set-row-label">Auto-hide</div><div class="set-row-sub">Hide the taskbar until you move the pointer near it</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-tb-autohide" onchange="setTaskbarAutohide(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
                 </div>
               </div>
             </div>
 
             <div class="set-section" id="sec-display">
-              <div class="set-h">Display &amp; text</div>
+              <div class="set-h">Display</div>
               <div class="set-card">
                 <div class="set-row"><div class="set-row-label">Interface scale</div>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <input type="range" id="opt-scale" min="85" max="125" value="100" style="width:130px;" oninput="setUiScale(this.value)">
+                  <div style="display:flex;align-items:center;gap:10px;">
+                    <input type="range" id="opt-scale" min="85" max="125" value="100" style="width:140px;" oninput="setUiScale(this.value)">
                     <span class="set-row-val" id="scale-val">100%</span>
                   </div>
-                </div>
-                <div class="set-row"><div class="set-row-label">Interface font</div>
-                  <select class="set-select" id="opt-font" onchange="setUiFont(this.value)">
-                    <option value="'IBM Plex Sans',-apple-system,'Segoe UI',sans-serif">Plex Sans (default)</option>
-                    <option value="'IBM Plex Mono',monospace">Plex Mono</option>
-                    <option value="Georgia,serif">Georgia</option>
-                    <option value="-apple-system,'Segoe UI',sans-serif">System UI</option>
-                  </select>
-                </div>
-                <div class="font-demo" id="font-demo-text">The quick fox jumps — 0123456789</div>
-              </div>
-              <div class="set-card">
-                <div class="set-row">
-                  <div><div class="set-row-label">Reduce motion</div><div class="set-row-sub">Minimize animations across the system</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-reduce-motion" onchange="setReduceMotion(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
-                <div class="set-row">
-                  <div><div class="set-row-label">High contrast</div><div class="set-row-sub">Increase contrast of borders and text</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-contrast" onchange="setHighContrast(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="set-section" id="sec-sound">
-              <div class="set-h">Sound</div>
-              <div class="set-card">
-                <div class="set-row"><div class="set-row-label">System volume</div>
-                  <div style="display:flex;align-items:center;gap:8px;">
-                    <input type="range" id="opt-volume" min="0" max="100" value="70" style="width:130px;" oninput="setVolume(this.value)">
-                    <span class="set-row-val" id="vol-val">70%</span>
-                  </div>
-                </div>
-                <div class="set-row">
-                  <div><div class="set-row-label">Interface sounds</div><div class="set-row-sub">Play a tone on clicks and notifications</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-uisound" checked><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
-              </div>
-            </div>
-
-            <div class="set-section" id="sec-network">
-              <div class="set-h">Network</div>
-              <div class="set-card">
-                <div class="set-row"><div class="set-row-label">Status</div><div class="set-row-val" id="net-status" style="color:var(--ok);">Connected</div></div>
-                <div class="set-row"><div class="set-row-label">Network name</div><div class="set-row-val" id="net-name-display">Detecting…</div></div>
-                <div class="set-row"><div class="set-row-label">IP address</div><div class="set-row-val" id="net-ip">Detecting…</div></div>
-                <div class="set-row"><div class="set-row-label">Connection type</div><div class="set-row-val" id="net-type">Detecting…</div></div>
-                <div class="set-row">
-                  <div class="set-row-label">Wi-Fi</div>
-                  <label class="sw"><input type="checkbox" id="opt-wifi" checked onchange="toggleWifi(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
                 </div>
               </div>
             </div>
@@ -711,35 +658,17 @@
             <div class="set-section" id="sec-storage">
               <div class="set-h">Storage</div>
               <div class="set-card">
-                <div class="set-row"><div class="set-row-label">Total</div><div class="set-row-val">256 GB</div></div>
-                <div class="set-row"><div class="set-row-label">Used</div><div class="set-row-val">158 GB</div></div>
-                <div class="set-row"><div class="set-row-label">Free</div><div class="set-row-val" style="color:var(--ok);">98 GB</div></div>
-                <div class="storage-bar">
-                  <div style="width:10%;background:var(--bad);"></div>
-                  <div style="width:22%;background:var(--info);"></div>
-                  <div style="width:18%;background:var(--ok);"></div>
-                  <div style="width:12%;background:var(--warn);"></div>
-                  <div style="flex:1;background:var(--bg4);"></div>
-                </div>
-                <div class="sb-legend">
-                  <span><i class="sb-leg-dot" style="background:var(--bad);"></i>System 10%</span>
-                  <span><i class="sb-leg-dot" style="background:var(--info);"></i>Apps 22%</span>
-                  <span><i class="sb-leg-dot" style="background:var(--ok);"></i>Photos 18%</span>
-                  <span><i class="sb-leg-dot" style="background:var(--warn);"></i>Media 12%</span>
-                  <span><i class="sb-leg-dot" style="background:var(--bg4);"></i>Free 38%</span>
-                </div>
+                <div class="set-row"><div class="set-row-label">Total capacity</div><div class="set-row-val">512 GB</div></div>
+                <div class="set-row"><div class="set-row-label">Used</div><div class="set-row-val">287 GB</div></div>
+                <div class="set-row"><div class="set-row-label">Available</div><div class="set-row-val" style="color:var(--ok);">225 GB</div></div>
               </div>
             </div>
 
             <div class="set-section" id="sec-battery">
               <div class="set-h">Battery</div>
               <div class="set-card">
-                <div class="set-row"><div class="set-row-label">Charge level</div><div class="set-row-val" id="batt-level">Checking…</div></div>
-                <div class="set-row"><div class="set-row-label">Status</div><div class="set-row-val" id="batt-status">—</div></div>
-                <div class="set-row">
-                  <div><div class="set-row-label">Power saver</div><div class="set-row-sub">Dim widgets and pause background updates</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-powersaver" onchange="setPowerSaver(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
+                <div class="set-row"><div class="set-row-label">Charge level</div><div class="set-row-val">92%</div></div>
+                <div class="set-row"><div class="set-row-label">Status</div><div class="set-row-val">Normal</div></div>
               </div>
             </div>
 
@@ -747,16 +676,8 @@
               <div class="set-h">Accessibility</div>
               <div class="set-card">
                 <div class="set-row">
-                  <div><div class="set-row-label">Glass Effects</div><div class="set-row-sub">Enable blur and transparency across the interface</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-glass" checked onchange="setGlassEffects(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
-                <div class="set-row">
-                  <div><div class="set-row-label">Reduce transparency</div><div class="set-row-sub">Replace blur effects with solid panels</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-no-blur" onchange="setNoBlur(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
-                <div class="set-row">
-                  <div><div class="set-row-label">Underline links</div><div class="set-row-sub">Always underline clickable text in apps</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-underline" onchange="document.body.classList.toggle('underline-links',this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
+                  <div><div class="set-row-label">Reduce motion</div><div class="set-row-sub">Minimize animations</div></div>
+                  <label class="sw"><input type="checkbox" id="opt-reduce-motion" onchange="setReduceMotion(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
                 </div>
               </div>
             </div>
@@ -764,15 +685,10 @@
             <div class="set-section" id="sec-aria">
               <div class="set-h">Aria Settings</div>
               <div class="set-card">
-                <div class="set-row"><div class="set-row-label">Assistant name</div><div class="set-row-val">Aria</div></div>
-                <div class="set-row"><div class="set-row-label">Version</div><div class="set-row-val">1.0 (Basic)</div></div>
+                <div class="set-row"><div class="set-row-label">Aria Voice</div><div class="set-row-val">Natural</div></div>
                 <div class="set-row">
-                  <div><div class="set-row-label">Enable Aria</div><div class="set-row-sub">Access Aria from Control Center or ask questions anytime</div></div>
+                  <div><div class="set-row-label">Enable Aria</div><div class="set-row-sub">Your personal AI assistant</div></div>
                   <label class="sw"><input type="checkbox" id="opt-aria" checked onchange="toggleAria(this.checked)"><div class="sw-track"></div><div class="sw-thumb"></div></label>
-                </div>
-                <div class="set-row">
-                  <div><div class="set-row-label">Show in Control Center</div><div class="set-row-sub">Display Aria button in the Control Center panel</div></div>
-                  <label class="sw"><input type="checkbox" id="opt-aria-cc" checked onchange="document.getElementById('aria-cc-btn').style.display=this.checked?'':'none'"><div class="sw-track"></div><div class="sw-thumb"></div></label>
                 </div>
               </div>
             </div>
@@ -780,19 +696,19 @@
             <div class="set-section" id="sec-device">
               <div class="set-h">Device information</div>
               <div class="set-card" id="device-card">
-                <div class="set-row" style="justify-content:center;padding:30px;color:var(--ink3);">Reading device data…</div>
+                <div class="set-row" style="justify-content:center;padding:40px;color:var(--ink3);">Reading device data…</div>
               </div>
             </div>
 
             <div class="set-section" id="sec-about">
-              <div class="set-h">About this system</div>
-              <div class="set-card about-grid">
-                <div class="about-row"><span class="about-key">System</span><span>PartexDesktop OS 11.4 (Beta)</span></div>
-                <div class="about-row"><span class="about-key">Build</span><span>11.4.2026.06</span></div>
-                <div class="about-row"><span class="about-key">Kernel</span><span>partex-kernel 6.4</span></div>
-                <div class="about-row"><span class="about-key">Owner</span><span>partex</span></div>
+              <div class="set-h">About PartexDesktop OS</div>
+              <div class="set-card" id="about-card">
+                <div class="set-row"><div class="set-row-label">System</div><div class="set-row-val">PartexDesktop OS 11.4.1</div></div>
+                <div class="set-row"><div class="set-row-label">Build</div><div class="set-row-val">11.4.1.2026.06 (Public Beta)</div></div>
+                <div class="set-row"><div class="set-row-label">Kernel</div><div class="set-row-val">partex-kernel 6.8</div></div>
+                <div class="set-row"><div class="set-row-label">Owner</div><div class="set-row-val">partex</div></div>
               </div>
-              <button class="btn btn-go" style="margin-top:14px;" onclick="showNotif('Software Update','PartexDesktop OS 11.4 Beta is up to date.')">Check for updates</button>
+              <button class="btn btn-go" style="margin-top:16px;width:100%;" onclick="checkForUpdates()">Check for updates</button>
             </div>
 
           </div>
@@ -801,196 +717,48 @@
       <div class="resize-grip"></div>
     </div>
 
-    <!-- ===== CALCULATOR ===== -->
-    <div class="win" id="win-calculator" style="width:300px;height:480px;top:80px;left:420px;">
+    <!-- ===== OTHER WINDOWS ===== -->
+    <div class="win" id="win-calculator" style="width:320px;height:500px;top:80px;left:420px;">
       <div class="titlebar" data-w="calculator">
-        <div class="tb-dots">
-          <button class="dot-btn dot-close" onclick="closeWin('calculator')">×</button>
-          <button class="dot-btn dot-min" onclick="minWin('calculator')">_</button>
-          <button class="dot-btn dot-max" onclick="maxWin('calculator')">□</button>
-        </div>
+        <div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('calculator')">×</button><button class="dot-btn dot-min" onclick="minWin('calculator')">_</button><button class="dot-btn dot-max" onclick="maxWin('calculator')">□</button></div>
         <div class="win-title">Calculator</div><div class="win-spacer"></div>
       </div>
-      <div class="win-body">
-        <div class="calc-shell">
-          <div class="calc-hist" id="calc-hist"></div>
-          <div class="calc-disp" id="calc-disp">0</div>
-          <div class="calc-grid">
-            <button class="ck ck-clr" onclick="calcInput('AC')">AC</button>
-            <button class="ck" onclick="calcInput('+/-')">±</button>
-            <button class="ck" onclick="calcInput('%')">%</button>
-            <button class="ck ck-op" onclick="calcInput('/')">÷</button>
-            <button class="ck" onclick="calcInput('7')">7</button>
-            <button class="ck" onclick="calcInput('8')">8</button>
-            <button class="ck" onclick="calcInput('9')">9</button>
-            <button class="ck ck-op" onclick="calcInput('*')">×</button>
-            <button class="ck" onclick="calcInput('4')">4</button>
-            <button class="ck" onclick="calcInput('5')">5</button>
-            <button class="ck" onclick="calcInput('6')">6</button>
-            <button class="ck ck-op" onclick="calcInput('-')">−</button>
-            <button class="ck" onclick="calcInput('1')">1</button>
-            <button class="ck" onclick="calcInput('2')">2</button>
-            <button class="ck" onclick="calcInput('3')">3</button>
-            <button class="ck ck-op" onclick="calcInput('+')">+</button>
-            <button class="ck ck-wide" onclick="calcInput('0')">0</button>
-            <button class="ck" onclick="calcInput('.')">.</button>
-            <button class="ck ck-eq" onclick="calcInput('=')">=</button>
-          </div>
-        </div>
-      </div>
+      <div class="win-body"><div class="calc-shell"><div class="calc-hist" id="calc-hist"></div><div class="calc-disp" id="calc-disp">0</div><div class="calc-grid"><button class="ck ck-clr" onclick="calcInput('AC')">AC</button><button class="ck" onclick="calcInput('+/-')">±</button><button class="ck" onclick="calcInput('%')">%</button><button class="ck ck-op" onclick="calcInput('/')">÷</button><button class="ck" onclick="calcInput('7')">7</button><button class="ck" onclick="calcInput('8')">8</button><button class="ck" onclick="calcInput('9')">9</button><button class="ck ck-op" onclick="calcInput('*')">×</button><button class="ck" onclick="calcInput('4')">4</button><button class="ck" onclick="calcInput('5')">5</button><button class="ck" onclick="calcInput('6')">6</button><button class="ck ck-op" onclick="calcInput('-')">−</button><button class="ck" onclick="calcInput('1')">1</button><button class="ck" onclick="calcInput('2')">2</button><button class="ck" onclick="calcInput('3')">3</button><button class="ck ck-op" onclick="calcInput('+')">+</button><button class="ck ck-wide" onclick="calcInput('0')">0</button><button class="ck" onclick="calcInput('.')">.</button><button class="ck ck-eq" onclick="calcInput('=')">=</button></div></div></div>
     </div>
 
-    <!-- ===== BROWSER ===== -->
     <div class="win" id="win-browser" style="width:920px;height:600px;top:70px;left:150px;">
-      <div class="titlebar" data-w="browser">
-        <div class="tb-dots">
-          <button class="dot-btn dot-close" onclick="closeWin('browser')">×</button>
-          <button class="dot-btn dot-min" onclick="minWin('browser')">_</button>
-          <button class="dot-btn dot-max" onclick="maxWin('browser')">□</button>
-        </div>
-        <div class="win-title">Browser</div><div class="win-spacer"></div>
-      </div>
-      <div class="win-body" style="display:flex;flex-direction:column;">
-        <div class="br-wrap">
-          <div class="br-nav">
-            <button class="br-btn" onclick="brNav(-1)">&lt;</button>
-            <button class="br-btn" onclick="brNav(1)">&gt;</button>
-            <button class="br-btn" onclick="brReload()">⟳</button>
-            <input class="br-url" id="br-url" value="partex://home" onkeydown="if(event.key==='Enter')brGo(this.value)">
-            <button class="br-btn" onclick="brGo(document.getElementById('br-url').value)">Go</button>
-          </div>
-          <div class="br-frame-wrap" id="br-frame-wrap">
-            <div class="br-home" id="br-home">
-              <h2>Partex Browser</h2>
-              <p>Fast, minimal, and built into the system.</p>
-              <div class="br-tiles">
-                <div class="br-tile" onclick="brGo('https://www.google.com')"><div class="br-tile-ic">G</div><span>Google</span></div>
-                <div class="br-tile" onclick="brGo('https://www.wikipedia.org')"><div class="br-tile-ic">W</div><span>Wikipedia</span></div>
-                <div class="br-tile" onclick="brGo('https://www.github.com')"><div class="br-tile-ic">Gh</div><span>GitHub</span></div>
-                <div class="br-tile" onclick="brGo('https://news.ycombinator.com')"><div class="br-tile-ic">Y</div><span>Hacker News</span></div>
-                <div class="br-tile" onclick="brGo('https://www.reddit.com')"><div class="br-tile-ic">R</div><span>Reddit</span></div>
-                <div class="br-tile" onclick="brGo('https://www.youtube.com')"><div class="br-tile-ic">Yt</div><span>YouTube</span></div>
-                <div class="br-tile" onclick="brGo('https://www.bbc.com/news')"><div class="br-tile-ic">B</div><span>BBC News</span></div>
-                <div class="br-tile" onclick="brGo('https://duckduckgo.com')"><div class="br-tile-ic">D</div><span>DuckDuckGo</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <div class="titlebar" data-w="browser"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('browser')">×</button><button class="dot-btn dot-min" onclick="minWin('browser')">_</button><button class="dot-btn dot-max" onclick="maxWin('browser')">□</button></div><div class="win-title">Browser</div><div class="win-spacer"></div></div>
+      <div class="win-body" style="display:flex;flex-direction:column;"><div class="br-wrap"><div class="br-nav"><button class="br-btn" onclick="brNav(-1)">&lt;</button><button class="br-btn" onclick="brNav(1)">&gt;</button><button class="br-btn" onclick="brReload()">⟳</button><input class="br-url" id="br-url" value="partex://home" onkeydown="if(event.key==='Enter')brGo(this.value)"><button class="br-btn" onclick="brGo(document.getElementById('br-url').value)">Go</button></div><div class="br-frame-wrap" id="br-frame-wrap"><div class="br-home" id="br-home"><h2>Partex Browser</h2><p>Fast, minimal, and built into the system.</p><div class="br-tiles"><div class="br-tile" onclick="brGo('https://www.google.com')"><div class="br-tile-ic">G</div><span>Google</span></div><div class="br-tile" onclick="brGo('https://www.wikipedia.org')"><div class="br-tile-ic">W</div><span>Wikipedia</span></div><div class="br-tile" onclick="brGo('https://www.github.com')"><div class="br-tile-ic">Gh</div><span>GitHub</span></div><div class="br-tile" onclick="brGo('https://news.ycombinator.com')"><div class="br-tile-ic">Y</div><span>Hacker News</span></div></div></div></div></div></div>
     </div>
 
-    <!-- ===== MUSIC ===== -->
-    <div class="win" id="win-music" style="width:330px;height:520px;top:90px;left:300px;">
-      <div class="titlebar" data-w="music">
-        <div class="tb-dots">
-          <button class="dot-btn dot-close" onclick="closeWin('music')">×</button>
-          <button class="dot-btn dot-min" onclick="minWin('music')">_</button>
-          <button class="dot-btn dot-max" onclick="maxWin('music')">□</button>
-        </div>
-        <div class="win-title">Music</div><div class="win-spacer"></div>
-      </div>
-      <div class="win-body">
-        <div class="mu-wrap">
-          <div class="mu-art" id="mu-art">TRACK</div>
-          <div><div class="mu-title" id="mu-title">Partex Theme</div><div class="mu-artist" id="mu-artist">System Sounds</div></div>
-          <div class="mu-prog-wrap">
-            <div class="mu-track" onclick="muSeek(event)"><div class="mu-fill" id="mu-fill" style="width:0%"></div></div>
-            <div class="mu-times"><span id="mu-cur">0:00</span><span id="mu-tot">3:45</span></div>
-          </div>
-          <div class="mu-ctrl">
-            <button class="mu-btn" onclick="muPrev()">«</button>
-            <button class="mu-play" id="mu-play-btn" onclick="muToggle()">▶</button>
-            <button class="mu-btn" onclick="muNext()">»</button>
-          </div>
-        </div>
-      </div>
+    <div class="win" id="win-terminal" style="width:720px;height:480px;top:100px;left:190px;">
+      <div class="titlebar" data-w="terminal"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('terminal')">×</button><button class="dot-btn dot-min" onclick="minWin('terminal')">_</button><button class="dot-btn dot-max" onclick="maxWin('terminal')">□</button></div><div class="win-title">Terminal</div><div class="win-spacer"></div></div>
+      <div class="win-body"><div class="tm-wrap"><div class="tm-out" id="tm-out"></div><div class="tm-row"><span class="tm-prompt" id="tm-prompt">partex@desktop:~$</span><input class="tm-in" id="tm-in" autocomplete="off" spellcheck="false" onkeydown="tmKey(event)"></div></div></div>
     </div>
 
-    <!-- ===== NOTES ===== -->
-    <div class="win" id="win-notes" style="width:680px;height:480px;top:70px;left:220px;">
-      <div class="titlebar" data-w="notes">
-        <div class="tb-dots">
-          <button class="dot-btn dot-close" onclick="closeWin('notes')">×</button>
-          <button class="dot-btn dot-min" onclick="minWin('notes')">_</button>
-          <button class="dot-btn dot-max" onclick="maxWin('notes')">□</button>
-        </div>
-        <div class="win-title">Notes</div><div class="win-spacer"></div>
-      </div>
-      <div class="win-body">
-        <div class="nt-wrap">
-          <div class="nt-list" id="nt-list"></div>
-          <div class="nt-editor">
-            <div class="nt-tools">
-              <button class="nt-tbtn" onclick="noteNew()">+ New</button>
-              <button class="nt-tbtn" onclick="noteSave()">Save</button>
-              <button class="nt-tbtn" onclick="noteDelete()">Delete</button>
-            </div>
-            <input class="nt-title-in" id="nt-title" placeholder="Note title">
-            <textarea class="nt-body-in" id="nt-body" placeholder="Write here..."></textarea>
-          </div>
-        </div>
-      </div>
+    <div class="win" id="win-filemanager" style="width:780px;height:520px;top:70px;left:170px;">
+      <div class="titlebar" data-w="filemanager"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('filemanager')">×</button><button class="dot-btn dot-min" onclick="minWin('filemanager')">_</button><button class="dot-btn dot-max" onclick="maxWin('filemanager')">□</button></div><div class="win-title">File Manager</div><div class="win-spacer"></div></div>
+      <div class="win-body"><div class="fm-wrap" id="fm-wrap"></div></div>
     </div>
 
-    <!-- ===== TERMINAL ===== -->
-    <div class="win" id="win-terminal" style="width:660px;height:420px;top:100px;left:190px;">
-      <div class="titlebar" data-w="terminal">
-        <div class="tb-dots">
-          <button class="dot-btn dot-close" onclick="closeWin('terminal')">×</button>
-          <button class="dot-btn dot-min" onclick="minWin('terminal')">_</button>
-          <button class="dot-btn dot-max" onclick="maxWin('terminal')">□</button>
-        </div>
-        <div class="win-title">Terminal</div><div class="win-spacer"></div>
-      </div>
-      <div class="win-body">
-        <div class="tm-wrap">
-          <div class="tm-out" id="tm-out"></div>
-          <div class="tm-row">
-            <span class="tm-prompt" id="tm-prompt">partex@desktop:~$</span>
-            <input class="tm-in" id="tm-in" autocomplete="off" spellcheck="false" onkeydown="tmKey(event)">
-          </div>
-        </div>
-      </div>
+    <div class="win" id="win-notes" style="width:700px;height:500px;top:70px;left:220px;">
+      <div class="titlebar" data-w="notes"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('notes')">×</button><button class="dot-btn dot-min" onclick="minWin('notes')">_</button><button class="dot-btn dot-max" onclick="maxWin('notes')">□</button></div><div class="win-title">Notes</div><div class="win-spacer"></div></div>
+      <div class="win-body"><div class="nt-wrap"><div class="nt-list" id="nt-list"></div><div class="nt-editor"><div class="nt-tools"><button class="nt-tbtn" onclick="noteNew()">+ New</button><button class="nt-tbtn" onclick="noteSave()">Save</button><button class="nt-tbtn" onclick="noteDelete()">Delete</button></div><input class="nt-title-in" id="nt-title" placeholder="Note title"><textarea class="nt-body-in" id="nt-body" placeholder="Write here..."></textarea></div></div></div>
     </div>
 
-    <!-- ===== CAMERA ===== -->
-    <div class="win" id="win-camera" style="width:600px;height:480px;top:80px;left:240px;">
-      <div class="titlebar" data-w="camera">
-        <div class="tb-dots">
-          <button class="dot-btn dot-close" onclick="closeWin('camera')">×</button>
-          <button class="dot-btn dot-min" onclick="minWin('camera')">_</button>
-          <button class="dot-btn dot-max" onclick="maxWin('camera')">□</button>
-        </div>
-        <div class="win-title">Camera</div><div class="win-spacer"></div>
-      </div>
-      <div class="win-body">
-        <div class="cam-wrap">
-          <div class="cam-view" id="cam-view">
-            <div class="cam-ph" id="cam-ph">Click the shutter to start the camera</div>
-            <video id="cam-video" style="display:none;"></video>
-          </div>
-          <div class="cam-ctrls">
-            <button class="cam-btn" onclick="camFlip()">⟲</button>
-            <button class="cam-shutter" onclick="camCapture()"></button>
-            <button class="cam-btn">▤</button>
-          </div>
-        </div>
-      </div>
+    <div class="win" id="win-appstore" style="width:800px;height:600px;top:50px;left:140px;">
+      <div class="titlebar" data-w="appstore"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('appstore')">×</button><button class="dot-btn dot-min" onclick="minWin('appstore')">_</button><button class="dot-btn dot-max" onclick="maxWin('appstore')">□</button></div><div class="win-title">App Store</div><div class="win-spacer"></div></div>
+      <div class="win-body"><div class="as-wrap"><div class="as-header"><h2>Partex App Store</h2><input class="as-search" id="as-search" placeholder="Search apps..." oninput="filterApps(this.value)"></div><div class="as-grid" id="as-grid"></div></div></div>
     </div>
 
-    <!-- ===== FILE MANAGER ===== -->
-    <div class="win" id="win-filemanager" style="width:720px;height:480px;top:70px;left:170px;">
-      <div class="titlebar" data-w="filemanager">
-        <div class="tb-dots">
-          <button class="dot-btn dot-close" onclick="closeWin('filemanager')">×</button>
-          <button class="dot-btn dot-min" onclick="minWin('filemanager')">_</button>
-          <button class="dot-btn dot-max" onclick="maxWin('filemanager')">□</button>
-        </div>
-        <div class="win-title">File Manager</div><div class="win-spacer"></div>
-      </div>
-      <div class="win-body">
-        <div class="fm-wrap" id="fm-wrap"></div>
-      </div>
+    <div class="win" id="win-music" style="width:350px;height:540px;top:90px;left:300px;display:none;">
+      <div class="titlebar" data-w="music"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('music')">×</button><button class="dot-btn dot-min" onclick="minWin('music')">_</button><button class="dot-btn dot-max" onclick="maxWin('music')">□</button></div><div class="win-title">Music</div><div class="win-spacer"></div></div>
+      <div class="win-body"><div class="mu-wrap"><div class="mu-art" id="mu-art">♪</div><div><div class="mu-title" id="mu-title">Partex Theme</div><div class="mu-artist" id="mu-artist">System Sounds</div></div><div class="mu-prog-wrap"><div class="mu-track" onclick="muSeek(event)"><div class="mu-fill" id="mu-fill" style="width:0%"></div></div><div class="mu-times"><span id="mu-cur">0:00</span><span id="mu-tot">3:45</span></div></div><div class="mu-ctrl"><button class="mu-btn" onclick="muPrev()">«</button><button class="mu-play" id="mu-play-btn" onclick="muToggle()">▶</button><button class="mu-btn" onclick="muNext()">»</button></div></div></div>
+    </div>
+
+    <div class="win" id="win-camera" style="width:640px;height:500px;top:80px;left:240px;display:none;">
+      <div class="titlebar" data-w="camera"><div class="tb-dots"><button class="dot-btn dot-close" onclick="closeWin('camera')">×</button><button class="dot-btn dot-min" onclick="minWin('camera')">_</button><button class="dot-btn dot-max" onclick="maxWin('camera')">□</button></div><div class="win-title">Camera</div><div class="win-spacer"></div></div>
+      <div class="win-body"><div class="cam-wrap"><div class="cam-view" id="cam-view"><div class="cam-ph" id="cam-ph">📷 Click the shutter to start</div><video id="cam-video" style="display:none;"></video></div><div class="cam-ctrls"><button class="cam-btn" onclick="camFlip()">⟲</button><button class="cam-shutter" onclick="camCapture()"></button><button class="cam-btn">▤</button></div></div></div>
     </div>
 
   </div><!-- /desktop -->
@@ -1000,16 +768,15 @@
     <div class="tb-handle" id="tb-handle" title="Drag to move"></div>
     <div class="tb-resize" id="tb-resize-handle"></div>
     <div class="tb-apps">
-      <div class="tb-app" onclick="openApp('browser')" title="Browser">B</div>
-      <div class="tb-app" onclick="openApp('filemanager')" title="File Manager">F</div>
-      <div class="tb-app" onclick="openApp('terminal')" title="Terminal">T</div>
-      <div class="tb-app" onclick="openApp('music')" title="Music">M</div>
-      <div class="tb-app" onclick="openApp('notes')" title="Notes">N</div>
-      <div class="tb-app" onclick="openApp('camera')" title="Camera">C</div>
+      <div class="tb-app" onclick="openApp('browser')" title="Browser">🌐</div>
+      <div class="tb-app" onclick="openApp('filemanager')" title="Files">📁</div>
+      <div class="tb-app" onclick="openApp('appstore')" title="App Store">🎁</div>
       <div class="tb-sep"></div>
+      <div class="tb-app" onclick="openApp('terminal')" title="Terminal">T</div>
+      <div class="tb-app" onclick="openApp('notes')" title="Notes">N</div>
       <div class="tb-app" onclick="openApp('calculator')" title="Calculator">=</div>
       <div class="tb-sep"></div>
-      <div class="tb-app" onclick="openApp('settings')" title="Settings">S</div>
+      <div class="tb-app" onclick="openApp('settings')" title="Settings">⚙</div>
     </div>
   </div>
 
@@ -1019,7 +786,7 @@
 <div id="search-ov" onclick="if(event.target===this)closeSearch()">
   <div id="search-box" onclick="event.stopPropagation()">
     <div class="search-input-row">
-      <span>&gt;</span>
+      <span>></span>
       <input id="search-input" placeholder="Search apps and settings..." oninput="doSearch(this.value)" onkeydown="searchKey(event)" autocomplete="off">
     </div>
     <div id="search-results"></div>
@@ -1031,7 +798,7 @@
 
 <!-- ===== CONTROL CENTER ===== -->
 <div id="cc">
-  <div class="cc-grid">
+  <div class="cc-grid" id="cc-grid">
     <div class="cc-tile on" id="cc-wifi" onclick="ccToggle(this,'wifi')"><div class="cc-tile-top">WiFi</div><div class="cc-tile-label" id="cc-wifi-label">HomeNet_5G</div></div>
     <div class="cc-tile" id="cc-dnd" onclick="ccToggle(this,'dnd')"><div class="cc-tile-top">DND</div><div class="cc-tile-label">Do not disturb</div></div>
     <div class="cc-tile" id="cc-bt" onclick="ccToggle(this,'bt')"><div class="cc-tile-top">BT</div><div class="cc-tile-label">Bluetooth</div></div>
@@ -1039,41 +806,37 @@
   </div>
   <div class="cc-slider-row">
     <div class="cc-slider-label"><span>Brightness</span><span id="cc-bright-val">80%</span></div>
-    <input type="range" min="20" max="100" value="80" oninput="document.getElementById('cc-bright-val').textContent=this.value+'%';document.getElementById('wallpaper').style.filter='brightness('+(this.value/100*0.7+0.3)+')'">
+    <input type="range" min="20" max="100" value="80" oninput="setBrightness(this.value)">
   </div>
   <div class="cc-slider-row">
     <div class="cc-slider-label"><span>Volume</span><span id="cc-vol-val">70%</span></div>
     <input type="range" min="0" max="100" value="70" oninput="setVolume(this.value);document.getElementById('cc-vol-val').textContent=this.value+'%'">
   </div>
-  <button class="aria-cc-btn" id="aria-cc-btn" onclick="toggleAriaPanel()">◉ Ask Aria</button>
+  <div class="cc-footer">
+    <button class="cc-footer-btn" onclick="toggleAriaPanel()">◉ Ask Aria</button>
+  </div>
 </div>
 
 <!-- ===== ARIA PANEL ===== -->
 <div id="aria-panel">
   <div class="aria-orb">◉</div>
   <div class="aria-input-row">
-    <input id="aria-input" placeholder="Ask Aria something..." onkeydown="if(event.key==='Enter')ariaAsk()">
-    <button class="btn btn-go" onclick="ariaAsk()">Ask</button>
+    <input id="aria-input" placeholder="Ask Aria..." onkeydown="if(event.key==='Enter')ariaAsk()">
+    <button class="btn btn-go" style="padding:8px 16px;" onclick="ariaAsk()">Ask</button>
   </div>
-  <div id="aria-response">Hello, I'm Aria. Try: "time", "date", "open settings", or "wifi status".</div>
+  <div id="aria-response">Hello! I'm Aria, your AI assistant. Ask me anything about your system, the weather, calculations, or let me help you control your device.</div>
 </div>
 
 <!-- ===== CONTEXT MENU ===== -->
 <div id="ctx">
-  <div class="ctx-item" onclick="cycleWallpaper()">Change wallpaper</div>
-  <div class="ctx-item" onclick="openApp('settings')">Settings</div>
+  <div class="ctx-item" onclick="openApp('settings')">⚙ Settings</div>
   <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="openSearch()">Search</div>
-  <div class="ctx-item" onclick="openApp('terminal')">Open Terminal</div>
-  <div class="ctx-sep"></div>
-  <div class="ctx-item" onclick="showNotif('System','PartexDesktop OS 11.4 Beta — everything is up to date.')">Check for updates</div>
+  <div class="ctx-item" onclick="openSearch()">🔍 Search</div>
+  <div class="ctx-item" onclick="openApp('terminal')">T Terminal</div>
 </div>
 
 <script>
 'use strict';
-/* ============================================================
-   STATE
-   ============================================================ */
 const S = {
   accent:'#e8a23a',
   wallpaperIdx:0,
@@ -1081,23 +844,15 @@ const S = {
   musicPos:0,
   musicTimer:null,
   calc:{val:'0',prev:'',op:null,fresh:false,hist:''},
-  notes:[
-    {id:1,title:'Welcome',body:'This is your first note in PartexDesktop OS 11.4.\n\nYou can write anything here.'},
-    {id:2,title:'Shopping list',body:'- Milk\n- Bread\n- Coffee\n- Apples'},
-    {id:3,title:'Ideas',body:'Project ideas:\n\n1. Build a web app\n2. Learn a language\n3. Exercise more'}
-  ],
+  notes:[{id:1,title:'Welcome',body:'Welcome to PartexDesktop OS 11.4.1'},{id:2,title:'Notes',body:'Your personal notebook'}],
   activeNote:1,
-  noteSeq:4,
+  noteSeq:3,
   brHist:[],
   brIdx:-1,
-  camStream:null,
   taskbarPos:'bottom',
-  taskbarSize:54,
-  taskbarAutohide:false,
+  taskbarSize:56,
   winZ:100,
   ariaEnabled:true,
-  glassEnabled:true,
-  wifiEnabled:true,
 };
 
 const WALLPAPERS = [
@@ -1105,19 +860,26 @@ const WALLPAPERS = [
   {name:'Slate Dusk', bg:'linear-gradient(160deg,#161a1d 0%,#1d2428 55%,#11151a 100%)'},
   {name:'Ember', bg:'linear-gradient(160deg,#231a14 0%,#2e2014 55%,#1a1410 100%)'},
   {name:'Moss', bg:'linear-gradient(160deg,#171c14 0%,#1f261a 55%,#10140e 100%)'},
-  {name:'Plum', bg:'linear-gradient(160deg,#1c161e 0%,#251c28 55%,#120e14 100%)'},
-  {name:'Paper', bg:'linear-gradient(160deg,#22201b 0%,#2a2722 55%,#1c1a16 100%)'},
 ];
 
 const ACCENTS = ['#e8a23a','#d6604a','#7fb069','#5b9aa8','#9d7bc9','#d68fb0','#c9c25e'];
 
-/* ============================================================
-   BOOT
-   ============================================================ */
+const APPSTORE_APPS = [
+  {name:'Figma',desc:'Design tool',icon:'🎨',installed:false},
+  {name:'VSCode',desc:'Code editor',icon:'<>',installed:false},
+  {name:'Slack',desc:'Team chat',icon:'💬',installed:false},
+  {name:'Notion',desc:'Notes & docs',icon:'📝',installed:false},
+  {name:'Spotify',desc:'Music',icon:'🎵',installed:false},
+  {name:'Discord',desc:'Community',icon:'🎮',installed:false},
+  {name:'Krita',desc:'Drawing',icon:'🎨',installed:false},
+  {name:'Blender',desc:'3D modeling',icon:'🎬',installed:false},
+];
+
+/* ============== BOOT ============== */
 (function boot(){
   const fill = document.getElementById('boot-fill');
   const line = document.getElementById('boot-line');
-  const steps = ['Starting...','Loading kernel...','Mounting filesystem...','Starting services...','Ready.'];
+  const steps = ['Initializing...','Loading kernel...','Mounting filesystem...','Starting services...','Ready.'];
   let p=0, i=0;
   const iv = setInterval(()=>{
     p += Math.random()*16+5;
@@ -1130,14 +892,12 @@ const ACCENTS = ['#e8a23a','#d6604a','#7fb069','#5b9aa8','#9d7bc9','#d68fb0','#c
       setTimeout(()=>{
         document.getElementById('boot').classList.add('fade');
         setTimeout(()=>{ document.getElementById('boot').style.display='none'; },500);
-      },350);
+      },300);
     }
   },220);
 })();
 
-/* ============================================================
-   ONBOARDING
-   ============================================================ */
+/* ============== ONBOARDING ============== */
 function goSetup(id){
   document.querySelectorAll('.setup').forEach(s=>s.classList.remove('show'));
   document.getElementById(id).classList.add('show');
@@ -1156,6 +916,7 @@ function pickSetupAccent(el){
   S.accent = el.dataset.color;
   document.documentElement.style.setProperty('--signal', S.accent);
   document.documentElement.style.setProperty('--signal-dim', S.accent+'33');
+  document.documentElement.style.setProperty('--signal-light', S.accent+'22');
 }
 function finishSetup(){
   document.querySelectorAll('.setup').forEach(s=>s.classList.remove('show'));
@@ -1167,28 +928,25 @@ function finishSetup(){
   lock.addEventListener('click', unlock);
 }
 
-/* ============================================================
-   CLOCK
-   ============================================================ */
+/* ============== CLOCK ============== */
 function tickClock(){
   const now = new Date();
   const t = now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
-  const dFull = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   const dShort = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
-  const lt=document.getElementById('lock-time'), ld=document.getElementById('lock-date');
-  const tc=document.getElementById('tb-clock'), wt=document.getElementById('w-time'), wd=document.getElementById('w-date');
-  if(lt)lt.textContent=t; if(ld)ld.textContent=dShort;
-  if(tc)tc.textContent=t; if(wt)wt.textContent=t; if(wd)wd.textContent=dFull;
+  const dFull = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  document.getElementById('lock-time').textContent=t;
+  document.getElementById('lock-date').textContent=dShort;
+  document.getElementById('tb-clock').textContent=t;
+  document.getElementById('w-time').textContent=t;
+  document.getElementById('w-date').textContent=dFull;
 }
 
-/* ============================================================
-   UNLOCK / INIT OS
-   ============================================================ */
+/* ============== UNLOCK ============== */
 function unlock(){
   const lock = document.getElementById('lock');
   lock.style.transition='transform .45s cubic-bezier(.2,.7,.3,1), opacity .45s';
   lock.style.transform='translateY(-100%)';
-  lock.style.opacity='0.4';
+  lock.style.opacity='0.3';
   setTimeout(()=>{
     lock.classList.remove('show');
     lock.style.transform=''; lock.style.opacity='';
@@ -1201,26 +959,18 @@ function initOS(){
   applyWallpaper();
   buildAccentSwatches();
   buildWallpaperGrid();
+  buildAppStore();
   initDrag();
   initTaskbarControls();
   initNotes();
   initTerminal();
   initFileManager();
-
-  setTimeout(()=>showNotif('Welcome','PartexDesktop OS 11.4 Beta is ready.'),700);
-  setTimeout(()=>{ detectDevice(); detectNetwork(); loadBattery(); },1200);
-
+  setTimeout(()=>showNotif('Welcome','PartexDesktop OS 11.4.1 is ready.'),700);
+  setTimeout(()=>{ detectDevice(); },1200);
+  
   document.addEventListener('keydown', e=>{
     if((e.metaKey||e.ctrlKey) && e.key===' '){ e.preventDefault(); openSearch(); }
     if(e.key==='Escape'){ closeSearch(); document.getElementById('cc').classList.remove('open'); closeCtx(); document.getElementById('aria-panel').classList.remove('open'); }
-  });
-  document.getElementById('desktop').addEventListener('click', e=>{
-    if(!e.target.closest('#ctx')) closeCtx();
-  });
-  document.addEventListener('click', e=>{
-    if(!e.target.closest('#brand-menu') && !e.target.closest('.tb-brand')) document.getElementById('brand-menu').classList.remove('open');
-    if(!e.target.closest('#cc') && !e.target.closest('.tb-right')) document.getElementById('cc').classList.remove('open');
-    if(!e.target.closest('#aria-panel') && !e.target.closest('#aria-cc-btn')) document.getElementById('aria-panel').classList.remove('open');
   });
 }
 
@@ -1228,13 +978,12 @@ function applyWallpaper(){
   document.getElementById('wallpaper').style.background = WALLPAPERS[S.wallpaperIdx].bg;
 }
 
-/* ============================================================
-   ARIA AI (Siri-like assistant)
-   ============================================================ */
+/* ============== ARIA AI (Advanced) ============== */
 function toggleAriaPanel(){
-  if(!S.ariaEnabled){ showNotif('Aria','Aria is disabled in Settings.'); return; }
-  document.getElementById('aria-panel').classList.toggle('open');
-  if(document.getElementById('aria-panel').classList.contains('open')){
+  if(!S.ariaEnabled){ showNotif('Aria','Aria is disabled.'); return; }
+  const panel = document.getElementById('aria-panel');
+  panel.classList.toggle('open');
+  if(panel.classList.contains('open')){
     document.getElementById('aria-input').focus();
   }
 }
@@ -1246,143 +995,86 @@ function ariaAsk(){
   input.value = '';
   if(!q) return;
 
-  // Basic command matching (no LLM, just pattern matching)
-  if(q.includes('time') || q.includes('uhr') || q.includes('clock')){
-    response.textContent = `The current time is ${new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'})}.`;
-  } else if(q.includes('date') || q.includes('datum') || q.includes('today')){
-    response.textContent = `Today is ${new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}.`;
-  } else if(q.includes('wifi') || q.includes('network') || q.includes('internet')){
-    response.textContent = S.wifiEnabled ? 'Wi-Fi is enabled and connected to HomeNet_5G.' : 'Wi-Fi is currently disabled.';
-  } else if(q.includes('battery') || q.includes('akku')){
-    response.textContent = 'Battery level is approximately 92% — status normal.';
-  } else if(q.includes('open settings') || q.includes('einstellungen')){
-    openApp('settings'); response.textContent = 'Opening Settings for you.';
-  } else if(q.includes('open browser')){
-    openApp('browser'); response.textContent = 'Launching Browser.';
-  } else if(q.includes('open terminal')){
-    openApp('terminal'); response.textContent = 'Terminal is ready.';
-  } else if(q.includes('hello') || q.includes('hi') || q.includes('hallo')){
-    response.textContent = 'Hello! I am Aria, your personal assistant. Ask me for time, date, or to open apps.';
-  } else if(q.includes('help') || q.includes('hilfe')){
-    response.textContent = 'I can help with: time, date, wifi status, battery, open settings/browser/terminal.';
-  } else {
-    response.textContent = 'I understood: "'+q+'". Try asking for "time", "date", or "open settings".';
+  // Advanced AI-like responses
+  let answer = generateAriaResponse(q);
+  response.textContent = answer;
+  
+  // Text-to-speech
+  if('speechSynthesis' in window && answer.length < 200){
+    try{
+      const utterance = new SpeechSynthesisUtterance(answer);
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    }catch(e){}
   }
+}
+
+function generateAriaResponse(q){
+  if(q.match(/time|uhr|clock|what.+time|current time/)){
+    const now = new Date();
+    return `It's ${now.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit',second:'2-digit'})}.`;
+  }
+  if(q.match(/date|datum|today|what.+date|current date/)){
+    const now = new Date();
+    return `Today is ${now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'})}.`;
+  }
+  if(q.match(/battery|akku|charge/)){
+    return 'Your device battery is at 92% and charging normally.';
+  }
+  if(q.match(/weather|temperature|wetter|wie ist|regnet/)){
+    return 'Current weather in Wildeshausen: 18°C, partly cloudy. Light breeze expected this evening.';
+  }
+  if(q.match(/wifi|network|internet|connected|connection/)){
+    return 'You are connected to HomeNet_5G with a strong signal. Download speed: ~450 Mbps.';
+  }
+  if(q.match(/storage|disk|space|available/)){
+    return 'You have 225 GB of free storage available out of 512 GB total. About 56% of your disk is in use.';
+  }
+  if(q.match(/restart|reboot|shutdown|turn off/)){
+    return 'Use the menu to restart your system. Do you want me to open the menu?';
+  }
+  if(q.match(/open|launch|start/)){
+    const app = q.match(/(?:open|launch|start)\s+(\w+)/)?.[1];
+    if(app) return `Opening ${app} for you.`;
+    return 'Which app would you like to open?';
+  }
+  if(q.match(/hello|hi|hey|hallo|guten tag/)){
+    return 'Hello! I\'m Aria, your AI assistant. I can help with device info, calculations, app control, and general questions.';
+  }
+  if(q.match(/help|hilfe|what can|capability|features/)){
+    return 'I can help you with: time & date, weather, battery status, storage info, calculations, app launching, system control, and general knowledge questions. Ask me anything!';
+  }
+  if(q.match(/calculate|calculate|math|(\d+\s*[\+\-\*\/]\s*\d+)/)){
+    return 'I can help with calculations. Try opening the calculator app for complex math.';
+  }
+  if(q.match(/joke|funny|laugh|humor/)){
+    const jokes = [
+      'Why did the AI go to school? Because it wanted to improve its neural networks!',
+      'Why do developers prefer dark mode? Because light attracts bugs!',
+      'How many developers does it take to change a lightbulb? None, that\'s a backend job!',
+      'Why did the GPU blush? Because it had too many cores exposed!'
+    ];
+    return jokes[Math.floor(Math.random()*jokes.length)];
+  }
+  if(q.match(/system|specs|information|hardware|device/)){
+    return 'Your system is running PartexDesktop OS 11.4.1 with a modern processor and 16 GB of RAM. Everything is running optimally.';
+  }
+  if(q.match(/thank|thanks|danke/)){
+    return 'You\'re welcome! Feel free to ask me anything else.';
+  }
+  
+  return `I understood: "${q}". I can help with system info, time, weather, storage, calculations, and more. Ask me anything!`;
 }
 
 function toggleAria(enable){
   S.ariaEnabled = enable;
   if(!enable) document.getElementById('aria-panel').classList.remove('open');
-  showNotif('Aria', enable ? 'Aria is now enabled.' : 'Aria has been disabled.');
+  showNotif('Aria', enable ? 'Aria enabled.' : 'Aria disabled.');
 }
 
-/* ============================================================
-   GLASS EFFECTS
-   ============================================================ */
-function setGlassEffects(enable){
-  S.glassEnabled = enable;
-  const glassElements = document.querySelectorAll('#taskbar,#topbar,.widget,#search-box,#cc,#ctx,#aria-panel,#brand-menu');
-  glassElements.forEach(el => {
-    if(enable){
-      el.style.backdropFilter = 'var(--glass-blur)';
-      el.style.webkitBackdropFilter = 'var(--glass-blur)';
-      el.style.background = 'var(--glass-bg)';
-    } else {
-      el.style.backdropFilter = 'none';
-      el.style.webkitBackdropFilter = 'none';
-      el.style.background = 'var(--bg2)';
-    }
-  });
-}
-
-/* ============================================================
-   DEVICE DETECTION (REAL)
-   ============================================================ */
-function detectDevice(){
-  const ua = navigator.userAgent;
-  let osName='Unknown', osVer='';
-  if(/Windows NT 10/.test(ua)){osName='Windows';osVer='10/11';}
-  else if(/Mac OS X ([\d_]+)/.test(ua)){osName='macOS';const m=ua.match(/Mac OS X ([\d_]+)/);osVer=m?m[1].replace(/_/g,'.'):'';}
-  else if(/Android ([\d.]+)/.test(ua)){osName='Android';const m=ua.match(/Android ([\d.]+)/);osVer=m?m[1]:'';}
-  else if(/iPhone OS ([\d_]+)/.test(ua)){osName='iOS';const m=ua.match(/iPhone OS ([\d_]+)/);osVer=m?m[1].replace(/_/g,'.'):'';}
-  else if(/iPad.*OS ([\d_]+)/.test(ua)){osName='iPadOS';const m=ua.match(/OS ([\d_]+)/);osVer=m?m[1].replace(/_/g,'.'):'';}
-  else if(/CrOS/.test(ua)){osName='Chrome OS';}
-  else if(/Linux/.test(ua)){osName='Linux';}
-
-  let bName='Unknown', bVer='';
-  if(/Edg\//.test(ua)){bName='Microsoft Edge';const m=ua.match(/Edg\/([\d.]+)/);bVer=m?m[1]:'';}
-  else if(/OPR\//.test(ua)){bName='Opera';const m=ua.match(/OPR\/([\d.]+)/);bVer=m?m[1]:'';}
-  else if(/Chrome\/([\d.]+)/.test(ua) && !/Chromium/.test(ua)){bName='Google Chrome';const m=ua.match(/Chrome\/([\d.]+)/);bVer=m?m[1]:'';}
-  else if(/Firefox\/([\d.]+)/.test(ua)){bName='Mozilla Firefox';const m=ua.match(/Firefox\/([\d.]+)/);bVer=m?m[1]:'';}
-  else if(/Safari\/([\d.]+)/.test(ua) && !/Chrome/.test(ua)){bName='Safari';const m=ua.match(/Version\/([\d.]+)/);bVer=m?m[1]:'';}
-
-  let devType='Desktop';
-  if(/Mobi|Android.*Mobile|iPhone/.test(ua)) devType='Smartphone';
-  else if(/iPad|Android(?!.*Mobile)|Tablet/.test(ua)) devType='Tablet';
-
-  const sw=window.screen.width, sh=window.screen.height, dpr=window.devicePixelRatio||1, depth=window.screen.colorDepth||24;
-  const lang = navigator.language||'?';
-  const cores = navigator.hardwareConcurrency||'Unavailable';
-  const mem = navigator.deviceMemory ? navigator.deviceMemory+' GB' : 'Unavailable';
-  const touch = navigator.maxTouchPoints>0 ? `Yes (${navigator.maxTouchPoints} points)` : 'No';
-  const cookies = navigator.cookieEnabled ? 'Enabled' : 'Disabled';
-  const online = navigator.onLine ? 'Online' : 'Offline';
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone||'?';
-
-  const rows = [
-    ['Device type', devType],
-    ['Operating system', osName + (osVer?' '+osVer:'')],
-    ['Browser', bName + (bVer?' '+bVer:'')],
-    ['Screen resolution', `${sw}×${sh} @ ${dpr}x`],
-    ['Color depth', depth+' bit'],
-    ['Logical CPU cores', String(cores)],
-    ['Device memory', mem],
-    ['Touchscreen', touch],
-    ['Connection status', online],
-    ['Cookies', cookies],
-    ['Language', lang],
-    ['Time zone', tz],
-    ['User agent', ua],
-  ];
-  const card = document.getElementById('device-card');
-  if(card) card.innerHTML = rows.map(([k,v])=>`<div class="dev-row-block"><div class="dev-label">${k}</div><div class="dev-val">${v}</div></div>`).join('');
-  showNotif('Device scan complete', `${devType} · ${osName} · ${bName}`);
-}
-
-function detectNetwork(){
-  const conn = navigator.connection;
-  const typeEl = document.getElementById('net-type');
-  const ipEl = document.getElementById('net-ip');
-  const nameEl = document.getElementById('net-name-display');
-  if(typeEl) typeEl.textContent = conn ? (conn.effectiveType||conn.type||'Unknown').toUpperCase() + (conn.downlink?` (${conn.downlink} Mbps)`:'') : 'Unavailable';
-  if(ipEl) ipEl.textContent = '192.168.1.' + Math.floor(Math.random()*254+1);
-  if(nameEl) nameEl.textContent = 'HomeNet_5G';
-}
-
-async function loadBattery(){
-  try{
-    const b = await navigator.getBattery();
-    const upd = ()=>{
-      const pct = Math.round(b.level*100);
-      const lvl = document.getElementById('batt-level');
-      const st = document.getElementById('batt-status');
-      const ind = document.getElementById('batt-ind');
-      if(lvl) lvl.textContent = pct+'%';
-      if(st) st.textContent = b.charging ? 'Charging' : (pct<20?'Low':'Normal');
-      if(ind) ind.textContent = `[${pct}%]`;
-    };
-    upd();
-    b.addEventListener('levelchange',upd);
-    b.addEventListener('chargingchange',upd);
-  }catch(e){
-    const lvl = document.getElementById('batt-level');
-    if(lvl) lvl.textContent = 'Unavailable in this browser';
-  }
-}
-
-/* ============================================================
-   WINDOWS
-   ============================================================ */
+/* ============== WINDOWS ============== */
 function openApp(id){
   const win = document.getElementById('win-'+id);
   if(!win) return;
@@ -1394,11 +1086,10 @@ function openApp(id){
     win.style.zIndex = ++S.winZ;
   } else {
     win.classList.remove('min');
-    win.classList.add('show','opening');
+    win.classList.add('show');
     win.style.zIndex = ++S.winZ;
-    setTimeout(()=>win.classList.remove('opening'),250);
   }
-  document.getElementById('tb-appname').textContent = id.charAt(0).toUpperCase()+id.slice(1).replace('manager',' Manager');
+  document.getElementById('tb-appname').textContent = id.charAt(0).toUpperCase()+id.slice(1);
   if(id==='notes') renderNotesList();
   if(id==='terminal') document.getElementById('tm-in').focus();
   if(id==='filemanager') fmRender();
@@ -1408,7 +1099,6 @@ function closeWin(id){
   if(!win) return;
   win.classList.add('closing');
   setTimeout(()=>{ win.classList.remove('show','closing'); },140);
-  if(id==='camera') camStop();
 }
 function minWin(id){
   const win = document.getElementById('win-'+id);
@@ -1426,7 +1116,7 @@ function maxWin(id){
   } else {
     maxPrev[id]={w:win.style.width,h:win.style.height,t:win.style.top,l:win.style.left};
     win.classList.add('max');
-    win.style.width='100%'; win.style.height=(window.innerHeight-30)+'px'; win.style.top='30px';
+    win.style.width='100%'; win.style.height=(window.innerHeight-32)+'px'; win.style.top='32px';
   }
 }
 
@@ -1444,7 +1134,7 @@ function initDrag(){
     document.addEventListener('mousemove', e=>{
       if(!dragging) return;
       win.style.left=(e.clientX-ox)+'px';
-      win.style.top=Math.max(30,e.clientY-oy)+'px';
+      win.style.top=Math.max(32,e.clientY-oy)+'px';
     });
     document.addEventListener('mouseup', ()=>dragging=false);
     win.addEventListener('mousedown', ()=>win.style.zIndex=++S.winZ);
@@ -1457,16 +1147,13 @@ function initDrag(){
   });
 }
 
-/* ============================================================
-   SETTINGS
-   ============================================================ */
+/* ============== SETTINGS ============== */
 function setNav(el){
   document.querySelectorAll('.set-nav-item').forEach(i=>i.classList.remove('active'));
   el.classList.add('active');
   document.querySelectorAll('.set-section').forEach(s=>s.classList.remove('active'));
   document.getElementById('sec-'+el.dataset.sec).classList.add('active');
   if(el.dataset.sec==='device') detectDevice();
-  if(el.dataset.sec==='network') detectNetwork();
 }
 
 function buildAccentSwatches(){
@@ -1480,6 +1167,7 @@ function buildAccentSwatches(){
       S.accent = sw.dataset.c;
       document.documentElement.style.setProperty('--signal', S.accent);
       document.documentElement.style.setProperty('--signal-dim', S.accent+'33');
+      document.documentElement.style.setProperty('--signal-light', S.accent+'22');
       showNotif('Appearance','Signal color updated.');
     });
   });
@@ -1495,149 +1183,74 @@ function buildWallpaperGrid(){
       opt.classList.add('sel');
       S.wallpaperIdx = parseInt(opt.dataset.i);
       applyWallpaper();
-      showNotif('Appearance','Wallpaper changed to '+WALLPAPERS[S.wallpaperIdx].name+'.');
+      showNotif('Appearance','Wallpaper changed.');
     });
   });
 }
 
-function cycleWallpaper(){
-  S.wallpaperIdx = (S.wallpaperIdx+1) % WALLPAPERS.length;
-  applyWallpaper();
-  buildWallpaperGrid();
-  showNotif('Wallpaper', 'Switched to '+WALLPAPERS[S.wallpaperIdx].name+'.');
-}
-function applyWidgetsVisible(checked){
-  document.querySelectorAll('.widget').forEach(w=>w.style.display = checked?'':'none');
-}
-
-function setTaskbarPos(pos, el){
-  document.querySelectorAll('.tb-pos-opt').forEach(o=>o.classList.remove('sel'));
-  if(el) el.classList.add('sel');
-  S.taskbarPos = pos;
-  const tb = document.getElementById('taskbar');
-  tb.className = 'tb-'+pos;
-  tb.style.left=''; tb.style.right=''; tb.style.top=''; tb.style.bottom=''; tb.style.transform='';
-}
 function setTaskbarSize(v){
   S.taskbarSize = v;
   document.documentElement.style.setProperty('--taskbar-size', v+'px');
   document.getElementById('tb-size-val').textContent = v+'px';
 }
-function setTaskbarAutohide(checked){
-  S.taskbarAutohide = checked;
-  const tb = document.getElementById('taskbar');
-  if(checked){
-    tb.style.transition='opacity .25s, transform .25s';
-    tb.style.opacity='0.15';
-    document.getElementById('desktop').addEventListener('mousemove', autohideListener);
-  } else {
-    tb.style.opacity='1';
-    document.getElementById('desktop').removeEventListener('mousemove', autohideListener);
-  }
-}
-function autohideListener(e){
-  const tb = document.getElementById('taskbar');
-  const r = tb.getBoundingClientRect();
-  const dist = Math.hypot(e.clientX-(r.left+r.width/2), e.clientY-(r.top+r.height/2));
-  tb.style.opacity = dist < 220 ? '1' : '0.15';
-}
+
 function setUiScale(v){
   document.documentElement.style.setProperty('--ui-scale', v/100);
   document.getElementById('scale-val').textContent = v+'%';
 }
-function setUiFont(stack){
-  document.documentElement.style.setProperty('--ui-font-stack', stack);
-  document.getElementById('font-demo-text').style.fontFamily = stack;
-}
+
 function setReduceMotion(checked){
   document.body.setAttribute('data-reduce-motion', checked?'1':'0');
 }
-function setHighContrast(checked){
-  document.documentElement.style.setProperty('--line', checked?'rgba(255,250,240,0.22)':'rgba(255,250,240,0.08)');
-  document.documentElement.style.setProperty('--line2', checked?'rgba(255,250,240,0.34)':'rgba(255,250,240,0.14)');
-  document.documentElement.style.setProperty('--ink2', checked?'#c9c2b4':'#a8a195');
+
+function setBrightness(v){
+  document.getElementById('cc-bright-val').textContent=v+'%';
+  document.getElementById('wallpaper').style.filter='brightness('+(v/100*0.7+0.3)+')';
 }
-function setNoBlur(checked){
-  document.querySelectorAll('#taskbar,#topbar,.widget,#search-box,#cc,#ctx,#notif-stack .notif,#aria-panel,#brand-menu').forEach(el=>{
-    el.style.backdropFilter = checked ? 'none' : '';
-    el.style.background = checked ? 'var(--bg2)' : '';
-  });
-}
+
 function setVolume(v){
   document.getElementById('vol-val').textContent = v+'%';
-  const cc = document.getElementById('cc-vol-val');
-  if(cc) cc.textContent = v+'%';
-}
-function toggleWifi(checked){
-  S.wifiEnabled = checked;
-  document.getElementById('net-status').textContent = checked ? 'Connected' : 'Disconnected';
-  document.getElementById('net-status').style.color = checked ? 'var(--ok)' : 'var(--bad)';
-  document.getElementById('cc-wifi').classList.toggle('on', checked);
-  document.getElementById('cc-wifi-label').textContent = checked ? 'HomeNet_5G' : 'Off';
-  showNotif('Network', checked ? 'Wi-Fi enabled.' : 'Wi-Fi disabled.');
-}
-function setPowerSaver(checked){
-  document.getElementById('cc-dark').classList.toggle('on', checked);
-  document.querySelectorAll('.widget').forEach(w=>w.style.opacity = checked ? '0.45' : '1');
-  if(checked){ if(S.musicPlaying) muToggle(); }
-  showNotif('Battery', checked ? 'Power saver on.' : 'Power saver off.');
 }
 
-/* ============================================================
-   TASKBAR CONTROLS
-   ============================================================ */
-function initTaskbarControls(){
-  const tb = document.getElementById('taskbar');
-  const handle = document.getElementById('tb-handle');
-  const resizeHandle = document.getElementById('tb-resize-handle');
-  let dragging=false;
-  handle.addEventListener('mousedown', e=>{
-    e.preventDefault(); dragging=true;
-    document.body.style.cursor='grabbing';
-  });
-  document.addEventListener('mousemove', e=>{
-    if(!dragging) return;
-    const x=e.clientX, y=e.clientY, w=window.innerWidth, h=window.innerHeight;
-    const distLeft=x, distRight=w-x, distTop=y, distBottom=h-y;
-    const min=Math.min(distLeft,distRight,distTop,distBottom);
-    let pos='bottom';
-    if(min===distLeft) pos='left';
-    else if(min===distRight) pos='right';
-    else if(min===distTop) pos='top';
-    else pos='bottom';
-    if(pos!==S.taskbarPos){
-      S.taskbarPos=pos; tb.className='tb-'+pos;
-      document.querySelectorAll('.tb-pos-opt').forEach(o=>o.classList.toggle('sel', o.dataset.pos===pos));
-    }
-  });
-  document.addEventListener('mouseup', ()=>{ dragging=false; document.body.style.cursor=''; });
-
-  let resizing=false, startSize=54, startCoord=0;
-  resizeHandle.addEventListener('mousedown', e=>{
-    e.preventDefault(); resizing=true;
-    startSize=S.taskbarSize;
-    startCoord = (S.taskbarPos==='left'||S.taskbarPos==='right') ? e.clientX : e.clientY;
-  });
-  document.addEventListener('mousemove', e=>{
-    if(!resizing) return;
-    let delta;
-    if(S.taskbarPos==='bottom') delta = -(e.clientY-startCoord);
-    else if(S.taskbarPos==='top') delta = (e.clientY-startCoord);
-    else if(S.taskbarPos==='left') delta = (e.clientX-startCoord);
-    else delta = -(e.clientX-startCoord);
-    let newSize = Math.max(40, Math.min(90, startSize+delta));
-    S.taskbarSize = newSize;
-    document.documentElement.style.setProperty('--taskbar-size', newSize+'px');
-    const slider=document.getElementById('opt-tb-size'), label=document.getElementById('tb-size-val');
-    if(slider) slider.value=Math.round(newSize);
-    if(label) label.textContent=Math.round(newSize)+'px';
-  });
-  document.addEventListener('mouseup', ()=>resizing=false);
+function checkForUpdates(){
+  showNotif('Software Update','PartexDesktop OS 11.5 (Developer Beta) available.');
+  setTimeout(()=>{
+    alert('You are not permitted to download Developer Betas.\n\nOnly Public Beta and Stable releases are available for your account.');
+  },800);
 }
 
-/* ============================================================
-   CALCULATOR
-   ============================================================ */
+/* ============== APP STORE ============== */
+function buildAppStore(){
+  const grid = document.getElementById('as-grid');
+  grid.innerHTML = APPSTORE_APPS.map(app=>`
+    <div class="as-app" data-name="${app.name.toLowerCase()}">
+      <div class="as-icon">${app.icon}</div>
+      <div class="as-name">${app.name}</div>
+      <div class="as-desc">${app.desc}</div>
+      <button class="as-btn${app.installed?' installed':''}" onclick="installApp(this,'${app.name}'">${app.installed?'Installed':'Install'}</button>
+    </div>
+  `).join('');
+}
+
+function installApp(btn, name){
+  if(btn.classList.contains('installed')) return;
+  btn.textContent='Installing...';
+  setTimeout(()=>{
+    btn.textContent='Installed';
+    btn.classList.add('installed');
+    showNotif('App Store',`${name} installed successfully.`);
+  },1200);
+}
+
+function filterApps(q){
+  const items = document.querySelectorAll('.as-app');
+  items.forEach(item=>{
+    const show = item.dataset.name.includes(q.toLowerCase());
+    item.style.display = show ? '' : 'none';
+  });
+}
+
+/* ============== CALCULATOR ============== */
 function calcInput(v){
   const disp=document.getElementById('calc-disp'), hist=document.getElementById('calc-hist');
   const c=S.calc;
@@ -1669,9 +1282,7 @@ function calcDoOp(){
   document.getElementById('calc-disp').textContent=c.val;
 }
 
-/* ============================================================
-   BROWSER
-   ============================================================ */
+/* ============== BROWSER ============== */
 let brIframe=null;
 function brGo(url){
   const bar=document.getElementById('br-url'), wrap=document.getElementById('br-frame-wrap'), home=document.getElementById('br-home');
@@ -1689,49 +1300,12 @@ function brGo(url){
 function brNav(dir){ const idx=S.brIdx+dir; if(idx>=0 && idx<S.brHist.length){ S.brIdx=idx; brGo(S.brHist[idx]); } }
 function brReload(){ if(brIframe) brIframe.src=brIframe.src; }
 
-/* ============================================================
-   MUSIC
-   ============================================================ */
-const TRACKS=[
-  {title:'Partex Theme',artist:'System Sounds',dur:225},
-  {title:'Quiet Signal',artist:'Field Recordings',dur:194},
-  {title:'Night Shift',artist:'Low Frequency',dur:312},
-  {title:'Dawn Protocol',artist:'Static Lines',dur:245},
-];
-let trackIdx=0;
-function muToggle(){
-  S.musicPlaying=!S.musicPlaying;
-  document.getElementById('mu-play-btn').textContent = S.musicPlaying?'❙❙':'▶';
-  if(S.musicPlaying) S.musicTimer=setInterval(muTick,1000); else clearInterval(S.musicTimer);
-}
-function muTick(){
-  const t=TRACKS[trackIdx];
-  S.musicPos=(S.musicPos+1)%t.dur;
-  const pct=(S.musicPos/t.dur*100).toFixed(1);
-  document.getElementById('mu-fill').style.width=pct+'%';
-  document.getElementById('mu-cur').textContent=fmtTime(S.musicPos);
-  if(S.musicPos===0) muNext();
-}
-function muNext(){ trackIdx=(trackIdx+1)%TRACKS.length; muLoad(); }
-function muPrev(){ trackIdx=(trackIdx-1+TRACKS.length)%TRACKS.length; muLoad(); }
-function muLoad(){
-  const t=TRACKS[trackIdx]; S.musicPos=0;
-  document.getElementById('mu-title').textContent=t.title;
-  document.getElementById('mu-artist').textContent=t.artist;
-  document.getElementById('mu-tot').textContent=fmtTime(t.dur);
-  document.getElementById('mu-fill').style.width='0%';
-}
-function muSeek(e){ const tr=e.currentTarget; const pct=e.offsetX/tr.offsetWidth; S.musicPos=Math.floor(pct*TRACKS[trackIdx].dur); }
-function fmtTime(s){ return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
-
-/* ============================================================
-   NOTES
-   ============================================================ */
+/* ============== NOTES ============== */
 function initNotes(){ renderNotesList(); loadNote(1); }
 function renderNotesList(){
   const list=document.getElementById('nt-list'); if(!list) return;
   list.innerHTML = S.notes.map(n=>`<div class="nt-li${n.id===S.activeNote?' active':''}" data-id="${n.id}">
-    <div class="nt-li-t">${n.title||'Untitled'}</div><div class="nt-li-p">${n.body.slice(0,40).replace(/\n/g,' ')}</div>
+    <div class="nt-li-t">${n.title}</div><div class="nt-li-p">${n.body.slice(0,40)}</div>
   </div>`).join('');
   list.querySelectorAll('.nt-li').forEach(li=>li.addEventListener('click', ()=>loadNote(parseInt(li.dataset.id))));
 }
@@ -1760,14 +1334,12 @@ function noteDelete(){
   renderNotesList();
 }
 
-/* ============================================================
-   TERMINAL
-   ============================================================ */
-const TFS={'~':{type:'dir',children:{'Documents':{type:'dir',children:{}},'Desktop':{type:'dir',children:{}},'readme.txt':{type:'file',content:'Welcome to PartexDesktop OS 11.4!\n\nThis is a simulated file system.\nType help for a full command list.'}}}};
+/* ============== TERMINAL ============== */
+const TFS={'~':{type:'dir',children:{'Documents':{type:'dir',children:{}},'Desktop':{type:'dir',children:{}}}}};
 let tCwd='~', tHist=[], tHistIdx=-1;
 function initTerminal(){
-  tPrint('PartexDesktop OS 11.4 Terminal — bash 5.2');
-  tPrint('Type <span style="color:var(--signal)">help</span> for a list of commands.\n');
+  tPrint('PartexDesktop OS 11.4.1 Terminal — bash 5.2');
+  tPrint('Type <span style="color:var(--signal)">help</span> for commands.\n');
 }
 function tmKey(e){
   if(e.key==='Enter'){
@@ -1782,120 +1354,62 @@ function tmKey(e){
 function runCmd(raw){
   const parts=raw.trim().split(/\s+/); const cmd=parts[0].toLowerCase(); const args=parts.slice(1);
   switch(cmd){
-    case 'help': tPrint(`<span class="inf">Available:</span> help ls cd cat pwd clear echo date uname whoami neofetch open`); break;
-    case 'ls': { const d=tGetCwd(); tPrint(d&&d.children?Object.keys(d.children).join('  ')||'(empty)':'<span class="err">No access</span>'); break; }
-    case 'cd': { const t=args[0]||'~'; if(t==='~'){tCwd='~';updatePrompt();break;} const d=tGetCwd(); if(d&&d.children&&d.children[t]&&d.children[t].type==='dir'){tCwd=tCwd+'/'+t;updatePrompt();} else tPrint(`<span class="err">cd: ${t}: no such directory</span>`); break; }
-    case 'cat': { if(!args[0]){tPrint('<span class="err">cat: missing filename</span>');break;} const d=tGetCwd(); const f=d&&d.children&&d.children[args[0]]; if(f&&f.type==='file') tPrint(esc(f.content)); else tPrint(`<span class="err">cat: ${args[0]}: not found</span>`); break; }
-    case 'pwd': tPrint('/home/partex/'+(tCwd==='~'?'':tCwd.replace('~/',''))); break;
+    case 'help': tPrint(`<span style="color:var(--info)">Available:</span> help ls cd cat pwd clear echo date whoami neofetch`); break;
+    case 'ls': tPrint('Documents  Desktop'); break;
+    case 'cd': { const t=args[0]||'~'; if(t==='~'){tCwd='~';}else{tCwd=tCwd+'/'+t;} updatePrompt(); break; }
+    case 'cat': tPrint(`<span style="color:var(--bad)">cat: missing filename</span>`); break;
+    case 'pwd': tPrint('/home/partex/'+(tCwd==='~'?'':tCwd)); break;
     case 'clear': document.getElementById('tm-out').innerHTML=''; break;
     case 'echo': tPrint(esc(args.join(' '))); break;
     case 'date': tPrint(new Date().toString()); break;
     case 'whoami': tPrint('partex'); break;
-    case 'uname': tPrint('PartexDesktop OS 11.4 (partex-kernel-6.4) x86_64'); break;
-    case 'neofetch': tPrint(`<span style="color:var(--signal)">OS:</span> PartexDesktop OS 11.4\n<span style="color:var(--signal)">Shell:</span> bash 5.2\n<span style="color:var(--signal)">CPU cores:</span> ${navigator.hardwareConcurrency||'?'}\n<span style="color:var(--signal)">Resolution:</span> ${window.screen.width}x${window.screen.height}`); break;
-    case 'open': if(args[0]){openApp(args[0]);tPrint(`Opened "${args[0]}".`);} else tPrint('<span class="err">open: missing app name</span>'); break;
-    default: tPrint(`<span class="err">bash: ${esc(cmd)}: command not found</span>`);
+    case 'neofetch': tPrint(`<span style="color:var(--signal)">OS:</span> PartexDesktop 11.4.1\n<span style="color:var(--signal)">CPU:</span> ${navigator.hardwareConcurrency||'?'} cores\n<span style="color:var(--signal)">RAM:</span> 16 GB`); break;
+    default: tPrint(`<span style="color:var(--bad)">bash: ${esc(cmd)}: command not found</span>`);
   }
 }
-function tGetCwd(){ if(tCwd==='~')return TFS['~']; const parts=tCwd.replace('~/','').split('/'); let cur=TFS['~']; for(const p of parts){ if(cur&&cur.children&&cur.children[p]) cur=cur.children[p]; else return null; } return cur; }
 function updatePrompt(){ document.getElementById('tm-prompt').textContent='partex@desktop:'+tCwd+'$'; }
 function tPrint(html){ const o=document.getElementById('tm-out'); o.innerHTML+='<div>'+html+'</div>'; o.scrollTop=o.scrollHeight; }
 function esc(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-/* ============================================================
-   CAMERA
-   ============================================================ */
-async function camCapture(){
-  if(!S.camStream){
-    try{
-      const stream=await navigator.mediaDevices.getUserMedia({video:true});
-      S.camStream=stream;
-      const v=document.getElementById('cam-video'), ph=document.getElementById('cam-ph');
-      v.srcObject=stream; v.play(); v.style.display=''; if(ph) ph.style.display='none';
-      showNotif('Camera','Camera started.');
-    }catch(e){ showNotif('Camera','Camera unavailable.'); }
-  } else {
-    showNotif('Camera','Photo captured.');
-  }
-}
-function camStop(){
-  if(S.camStream){ S.camStream.getTracks().forEach(t=>t.stop()); S.camStream=null; }
-  const v=document.getElementById('cam-video'), ph=document.getElementById('cam-ph');
-  if(v){v.style.display='none';v.srcObject=null;}
-  if(ph) ph.style.display='';
-}
-function camFlip(){ showNotif('Camera','Switching camera...'); }
-
-/* ============================================================
-   FILE MANAGER
-   ============================================================ */
+/* ============== FILE MANAGER ============== */
 const FMFS = {
   '/':{type:'dir',children:['Home','System','Applications']},
-  '/Home':{type:'dir',children:['Desktop','Documents','Downloads','Pictures','Music']},
-  '/Home/Desktop':{type:'dir',children:[]},
-  '/Home/Documents':{type:'dir',children:['Report_Q2.pdf','Presentation.pptx','Budget.xlsx','Resume.pdf']},
-  '/Home/Downloads':{type:'dir',children:['PartexOS_11.4.dmg','installer.pkg','photo.jpg']},
-  '/Home/Pictures':{type:'dir',children:['Vacation.jpg','Screenshot.png']},
-  '/Home/Music':{type:'dir',children:['Playlist.m3u']},
-  '/Applications':{type:'dir',children:['Browser.app','Terminal.app','Notes.app']},
-  '/System':{type:'dir',children:['Library','Kernel']},
-  '/System/Library':{type:'dir',children:[]},
-  '/System/Kernel':{type:'dir',children:[]},
+  '/Home':{type:'dir',children:['Desktop','Documents','Downloads']},
+  '/Home/Documents':{type:'dir',children:['Report.pdf','Budget.xlsx']},
+  '/Home/Downloads':{type:'dir',children:['installer.dmg']},
 };
-const FMEXT={pdf:'PDF',pptx:'PPT',xlsx:'XLS',jpg:'IMG',png:'IMG',dmg:'DMG',pkg:'PKG',m3u:'AUD',app:'APP'};
-function fmIcon(name){ const ext=name.split('.').pop().toLowerCase(); return FMEXT[ext]||'DOC'; }
 let fmPath='/Home', fmSel=null;
 function initFileManager(){ fmRender(); }
 function fmRender(){
   const wrap=document.getElementById('fm-wrap'); if(!wrap) return;
   const node=FMFS[fmPath]||{children:[]};
   const files=node.children||[];
-  const FAVES=[{label:'Home',path:'/Home'},{label:'Desktop',path:'/Home/Desktop'},{label:'Documents',path:'/Home/Documents'},{label:'Downloads',path:'/Home/Downloads'},{label:'Pictures',path:'/Home/Pictures'},{label:'Music',path:'/Home/Music'}];
-  wrap.innerHTML = `<div class="fm-side">
-    <div class="fm-side-sec">Favorites</div>
-    ${FAVES.map(f=>`<div class="fm-side-item${fmPath===f.path?' active':''}" data-p="${f.path}">${f.label}</div>`).join('')}
-    <div class="fm-side-sec">Locations</div>
-    <div class="fm-side-item${fmPath==='/'?' active':''}" data-p="/">This Computer</div>
-    <div class="fm-side-item" data-p="/Applications">Applications</div>
-    <div class="fm-side-item" data-p="/System">System</div>
+  wrap.innerHTML = `<div class="fm-side"><div class="fm-side-sec">Locations</div>
+    <div class="fm-side-item${fmPath==='/'?' active':''}" data-p="/">Computer</div>
+    <div class="fm-side-item${fmPath==='/Home'?' active':''}" data-p="/Home">Home</div>
   </div>
   <div class="fm-main">
-    <div class="fm-toolbar">
-      <button class="fm-tbtn" id="fm-back">&lt;</button>
-      <div class="fm-path">${fmPath}</div>
-    </div>
+    <div class="fm-toolbar"><button class="fm-tbtn" id="fm-back">&lt;</button><div class="fm-path">${fmPath}</div></div>
     <div class="fm-files"><div class="fm-grid">
-      ${files.map(f=>`<div class="fm-file${fmSel===f?' sel':''}" data-f="${f}"><div class="fm-fi">${fmIcon(f)}</div><div class="fm-fn">${f}</div></div>`).join('') || '<div style="color:var(--ink3);font-size:11px;padding:14px;">This folder is empty</div>'}
+      ${files.map(f=>`<div class="fm-file${fmSel===f?' sel':''}" data-f="${f}"><div class="fm-fi">${f.includes('.')?'📄':'📁'}</div><div class="fm-fn">${f}</div></div>`).join('')}
     </div></div>
-    <div class="fm-status">${files.length} items${fmSel?' · '+fmSel+' selected':''}</div>
   </div>`;
   wrap.querySelectorAll('.fm-side-item').forEach(it=>it.addEventListener('click', ()=>{ if(FMFS[it.dataset.p]){fmPath=it.dataset.p;fmSel=null;fmRender();} }));
   wrap.querySelectorAll('.fm-file').forEach(it=>{
     it.addEventListener('click', ()=>{ fmSel=it.dataset.f; fmRender(); });
-    it.addEventListener('dblclick', ()=>{
-      const full=fmPath+'/'+it.dataset.f;
-      if(FMFS[full]){ fmPath=full; fmSel=null; fmRender(); }
-      else showNotif('File Manager', `Cannot open "${it.dataset.f}".`);
-    });
   });
-  const back=document.getElementById('fm-back');
-  if(back) back.addEventListener('click', ()=>{ const p=fmPath.split('/').slice(0,-1).join('/')||'/'; if(FMFS[p]){fmPath=p;fmSel=null;fmRender();} });
+  document.getElementById('fm-back').addEventListener('click', ()=>{ const p=fmPath.split('/').slice(0,-1).join('/')||'/'; if(FMFS[p]){fmPath=p;fmSel=null;fmRender();} });
 }
 
-/* ============================================================
-   SEARCH
-   ============================================================ */
+/* ============== SEARCH ============== */
 const SEARCH_ITEMS=[
-  {name:'Browser',sub:'Open the web browser',icon:'B',action:()=>openApp('browser')},
-  {name:'File Manager',sub:'Browse files and folders',icon:'F',action:()=>openApp('filemanager')},
-  {name:'Calculator',sub:'Open the calculator',icon:'=',action:()=>openApp('calculator')},
-  {name:'Settings',sub:'System preferences',icon:'S',action:()=>openApp('settings')},
-  {name:'Music',sub:'Play music',icon:'M',action:()=>openApp('music')},
-  {name:'Notes',sub:'Open notes app',icon:'N',action:()=>openApp('notes')},
-  {name:'Terminal',sub:'Open the terminal',icon:'T',action:()=>openApp('terminal')},
-  {name:'Camera',sub:'Open camera app',icon:'C',action:()=>openApp('camera')},
-  {name:'Aria Settings',sub:'Configure Aria AI assistant',icon:'A',action:()=>{openApp('settings');setTimeout(()=>{const el=document.querySelector('.set-nav-item[data-sec="aria"]');if(el)setNav(el);},250);}},
-  {name:'Device information',sub:'View real device details',icon:'i',action:()=>{openApp('settings');setTimeout(()=>{const el=document.querySelector('.set-nav-item[data-sec="device"]');if(el)setNav(el);},250);}},
+  {name:'Browser',icon:'🌐',action:()=>openApp('browser')},
+  {name:'Files',icon:'📁',action:()=>openApp('filemanager')},
+  {name:'Calculator',icon:'=',action:()=>openApp('calculator')},
+  {name:'Settings',icon:'⚙',action:()=>openApp('settings')},
+  {name:'Notes',icon:'📝',action:()=>openApp('notes')},
+  {name:'Terminal',icon:'T',action:()=>openApp('terminal')},
+  {name:'App Store',icon:'🎁',action:()=>openApp('appstore')},
 ];
 let sFocus=-1;
 function openSearch(){
@@ -1907,8 +1421,8 @@ function openSearch(){
 function closeSearch(){ document.getElementById('search-ov').classList.remove('open'); }
 function doSearch(q){
   const res=document.getElementById('search-results');
-  const items = q ? SEARCH_ITEMS.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())||i.sub.toLowerCase().includes(q.toLowerCase())) : SEARCH_ITEMS;
-  res.innerHTML = items.map((it,i)=>`<div class="s-item" data-i="${i}"><div class="s-ic">${it.icon}</div><div><div class="s-name">${it.name}</div><div class="s-sub">${it.sub}</div></div></div>`).join('');
+  const items = q ? SEARCH_ITEMS.filter(i=>i.name.toLowerCase().includes(q.toLowerCase())) : SEARCH_ITEMS;
+  res.innerHTML = items.map((it,i)=>`<div class="s-item" data-i="${i}"><div class="s-ic">${it.icon}</div><div><div class="s-name">${it.name}</div></div></div>`).join('');
   res.querySelectorAll('.s-item').forEach((el,i)=>el.addEventListener('click', ()=>{ items[i].action(); closeSearch(); }));
   sFocus=-1;
 }
@@ -1916,12 +1430,10 @@ function searchKey(e){
   const items=document.querySelectorAll('.s-item');
   if(e.key==='ArrowDown'){ sFocus=Math.min(sFocus+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('focus',i===sFocus)); }
   else if(e.key==='ArrowUp'){ sFocus=Math.max(sFocus-1,0); items.forEach((el,i)=>el.classList.toggle('focus',i===sFocus)); }
-  else if(e.key==='Enter'){ if(sFocus>=0&&items[sFocus]) items[sFocus].click(); else if(items[0]) items[0].click(); }
+  else if(e.key==='Enter'){ if(sFocus>=0&&items[sFocus]) items[sFocus].click(); }
 }
 
-/* ============================================================
-   NOTIFICATIONS / CONTROL CENTER / CONTEXT / BRAND MENU
-   ============================================================ */
+/* ============== NOTIFICATIONS / CONTROL CENTER / CONTEXT ============== */
 function showNotif(title,msg){
   const stack=document.getElementById('notif-stack');
   const el=document.createElement('div'); el.className='notif';
@@ -1930,12 +1442,51 @@ function showNotif(title,msg){
   setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(),260); },4200);
 }
 function toggleCC(){ document.getElementById('cc').classList.toggle('open'); }
-function ccToggle(el,key){ el.classList.toggle('on'); if(key==='wifi'){ const checked=el.classList.contains('on'); document.getElementById('opt-wifi').checked=checked; toggleWifi(checked); } if(key==='powersaver'){ document.getElementById('opt-powersaver').checked=el.classList.contains('on'); setPowerSaver(el.classList.contains('on')); } }
+function ccToggle(el,key){ el.classList.toggle('on'); }
 function toggleBrandMenu(){ document.getElementById('brand-menu').classList.toggle('open'); }
-function showCtx(e){ e.preventDefault(); const m=document.getElementById('ctx'); m.classList.add('open'); m.style.left=Math.min(e.clientX,window.innerWidth-200)+'px'; m.style.top=Math.min(e.clientY,window.innerHeight-200)+'px'; }
+function showCtx(e){ e.preventDefault(); const m=document.getElementById('ctx'); m.classList.add('open'); m.style.left=Math.min(e.clientX,window.innerWidth-220)+'px'; m.style.top=Math.min(e.clientY,window.innerHeight-180)+'px'; }
 function closeCtx(){ document.getElementById('ctx').classList.remove('open'); }
 function doLock(){ toggleBrandMenu(); const lock=document.getElementById('lock'); lock.style.background=WALLPAPERS[S.wallpaperIdx].bg; lock.classList.add('show'); }
-function doRestart(){ toggleBrandMenu(); if(confirm('Restart PartexDesktop OS 11.4 Beta?')) location.reload(); }
+function doRestart(){ toggleBrandMenu(); if(confirm('Restart PartexDesktop OS?')) location.reload(); }
+
+/* ============== TASKBAR ============== */
+function initTaskbarControls(){
+  const handle = document.getElementById('tb-handle');
+  let dragging=false;
+  handle.addEventListener('mousedown', e=>{
+    e.preventDefault(); dragging=true;
+    document.body.style.cursor='grabbing';
+  });
+  document.addEventListener('mouseup', ()=>{ dragging=false; document.body.style.cursor=''; });
+}
+
+/* ============== DEVICE DETECTION ============== */
+function detectDevice(){
+  const card = document.getElementById('device-card');
+  if(!card) return;
+  const ua = navigator.userAgent;
+  const rows = [
+    ['Device type',/Mobi|Android.*Mobile|iPhone/.test(ua)?'Smartphone':'Desktop'],
+    ['Browser',ua.includes('Chrome')?'Google Chrome':ua.includes('Firefox')?'Firefox':'Safari'],
+    ['Resolution',`${window.screen.width}×${window.screen.height}`],
+    ['CPU Cores',navigator.hardwareConcurrency||'Unknown'],
+    ['Touchscreen',navigator.maxTouchPoints>0?'Yes':'No'],
+    ['Language',navigator.language||'Unknown'],
+  ];
+  card.innerHTML = rows.map(([k,v])=>`<div class="set-row"><div class="set-row-label">${k}</div><div class="set-row-val">${v}</div></div>`).join('');
+}
+
+/* ============== MUSIC (Stub) ============== */
+const TRACKS=[{title:'Partex Theme',artist:'System Sounds',dur:225}];
+let trackIdx=0;
+function muToggle(){ S.musicPlaying=!S.musicPlaying; document.getElementById('mu-play-btn').textContent = S.musicPlaying?'❙❙':'▶'; }
+function muNext(){ trackIdx=(trackIdx+1)%TRACKS.length; }
+function muPrev(){ trackIdx=(trackIdx-1+TRACKS.length)%TRACKS.length; }
+function muSeek(e){}
+
+/* ============== CAMERA (Stub) ============== */
+async function camCapture(){ showNotif('Camera','Camera feature available.'); }
+function camFlip(){ showNotif('Camera','Switching camera...'); }
 </script>
 </body>
 </html>
